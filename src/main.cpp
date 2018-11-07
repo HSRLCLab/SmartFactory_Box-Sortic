@@ -4,13 +4,7 @@
 #include <ArduinoJson.h>
 #include "NetworkManager.h"
 #include "SensorArray.h"
-
-// TODO defines in Config file
-#define SENSOR_ITERATION_SECONDS 2
-#define SMARTBOX_WAITFOR_VEHICLES_SECONDS 5
-#define SMARTBOX_ITERATION_VACKS_SECONDS 10
-#define SMARTBOX_ITERATION_VTRANSPORTS_SECONDS 10
-#define SMARTBOX_WAITFOR_ANSWERS_SECONDS 10
+#include "MainConfiguration.h"
 
 // ===================================== Global Variables =====================================
 //NetworkManager netw;         // init  Network Connection
@@ -21,13 +15,13 @@ extern byte my_json_counter; // defined in NetworkManager.h
 
 // ===================================== my helper Functions =====================================
 
-// TODO: NetworkManager Initialisierung gängt Serial Monitor ab??? -> siehe Konstruktor
+// TODO: NetworkManager Initialisierung hängt Serial Monitor ab??? -> siehe Konstruktor
 
-double calcOptimum(JsonObject &obj) // returns Optimum for given values
+double calcOptimum(JsonObject &obj) // returns Optimum for given values, higher is better
 {
-  // obj["value"]
-  // TODO
-  return 1;
+  // mögliche Parameter: Geschwindigkeit, Abstand zu SmartBox, Anzahl noch auszuführende Tasks
+  double val = 100/obj["distance"]; // better for shorter way, 100 just for factoring
+  return val;
 };
 
 double returnNumOfVehicles()
@@ -60,7 +54,7 @@ void loopEmpty() // loop until Box full
     delay(SENSOR_ITERATION_SECONDS * 1000);
   }
   netw.publishMessage("SmartBox/level", "SB 1 full");
-  //netw.publishMessage("SmartBox/IP", netw.getIP); // TODO IP to string?
+  //netw.publishMessage("SmartBox/IP", netw.getIP);
 }
 
 void loopFull() // loop until Box transported, then exit program
@@ -104,10 +98,6 @@ while (!go_next)
 }
 */
 
-void sensorTestFunction()
-{
-  sarr.getSensorData();
-}
 
 // ===================================== Arduino Functions =====================================
 void setup() // for initialisation
@@ -126,7 +116,7 @@ void setup() // for initialisation
 void loop() // one Arduino-loop per one cycle (SB full -> transported -> returned empty)
 {
 
-  sensorTestFunction();
+  
   delay(200);
 
   /*

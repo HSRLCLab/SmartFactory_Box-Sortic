@@ -232,6 +232,7 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
         my_json_counter++;
     };
 
+    // my_JSON.prettyPrintTo(Serial); // prints JSON to Serial Monitor
     // TODO if requestVehicles in Vehicle/presence answer (if vehicle) "Vehicle MQTT-ID"
     // TODO if requestVehicles in Vehicle/presence answer (if smart box) = Vehicle *, then count & save ids
 }
