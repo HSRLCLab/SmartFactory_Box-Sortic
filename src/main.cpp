@@ -7,7 +7,7 @@
 #include "MainConfiguration.h"
 
 // ===================================== Global Variables =====================================
-//NetworkManager netw;         // init  Network Connection
+NetworkManager netw;         // init  Network Connection
 SensorArray sarr;            // init Sensor
 const int log_level = 3;     // 0-3 erlaubt
 extern JsonArray &array;     // defined in NetworkManager.h
@@ -20,13 +20,13 @@ extern byte my_json_counter; // defined in NetworkManager.h
 double calcOptimum(JsonObject &obj) // returns Optimum for given values, higher is better
 {
   // mögliche Parameter: Geschwindigkeit, Abstand zu SmartBox, Anzahl noch auszuführende Tasks
-  double val = 100/obj["distance"]; // better for shorter way, 100 just for factoring
+  double dis = obj["distance"];
+  double val = 100 / dis; // better for shorter way, 100 just for factoring
   return val;
 };
 
-double returnNumOfVehicles()
-{
-  /*
+double returnNumOfVehicles(){
+    /*
   netw.subscribe("Vehicle/presence");
   netw.publishMessage("Vehicle/presence", "requestVehicles");
   for (int i = 0; i <= SMARTBOX_WAITFOR_ANSWERS_SECONDS; i++)
@@ -37,15 +37,15 @@ double returnNumOfVehicles()
   };
   netw.unsubscribe("Vehicle/presence");
   */
-};
-
+}
 
 // void getSmartBoxInfo(){}; // read Smart Box Information
 
 // ===================================== my Functions =====================================
-/*
+
 void loopEmpty() // loop until Box full
 {
+  /*
   bool isEmpty = true;
   while (isEmpty) // while empty
   {
@@ -55,10 +55,12 @@ void loopEmpty() // loop until Box full
   }
   netw.publishMessage("SmartBox/level", "SB 1 full");
   //netw.publishMessage("SmartBox/IP", netw.getIP);
+  */
 }
 
 void loopFull() // loop until Box transported, then exit program
 {
+  /*
   bool go_next = false;
   delay(SMARTBOX_WAITFOR_VEHICLES_SECONDS * 1000); // wait for vehicles to respond
   // TODO: read all vehicle params, get number of responses -> NetworkManager???
@@ -80,24 +82,23 @@ void loopFull() // loop until Box transported, then exit program
       best_value = a;
       //best_ip=...   // TODO: how to read ip from best vehicle?
     }
+  }
+  // netw.publishMessage("SmartBox/decision_IP",best_ip); // publish decision ip (json?)
+
+  // wait for acknoledgement for transport
+  // wait for transported
+  // TODO
+  while (!go_next)
+  {
+    delay(SMARTBOX_ITERATION_VACKS_SECONDS * 1000);
+  };
+
+  while (!go_next)
+  {
+    delay(SMARTBOX_ITERATION_VTRANSPORTS_SECONDS * 1000);
+  };
+  */
 }
-// netw.publishMessage("SmartBox/decision_IP",best_ip); // publish decision ip (json?)
-
-// wait for acknoledgement for transport
-// wait for transported
-// TODO
-while (!go_next)
-{
-  delay(SMARTBOX_ITERATION_VACKS_SECONDS * 1000);
-};
-
-while (!go_next)
-{
-  delay(SMARTBOX_ITERATION_VTRANSPORTS_SECONDS * 1000);
-};
-}
-*/
-
 
 // ===================================== Arduino Functions =====================================
 void setup() // for initialisation
@@ -116,8 +117,7 @@ void setup() // for initialisation
 void loop() // one Arduino-loop per one cycle (SB full -> transported -> returned empty)
 {
 
-  
-  delay(200);
+  delay(1000);
 
   /*
   loopEmpty();
