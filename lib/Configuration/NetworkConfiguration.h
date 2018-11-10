@@ -10,7 +10,8 @@
 
 #define DEFAULT_WIFI_SSID "DigitalLab"
 #define DEFAULT_WIFI_PASSWORD "digital42HSR"
-#define DEFAULT_HOSTNAME "Wagen default"
+#define DEFAULT_HOSTNAME_SARTBOX "SmartBox_"
+#define DEFAULT_HOSTNAME_VEHICLE "Vehicle_"
 #define DEFAULT_WIFI_CS 8 // Pins for Adafruit ATWINC1500 Feather
 #define DEFAULT_WIFI_IRQ 7
 #define DEFAULT_WIFI_RST 4

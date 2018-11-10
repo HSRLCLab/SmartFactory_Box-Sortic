@@ -11,6 +11,7 @@
 #include <NetworkConfiguration.h>
 
 extern const int log_level; // 0-3 erlaubt
+extern const bool is_vehicle; // true if this is vehicle
 const byte default_pins[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN};
 
 void callback2(char *topic, byte *payload, unsigned int length);
@@ -22,7 +23,7 @@ class NetworkManager
 {
 public:
   NetworkManager();                                                                                             // DEFAULT C'tor
-  NetworkManager(IPAddress &broker, String *ssid2 = (String*)DEFAULT_WIFI_SSID, String *pass2 = (String*)DEFAULT_WIFI_PASSWORD, byte *mmQTTport = (byte*)DEFAULT_MQTT_PORT, byte pins[4] = (byte*)default_pins, char *hostname2 = (char*)DEFAULT_HOSTNAME); // COSTUM C'tor
+  NetworkManager(IPAddress &broker, String *ssid2 = (String*)DEFAULT_WIFI_SSID, String *pass2 = (String*)DEFAULT_WIFI_PASSWORD, byte *mmQTTport = (byte*)DEFAULT_MQTT_PORT, byte pins[4] = (byte*)default_pins); // COSTUM C'tor
   void receiveMessage(char *topic, byte *payload, unsigned int length);                                         // handle incoming MQTT messages from Server
   bool publishMessage(const String &topic, const String msg);                                                   // handles outgoing MQTT messages to Server
   bool unsubscribe(const String &topic);
@@ -39,7 +40,7 @@ private:
   // WIFI stuff
   String ssid;
   String pass;
-  char *hostname;
+  String hostname;
   IPAddress ip;
   byte macRouter[6];
   byte mac[6];

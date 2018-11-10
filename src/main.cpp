@@ -7,12 +7,10 @@
 #include "MainConfiguration.h"
 
 // ===================================== Global Variables =====================================
-//NetworkManager netw;         // init  Network Connection
-SensorArray sarr;            // init Sensor
-const int log_level = 3;     // 0-3 erlaubt
-extern JsonArray &array;     // defined in NetworkManager.h
-extern byte my_json_counter; // defined in NetworkManager.h
-
+extern JsonArray &array;       // defined in NetworkManager.h
+extern byte my_json_counter;   // defined in NetworkManager.h
+const int log_level = 3;       // 0-3 erlaubt
+const bool is_vehicle = false; // true if is vehicle, used for MQTT
 // ===================================== my helper Functions =====================================
 
 // TODO: NetworkManager Initialisierung hängt Serial Monitor ab??? -> siehe Konstruktor
@@ -20,13 +18,12 @@ extern byte my_json_counter; // defined in NetworkManager.h
 double calcOptimum(JsonObject &obj) // returns Optimum for given values, higher is better
 {
   // mögliche Parameter: Geschwindigkeit, Abstand zu SmartBox, Anzahl noch auszuführende Tasks
-  double val = 100/obj["distance"]; // better for shorter way, 100 just for factoring
+  double val = 100 / (double)obj["distance"]; // better for shorter way, 100 just for factoring
   return val;
 };
 
-double returnNumOfVehicles()
-{
-  /*
+double returnNumOfVehicles(){
+    /*
   netw.subscribe("Vehicle/presence");
   netw.publishMessage("Vehicle/presence", "requestVehicles");
   for (int i = 0; i <= SMARTBOX_WAITFOR_ANSWERS_SECONDS; i++)
@@ -38,7 +35,6 @@ double returnNumOfVehicles()
   netw.unsubscribe("Vehicle/presence");
   */
 };
-
 
 // void getSmartBoxInfo(){}; // read Smart Box Information
 
@@ -98,7 +94,6 @@ while (!go_next)
 }
 */
 
-
 // ===================================== Arduino Functions =====================================
 void setup() // for initialisation
 {
@@ -108,16 +103,22 @@ void setup() // for initialisation
     while (!Serial)
       ; // wait for serial port to connect
   }
+  NetworkManager netw; // init  Network Connection
+  SensorArray sarr;    // init Sensor
+
   // netw.subscribe("Vehicle/#"); // TODO: mehr ins Detail? Was brauche ich wirklich?
 
-  // pinMode(13, OUTPUT); // debug LED
+  pinMode(13, OUTPUT); // debug LED
 }
 
 void loop() // one Arduino-loop per one cycle (SB full -> transported -> returned empty)
 {
 
-  
-  delay(200);
+  digitalWrite(13, LOW);
+  Serial.println("Hello World.");
+  delay(1000);
+  digitalWrite(13, HIGH);
+  delay(1000);
 
   /*
   loopEmpty();
