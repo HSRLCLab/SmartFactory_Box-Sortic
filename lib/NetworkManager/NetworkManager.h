@@ -39,15 +39,15 @@ private:
   // WIFI stuff
   String ssid;
   String pass;
-  char *hostname = 0;
+  char *hostname;
   IPAddress ip;
   byte macRouter[6];
   byte mac[6];
   long rssi;
   byte encryption;
   int status;
-  WiFiServer *myServer = 0;
-  WiFiClient *myClient = 0;
+  WiFiServer *myServer;
+  WiFiClient *myClient;
   // MQTT stuff
   //MQTT_CALLBACK_SIGNATURE;
   PubSubClient *myMQTTclient;

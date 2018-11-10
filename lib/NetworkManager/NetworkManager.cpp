@@ -4,12 +4,9 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
 {
     ssid = DEFAULT_WIFI_SSID;
     pass = DEFAULT_WIFI_PASSWORD;
-    //String nname = strcat(DEFAULT_HOSTNAME, (String(random(0xffff), HEX)).c_str());
-    //this->hostname = (char*)&nname; // Create a random client ID (for default only)
-    this->hostname = DEFAULT_HOSTNAME;
-    status = WiFi.status();
+    hostname = strcat(DEFAULT_HOSTNAME, (String(random(0xffff), HEX)).c_str()); // Create a random client ID (for default only)
+    status = WL_IDLE_STATUS;
     WiFi.setPins(DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN);
-
 
     connectToWiFi(); // connect to WiFi
     myClient = new WiFiClient;
@@ -72,16 +69,16 @@ void NetworkManager::receiveMessage(char *topic, byte *payload, unsigned int len
 
 void NetworkManager::connectToWiFi()
 {
-    
-    if (status == WL_NO_SHIELD) // check for the presence of the shield:
+    if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shield:
     {
         log("NO WiFi shield present", "WiFi Library could not find WiFi shield. WiFi.status returned " + WiFi.status(), "programm is not continuing");
         while (true)
             ; // don't continue
-    };
-    
+    }
+    status = WiFi.status();
     String wifi_firmware = WiFi.firmwareVersion();
     log("", "", "WiFi Firmware Version = " + wifi_firmware);
+
     while (status != WL_CONNECTED) // connect to Wifi network
     {
         log("Attempting WLAN connection (WEP)...", "SSID: " + ssid, "");
