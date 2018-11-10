@@ -7,10 +7,17 @@
 #include "MainConfiguration.h"
 
 // ===================================== Global Variables =====================================
-extern JsonArray &array;       // defined in NetworkManager.h
-extern byte my_json_counter;   // defined in NetworkManager.h
-const int log_level = 3;       // 0-3 erlaubt
+JsonObject *JSarray[];  // defined in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
+int my_json_counter = 0;       //is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED
+NetworkManager *mNetwP = 0;    // used for usign NetworkManager access outside setup()
+SensorArray *mSarrP = 0;       // used for using SensorArray access outside setup()
+const int log_level = 2;       // can have values from 0-3
 const bool is_vehicle = false; // true if is vehicle, used for MQTT
+enum SBLevel
+{
+  full = 0,
+  empty = 1
+}; // describes Smart Box level states
 // ===================================== my helper Functions =====================================
 
 // TODO: NetworkManager Initialisierung hängt Serial Monitor ab??? -> siehe Konstruktor
@@ -22,77 +29,77 @@ double calcOptimum(JsonObject &obj) // returns Optimum for given values, higher 
   return val;
 };
 
-double returnNumOfVehicles(){
-    /*
-  netw.subscribe("Vehicle/presence");
-  netw.publishMessage("Vehicle/presence", "requestVehicles");
+double returnNumOfVehicles()
+{
+  mNetwP->subscribe("Vehicle/presence");
+  mNetwP->publishMessage("Vehicle/presence", "requestVehicles");
   for (int i = 0; i <= SMARTBOX_WAITFOR_ANSWERS_SECONDS; i++)
   {
-    netw.loop();
+    mNetwP->loop();
     delay(1000);
     // TODO see TODO in Networkmanager.cpp/callback2
   };
-  netw.unsubscribe("Vehicle/presence");
-  */
+  mNetwP->unsubscribe("Vehicle/presence");
 };
 
-// void getSmartBoxInfo(){}; // read Smart Box Information
+// void getSmartBoxInfo(){}; // read Smart Box Information TODO
 
 // ===================================== my Functions =====================================
-/*
 void loopEmpty() // loop until Box full
 {
-  bool isEmpty = true;
-  while (isEmpty) // while empty
+  bool isEmpty = false; // TODO set to true
+  while (isEmpty)       // while empty
   {
-    if (sarr.getSensorData())
+    if (mSarrP->getSensorData()) //  TODO
       isEmpty = false;
     delay(SENSOR_ITERATION_SECONDS * 1000);
   }
-  netw.publishMessage("SmartBox/level", "SB 1 full");
-  //netw.publishMessage("SmartBox/IP", netw.getIP);
+  mNetwP->subscribe("Vehicle/+/params"); // when full
+  mNetwP->subscribe("Vehicle/+/ack");
+  mNetwP->publishMessage("SmartBox/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
+  //(mNetwP->JSarrP[my_json_counter])->prettyPrintTo(Serial);
 }
 
 void loopFull() // loop until Box transported, then exit program
 {
   bool go_next = false;
   delay(SMARTBOX_WAITFOR_VEHICLES_SECONDS * 1000); // wait for vehicles to respond
+  // response has form: {}
   // TODO: read all vehicle params, get number of responses -> NetworkManager???
   byte num_of_vehi = returnNumOfVehicles();
-  String dist = array[my_json_counter]["distance"];
-  String vel = array[my_json_counter]["velocity"];
-  String tasks = array[my_json_counter]["tasks"];
+  double dist = JSarray[my_json_counter]->get<double>("distance");
+  //String vel = JSarray[my_json_counter]["velocity"];
+  //String tasks = JSarray[my_json_counter]["tasks"];
   // TODO what if reading nothing?
 
-  byte number;           // number of vehicle responses
+  byte number = 0;       // number of vehicle responses
   double best_value = 0; // best optimum value
   // TODO: how to get number, how to save callback values?
   IPAddress best_ip;                // IP from the vehicle with optimal value
   for (byte i = 0; i < number; i++) // call calcOptimal for all active vehicles
   {
-      double a = calcOptimum(); // TODO: json objekt übergeben
+    double a = 0;       //calcOptimum(); // TODO: json objekt übergeben
     if (a > best_value) // decide which vehicle should transport box
     {
       best_value = a;
       //best_ip=...   // TODO: how to read ip from best vehicle?
     }
-}
-// netw.publishMessage("SmartBox/decision_IP",best_ip); // publish decision ip (json?)
+  }
+  // netw.publishMessage("SmartBox/decision_IP",best_ip); // publish decision ip (json?)
 
-// wait for acknoledgement for transport
-// wait for transported
-// TODO
-while (!go_next)
-{
-  delay(SMARTBOX_ITERATION_VACKS_SECONDS * 1000);
-};
+  // wait for acknoledgement for transport
+  // wait for transported
+  // TODO
+  while (!go_next)
+  {
+    delay(SMARTBOX_ITERATION_VACKS_SECONDS * 1000);
+  };
 
-while (!go_next)
-{
-  delay(SMARTBOX_ITERATION_VTRANSPORTS_SECONDS * 1000);
-};
+  while (!go_next)
+  {
+    delay(SMARTBOX_ITERATION_VTRANSPORTS_SECONDS * 1000);
+  };
 }
-*/
 
 // ===================================== Arduino Functions =====================================
 void setup() // for initialisation
@@ -103,26 +110,29 @@ void setup() // for initialisation
     while (!Serial)
       ; // wait for serial port to connect
   }
-  NetworkManager netw; // init  Network Connection
-  SensorArray sarr;    // init Sensor
+  mNetwP = new NetworkManager();
+  mSarrP = new SensorArray();
+  JSarray=mNetwP->JSarrP; // todo NEXT
 
-  // netw.subscribe("Vehicle/#"); // TODO: mehr ins Detail? Was brauche ich wirklich?
-
-  pinMode(13, OUTPUT); // debug LED
+  if (true) // degug cycle -- DELETE ON FINAL
+  {
+    pinMode(13, OUTPUT); // debug LED
+    mNetwP->subscribe("SmartBox/level");
+  }
 }
 
-void loop() // one Arduino-loop per one cycle (SB full -> transported -> returned empty)
+void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 {
+  if (true) // degug cycle -- DELETE ON FINAL
+  {
+    digitalWrite(13, LOW);
+    //mNetwP->publishMessage("Vehicle/V1/params", "{city1:Zurich,city2:Bern}");
+    delay(1000);
+    digitalWrite(13, HIGH);
+    delay(1000);
+  }
 
-  digitalWrite(13, LOW);
-  Serial.println("Hello World.");
-  delay(1000);
-  digitalWrite(13, HIGH);
-  delay(1000);
-
-  /*
   loopEmpty();
 
-  loopFull();
-  */
+  //loopFull();
 }
