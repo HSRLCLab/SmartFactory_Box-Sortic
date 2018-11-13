@@ -7,20 +7,17 @@
 #include "MainConfiguration.h"
 
 // ===================================== Global Variables =====================================
-JsonObject *JSarray[];  // defined in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
-int my_json_counter = 0;       //is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED
-NetworkManager *mNetwP = 0;    // used for usign NetworkManager access outside setup()
-SensorArray *mSarrP = 0;       // used for using SensorArray access outside setup()
-const int log_level = 2;       // can have values from 0-3
-const bool is_vehicle = false; // true if is vehicle, used for MQTT
+JsonObject **JSarra;        // defined in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
+int my_json_counter = 0;    //is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED
+NetworkManager *mNetwP = 0; // used for usign NetworkManager access outside setup()
+SensorArray *mSarrP = 0;    // used for using SensorArray access outside setup()
+const int log_level = 2;    // can have values from 0-3
 enum SBLevel
 {
   full = 0,
   empty = 1
 }; // describes Smart Box level states
 // ===================================== my helper Functions =====================================
-
-// TODO: NetworkManager Initialisierung hängt Serial Monitor ab??? -> siehe Konstruktor
 
 double calcOptimum(JsonObject &obj) // returns Optimum for given values, higher is better
 {
@@ -29,7 +26,7 @@ double calcOptimum(JsonObject &obj) // returns Optimum for given values, higher 
   return val;
 };
 
-double returnNumOfVehicles()
+double returnNumOfVehicles() // TODO not needed?
 {
   mNetwP->subscribe("Vehicle/presence");
   mNetwP->publishMessage("Vehicle/presence", "requestVehicles");
@@ -42,7 +39,7 @@ double returnNumOfVehicles()
   mNetwP->unsubscribe("Vehicle/presence");
 };
 
-// void getSmartBoxInfo(){}; // read Smart Box Information TODO
+// void getSmartBoxInfo(){}; // print Smart Box Information TODO
 
 // ===================================== my Functions =====================================
 void loopEmpty() // loop until Box full
@@ -54,51 +51,78 @@ void loopEmpty() // loop until Box full
       isEmpty = false;
     delay(SENSOR_ITERATION_SECONDS * 1000);
   }
+}
+
+void loopFull() // loop until Box transported
+{
+  int mcount = my_json_counter;
   mNetwP->subscribe("Vehicle/+/params"); // when full
   mNetwP->subscribe("Vehicle/+/ack");
   mNetwP->publishMessage("SmartBox/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
-  //(mNetwP->JSarrP[my_json_counter])->prettyPrintTo(Serial);
-}
+  mNetwP->loop();
 
-void loopFull() // loop until Box transported, then exit program
-{
-  bool go_next = false;
-  delay(SMARTBOX_WAITFOR_VEHICLES_SECONDS * 1000); // wait for vehicles to respond
-  // response has form: {}
-  // TODO: read all vehicle params, get number of responses -> NetworkManager???
-  byte num_of_vehi = returnNumOfVehicles();
-  double dist = JSarray[my_json_counter]->get<double>("distance");
-  //String vel = JSarray[my_json_counter]["velocity"];
-  //String tasks = JSarray[my_json_counter]["tasks"];
-  // TODO what if reading nothing?
+  JSarra[my_json_counter]->prettyPrintTo(Serial); // test if runs for debugging, afterwards DELETE!
 
-  byte number = 0;       // number of vehicle responses
-  double best_value = 0; // best optimum value
-  // TODO: how to get number, how to save callback values?
-  IPAddress best_ip;                // IP from the vehicle with optimal value
-  for (byte i = 0; i < number; i++) // call calcOptimal for all active vehicles
+  for (int i = 0; i < SMARTBOX_WAITFOR_VEHICLES_SECONDS; i++)
   {
-    double a = 0;       //calcOptimum(); // TODO: json objekt übergeben
-    if (a > best_value) // decide which vehicle should transport box
+    mNetwP->loop();
+    delay(1000); // wait for vehicles to respond
+  }
+  mNetwP->loop();
+  /*
+  int mcount2 = my_json_counter;
+  double *best_values;
+  // EXAMPLE:   double dist = JSarray[my_json_counter]->get<double>("distance");
+  if (mcount2 < mcount) // get optimal vehicle values in best_values array
+  {
+    best_values = new double[(MAX_JSON_MESSAGES_SAVED - mcount) + mcount2 + 1]; // TODO überall bei new auch delete!
+    for (int i = mcount; i < MAX_JSON_MESSAGES_SAVED; i++)
     {
-      best_value = a;
-      //best_ip=...   // TODO: how to read ip from best vehicle?
+      // TODO if topic: Vehicle/VXXX/params
+      //best_values[i] = JSarra[i].get(...); // calcs optimum and puts result in best_values[]
+    }
+    for (int i = 0; i < mcount2; i++)
+    {
+      // TODO if topic: Vehicle/VXXX/params
+      //best_values[i] = JSarra[i];
     }
   }
-  // netw.publishMessage("SmartBox/decision_IP",best_ip); // publish decision ip (json?)
-
-  // wait for acknoledgement for transport
-  // wait for transported
-  // TODO
-  while (!go_next)
+  else
   {
-    delay(SMARTBOX_ITERATION_VACKS_SECONDS * 1000);
-  };
-
-  while (!go_next)
+    best_values = new double[mcount2 - mcount + 1]; // TODO überall bei new auch delete!
+    for (int i = mcount; i < mcount2 - mcount; i++)
+    {
+      // TODO if topic: Vehicle/VXXX/params
+    }
+  }
+  // get vehicle with best optimal value
+  
+  // number of vehicle necessary? byte num_of_vehi = returnNumOfVehicles(); // TODO what if reading nothing?
+  double index_max = 0; // index from best vehicle
+  // index max useless, da i oben anders! -> auslesen aus json!
+  double value_max = 0; // best optimal value from vehicle
+  for (int i = 0; i < sizeof(best_values) / sizeof(best_values[0]); i++)
   {
-    delay(SMARTBOX_ITERATION_VTRANSPORTS_SECONDS * 1000);
-  };
+    if (best_values[i] > value_max)
+    {
+      value_max = best_values[i];
+      index_max = i;
+    }
+    else if (best_values[i] == value_max)
+    {
+      log("has two same optimal values", "", "");
+    }
+    else
+      ;
+  }
+
+  mNetwP->publishMessage("") // publish to SmartBox/SBX/decision
+  ... waits for answer, if not within time, send to next (remember 2-3 best choices), jump back in function?
+  ... waits until transported
+  */
+
+  mNetwP->unsubscribe("Vehicle/+/params"); // when transported and brought back to factory
+  mNetwP->unsubscribe("Vehicle/+/ack");
 }
 
 // ===================================== Arduino Functions =====================================
@@ -112,7 +136,7 @@ void setup() // for initialisation
   }
   mNetwP = new NetworkManager();
   mSarrP = new SensorArray();
-  JSarray=mNetwP->JSarrP; // todo NEXT
+  JSarra = mNetwP->JSarrP;
 
   if (true) // degug cycle -- DELETE ON FINAL
   {

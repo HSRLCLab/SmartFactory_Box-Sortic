@@ -10,8 +10,8 @@
 // own files
 #include <NetworkConfiguration.h>
 
-extern const int log_level;   // defined in main.cpp
-extern const bool is_vehicle; // true if this is vehicle
+extern const int log_level;    // defined in main.cpp
+const bool is_vehicle = false; // true if is vehicle, used for MQTT
 extern int my_json_counter;
 const byte default_pins[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN};
 
@@ -31,7 +31,7 @@ public:
   void loop();                         // make client ready for receiving messages
   String getHostName();                // returns hostname of this object
   IPAddress getIP();                   // return current IP Address
-  JsonObject **JSarrP;                  // used to see saved Messages from outside this file
+  JsonObject **JSarrP;                 // used to see saved Messages from outside this file
 
 private:
   void log(const String &log1, const String &log2, const String &log3); // logging function, see log_level
