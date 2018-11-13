@@ -10,13 +10,16 @@ used in:
   NetworkManager.h    (*JSarray, *JSarrP)
   NetworkManager.cpp  (callback2)
   main.cpp            (*JSarra, calcOptimum())
+used for:
+  saving Messages to use them later on (asynchronous Communication)
 */
 
 struct myJSONStr {
   String topic = "";
-  String hostname;
+  String hostname = "";
+  String request = "";
   int level = -5;
-  double vehicleParams[5]; // TODO
+  double vehicleParams[5]; // TODO 5?
 } ;
 
 

@@ -247,6 +247,7 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     temp.hostname = my_JSON.get<String>("hostname");
     temp.level = my_JSON.get<int>("level");
     temp.topic = my_JSON.get<String>("topic");
+    temp.request = my_JSON.get<String>("request");
     // MORE TO ADD HERE
     // TODO direkt in unteren code -> temp muss nicht erstellt und kopiert werden
 

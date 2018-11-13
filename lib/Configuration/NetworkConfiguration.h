@@ -21,7 +21,7 @@
 #define DEFAULT_MQTT_BROKER_IP3 1
 #define DEFAULT_MQTT_BROKER_IP4 7
 #define DEFAULT_MQTT_PORT 1883
-#define MAX_JSON_MESSAGES_SAVED 50 // max num of saved JSON items
+#define MAX_JSON_MESSAGES_SAVED 50 // max num of saved JSON items, must be smaller than num of vehicles!
 #define MAX_JSON_PARSE_SIZE 300    // max buffer size to parse JSON objects, size of the pool in bytes, can be calculated in https://arduinojson.org/v5/assistant/
 
 #endif

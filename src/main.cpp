@@ -8,25 +8,71 @@
 #include <NetworkManagerStructs.h>
 
 // ===================================== Global Variables =====================================
-myJSONStr *JSarra;                   // defined in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
-int my_json_counter = 0;             // is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED
-bool my_json_counter_isEmpty = true; // defined in NetworkManager.h
+myJSONStr *JSarra;                   // used in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
+int my_json_counter = 0;             // is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED, DON'T TOUCH THIS: https://www.youtube.com/watch?v=otCpCn0l4Wo
+bool my_json_counter_isEmpty = true; // used in NetworkManager.h
 NetworkManager *mNetwP = 0;          // used for usign NetworkManager access outside setup()
 SensorArray *mSarrP = 0;             // used for using SensorArray access outside setup()
 const int log_level = 1;             // can have values from 0-3
-enum SBLevel                         // -5 is default if not set!
+double value_max = 0;                // best optimal value from vehicle
+String hostname_max = "";            // name of Vehicle with best value
+double value_max2 = 0;               // second best optimal value from vehicle
+String hostname_max2 = "";           // name of Vehicle with second best value
+bool hasAnswered = false;
+enum SBLevel // describes Smart Box level states, -5 is default if not set!
 {
   full = 0,
   empty = 1
-}; // describes Smart Box level states
+};
+enum funcToExecute
+{
+  enum_getMaximumFromOptimumValues = 1,
+  enum_checkVehicleAnswers = 2,
+  enum_checkVehicleAck = 3,
+} myfunc;
+void (*myFuncPtr)(int) = NULL; // Pointer for the following Functions: getMaximumFromOptimumValues, checkVehicleAnswers, checkVehicleAck
+void getMaximumFromOptimumValues(int ii);
+void checkVehicleAnswers(int ii);
+void checkVehicleAck(int ii);
 // ===================================== my helper Functions =====================================
 
 double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better
 {
   // mögliche Parameter: Geschwindigkeit, Abstand zu SmartBox, Anzahl noch auszuführende Tasks
-  double val = 100 / obj.level; // better for shorter way, 100 just for factoring
-  // TODO above
+  double val = 100 / obj.vehicleParams[0]; // better for shorter way, 100 just for factoring
   return val;
+};
+
+String *returnMQTTtopics(String top) // returns String-Array of topics, strings divided by /
+{
+  String tmp[MAX_MQTT_TOPIC_DEPTH];
+  int k1 = 0; // lower cut-bound
+  int k2 = 0; // upper cut-bound
+  int k3 = 0; // num of strings (must be below above!)
+  for (int i = 0; i < top.length(); i++)
+  {
+    if (top.charAt(i) == '/')
+    {
+      k1 = i + 1;
+      if (k3 == MAX_MQTT_TOPIC_DEPTH)
+        break;
+      else
+      {
+        tmp[k3] = top.substring(k1, k2);
+        k3++;
+      }
+    }
+    else
+    {
+      k2++;
+    }
+  }
+  String tmp2[k3];
+  for (int i = 0; i < k3; i++)
+  {
+    tmp2[i] = tmp[i];
+  }
+  return tmp2;
 };
 
 double returnNumOfVehicles() // TODO not needed?
@@ -40,6 +86,83 @@ double returnNumOfVehicles() // TODO not needed?
     // TODO see TODO in Networkmanager.cpp/callback2
   };
   mNetwP->unsubscribe("Vehicle/presence");
+  return 0;
+};
+
+void getMaximumFromOptimumValues(int ii)
+{
+  String *ttop = returnMQTTtopics(JSarra[ii].topic);
+  if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
+  {
+    double opt = calcOptimum(JSarra[ii]);
+    if (value_max < opt)
+    {
+      value_max2 = value_max;
+      hostname_max2 = hostname_max;
+      value_max = opt;
+      hostname_max = JSarra[ii].hostname;
+    }
+  }
+}
+
+void checkVehicleAnswers(int ii)
+{
+  String *ttop = returnMQTTtopics(JSarra[ii].topic);
+  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
+  {
+    if (JSarra[ii].hostname == mNetwP->getHostName()) // if answer is to this request
+    {
+      hasAnswered = true;
+    }
+  }
+}
+
+void checkVehicleAck(int ii)
+{
+  String *ttop = returnMQTTtopics(JSarra[ii].topic);
+  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
+  {
+    if (JSarra[ii].request == mNetwP->getHostName()) // if answer is to this request
+    {
+      hasAnswered = true;
+    }
+  }
+}
+
+void iterateAnswers(int mmcount, int mmcount2) // helper function because of FIFO order in JSarra, nicer way, because needed three times below in loopFull
+{
+  switch (myfunc) // which function to execute
+  {
+  case funcToExecute::enum_getMaximumFromOptimumValues:
+    myFuncPtr = getMaximumFromOptimumValues;
+  case funcToExecute::enum_checkVehicleAnswers:
+    myFuncPtr = checkVehicleAnswers;
+  case funcToExecute::enum_checkVehicleAck:
+    myFuncPtr = checkVehicleAck;
+  }
+  if (mmcount == mmcount2)
+  {
+    Serial.println("no answers or exact MAX_JSON_MESSAGES_SAVED answers received");
+    return;
+  }
+  else if (mmcount2 < mmcount)
+  {
+    for (int i = mmcount; i < MAX_JSON_MESSAGES_SAVED; i++)
+    {
+      myFuncPtr(i);
+    }
+    for (int i = 0; i < mmcount2; i++)
+    {
+      myFuncPtr(i);
+    }
+  }
+  else
+  {
+    for (int i = mmcount; i < mmcount2 - mmcount; i++)
+    {
+      myFuncPtr(i);
+    }
+  }
 };
 
 // void getSmartBoxInfo(){}; // print Smart Box Information TODO
@@ -58,76 +181,70 @@ void loopEmpty() // loop until Box full
 
 void loopFull() // loop until Box transported
 {
-  int mcount = my_json_counter;          // needed for number of messages received during run full
-  mNetwP->subscribe("Vehicle/+/params"); // when full
+  int mcount = my_json_counter;  // needed for number of messages received, lower num
+  int mcount2 = my_json_counter; // needed for number of messages received, upper num
+  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- Subscriptions & publish
+  mNetwP->subscribe("Vehicle/+/params");
   mNetwP->subscribe("Vehicle/+/ack");
   mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
 
+  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answer (which vehicles are there?)
   for (int i = 0; i < SMARTBOX_WAITFOR_VEHICLES_SECONDS; i++) // wait for vehicles to respond
   {
     mNetwP->loop();
     delay(1000);
   }
   mNetwP->loop();
+  mcount2 = my_json_counter;
+  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- calc Optimum Value & set hostname_max, hostname_max2 & publish
+  myfunc = funcToExecute::enum_getMaximumFromOptimumValues; // get all Optimum Values for all vehicles & gets Optimal value
+  iterateAnswers(mcount, mcount2);
+  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{hostname:" + hostname_max + "}"); // publishes decision, clientID is in topic
 
-  // JSarra[my_json_counter].hostname
-
-  // i'm here
-  // next: Netzwerk-Kommunikation definieren (JSON Objekte), allenfalls neue Structs (aber aufwendig!)
-
-  int mcount2 = my_json_counter;
-  if (mcount == mcount2)
-    Serial.println("no answers or exact MAX_JSON_MESSAGES_SAVED answers received");
-  double *best_values;
-  if (mcount2 < mcount) // get optimal vehicle values in best_values array
+// -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answer (is Vehicle X responding?)
+sendAck:
+  mcount = my_json_counter;                                  // needed for number of messages received during run full
+  for (int i = 0; i < SMARTBOX_ITERATION_VACKS_SECONDS; i++) // wait for vehicles to respond
   {
-    best_values = new double[(MAX_JSON_MESSAGES_SAVED - mcount) + mcount2 + 1]; // TODO überall bei new auch delete!
-    for (int i = mcount; i < MAX_JSON_MESSAGES_SAVED; i++)
-    {
-      // TODO if topic: Vehicle/VXXX/params
-      //best_values[i] = JSarra[i].get(...); // calcs optimum and puts result in best_values[]
-    }
-    for (int i = 0; i < mcount2; i++)
-    {
-      // TODO if topic: Vehicle/VXXX/params
-      //best_values[i] = JSarra[i];
-    }
+    mNetwP->loop();
+    delay(1000);
   }
-  else
-  {
-    best_values = new double[mcount2 - mcount + 1]; // TODO überall bei new auch delete!
-    for (int i = mcount; i < mcount2 - mcount; i++)
-    {
-      // TODO if topic: Vehicle/VXXX/params
-    }
-  }
-  // get vehicle with best optimal value
+  mNetwP->loop();
+  mcount2 = my_json_counter;
 
-  /*
-  
-  // number of vehicle necessary? byte num_of_vehi = returnNumOfVehicles(); // TODO what if reading nothing?
-  double index_max = 0; // index from best vehicle
-  // index max useless, da i oben anders! -> auslesen aus json!
-  double value_max = 0; // best optimal value from vehicle
-  for (int i = 0; i < sizeof(best_values) / sizeof(best_values[0]); i++)
+  // TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
+  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered to get SmartBox transported
+  hasAnswered = false;
+  myfunc = funcToExecute::enum_checkVehicleAnswers;
+  iterateAnswers(mcount, mcount2);
+  if (hasAnswered == false) // if no ack in time, send request to next vehicle
   {
-    if (best_values[i] > value_max)
-    {
-      value_max = best_values[i];
-      index_max = i;
-    }
-    else if (best_values[i] == value_max)
-    {
-      log("has two same optimal values", "", "");
-    }
-    else
-      ;
+    hostname_max = hostname_max2;
+    hasAnswered = true; // otherwise endless if both not responding
+    goto sendAck;
   }
+// -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answers (is SmartBox transported?)
+ackReceived:                                                       // when acknoledgement of desired is received, now waits for transport
+  mcount = my_json_counter;                                        // needed for number of messages received during run full
+  for (int i = 0; i < SMARTBOX_ITERATION_VTRANSPORTS_SECONDS; i++) // wait for vehicles to respond
+  {
+    mNetwP->loop();
+    delay(1000);
+  }
+  mNetwP->loop();
+  mcount2 = my_json_counter;
 
-  mNetwP->publishMessage("") // publish to SmartBox/SBX/decision
-  ... waits for answer, if not within time, send to next (remember 2-3 best choices), jump back in function?
-  ... waits until transported
-  */
+  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered having SmartBox transported
+  hasAnswered = false;
+  myfunc = funcToExecute::enum_checkVehicleAck;
+  iterateAnswers(mcount, mcount2);
+  if (hasAnswered == false) // if no ack in time, send request to next vehicle
+  {
+    hasAnswered = true;
+    goto ackReceived;
+  }
+  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- since transported and brought back to factory unsubsribe (is empty again)
+nowTransportet: // now the SmartBox is transported & brought back to factory
 
   mNetwP->unsubscribe("Vehicle/+/params"); // when transported and brought back to factory
   mNetwP->unsubscribe("Vehicle/+/ack");
@@ -136,7 +253,7 @@ void loopFull() // loop until Box transported
 // ===================================== Arduino Functions =====================================
 void setup() // for initialisation
 {
-  if (log_level >= 1)
+  if (log_level > 0)
   {
     Serial.begin(12000); //Initialize serial
     while (!Serial)
@@ -158,7 +275,6 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   if (true) // degug cycle -- DELETE ON FINAL
   {
     digitalWrite(13, LOW);
-    //mNetwP->publishMessage("SmartBox/level", "{city1:Zurich,city2:Bern}");
     delay(1000);
     digitalWrite(13, HIGH);
     delay(1000);
