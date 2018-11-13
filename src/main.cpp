@@ -18,18 +18,13 @@ double value_max = 0;                // best optimal value from vehicle
 String hostname_max = "";            // name of Vehicle with best value
 double value_max2 = 0;               // second best optimal value from vehicle
 String hostname_max2 = "";           // name of Vehicle with second best value
-bool hasAnswered = false;
-enum SBLevel // describes Smart Box level states, -5 is default if not set!
+bool hasAnswered = false;            // variable used to see if Vehicle have answered
+byte isLastRoundonError = 1;         // currently two max values are included, if both are not responding, this Variable will be set to true, must be min 1
+enum SBLevel                         // describes Smart Box level states, -5 is default if not set!
 {
   full = 0,
   empty = 1
 };
-enum funcToExecute
-{
-  enum_getMaximumFromOptimumValues = 1,
-  enum_checkVehicleAnswers = 2,
-  enum_checkVehicleAck = 3,
-} myfunc;
 void (*myFuncPtr)(int) = NULL; // Pointer for the following Functions: getMaximumFromOptimumValues, checkVehicleAnswers, checkVehicleAck
 void getMaximumFromOptimumValues(int ii);
 void checkVehicleAnswers(int ii);
@@ -131,15 +126,6 @@ void checkVehicleAck(int ii)
 
 void iterateAnswers(int mmcount, int mmcount2) // helper function because of FIFO order in JSarra, nicer way, because needed three times below in loopFull
 {
-  switch (myfunc) // which function to execute
-  {
-  case funcToExecute::enum_getMaximumFromOptimumValues:
-    myFuncPtr = getMaximumFromOptimumValues;
-  case funcToExecute::enum_checkVehicleAnswers:
-    myFuncPtr = checkVehicleAnswers;
-  case funcToExecute::enum_checkVehicleAck:
-    myFuncPtr = checkVehicleAck;
-  }
   if (mmcount == mmcount2)
   {
     Serial.println("no answers or exact MAX_JSON_MESSAGES_SAVED answers received");
@@ -187,7 +173,6 @@ void loopFull() // loop until Box transported
   mNetwP->subscribe("Vehicle/+/params");
   mNetwP->subscribe("Vehicle/+/ack");
   mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
-
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answer (which vehicles are there?)
   for (int i = 0; i < SMARTBOX_WAITFOR_VEHICLES_SECONDS; i++) // wait for vehicles to respond
   {
@@ -197,7 +182,7 @@ void loopFull() // loop until Box transported
   mNetwP->loop();
   mcount2 = my_json_counter;
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- calc Optimum Value & set hostname_max, hostname_max2 & publish
-  myfunc = funcToExecute::enum_getMaximumFromOptimumValues; // get all Optimum Values for all vehicles & gets Optimal value
+  myFuncPtr = getMaximumFromOptimumValues; // get all Optimum Values for all vehicles & gets Optimal value
   iterateAnswers(mcount, mcount2);
   mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{hostname:" + hostname_max + "}"); // publishes decision, clientID is in topic
 
@@ -215,14 +200,19 @@ sendAck:
   // TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered to get SmartBox transported
   hasAnswered = false;
-  myfunc = funcToExecute::enum_checkVehicleAnswers;
+  myFuncPtr = checkVehicleAnswers;
   iterateAnswers(mcount, mcount2);
-  if (hasAnswered == false) // if no ack in time, send request to next vehicle
+  if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no ack in time, send request to next vehicle
   {
     hostname_max = hostname_max2;
-    hasAnswered = true; // otherwise endless if both not responding
+    isLastRoundonError++;
     goto sendAck;
   }
+  else
+  {
+    Serial.print("none of the "+String(NUM_OF_VEHICLES_IN_FIELD)+" Vehicles is responding");
+  }
+  isLastRoundonError=1;
 // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answers (is SmartBox transported?)
 ackReceived:                                                       // when acknoledgement of desired is received, now waits for transport
   mcount = my_json_counter;                                        // needed for number of messages received during run full
@@ -236,16 +226,18 @@ ackReceived:                                                       // when ackno
 
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered having SmartBox transported
   hasAnswered = false;
-  myfunc = funcToExecute::enum_checkVehicleAck;
+  myFuncPtr = checkVehicleAck;
   iterateAnswers(mcount, mcount2);
-  if (hasAnswered == false) // if no ack in time, send request to next vehicle
+  if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no ack in time, send request to next vehicle
   {
-    hasAnswered = true;
+    hasAnswered = true; // otherwise endless if both not responding
     goto ackReceived;
   }
+  else
+  {
+    Serial.print("none of the "+String(NUM_OF_VEHICLES_IN_FIELD)+" Vehicles is responding");
+  }
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- since transported and brought back to factory unsubsribe (is empty again)
-nowTransportet: // now the SmartBox is transported & brought back to factory
-
   mNetwP->unsubscribe("Vehicle/+/params"); // when transported and brought back to factory
   mNetwP->unsubscribe("Vehicle/+/ack");
 }
@@ -263,7 +255,7 @@ void setup() // for initialisation
   mSarrP = new SensorArray();
   JSarra = mNetwP->JSarrP;
 
-  if (true) // degug cycle -- DELETE ON FINAL
+  if (true) // for debugging purpose, DELETE ON FINAL TODO
   {
     pinMode(13, OUTPUT); // debug LED
     mNetwP->subscribe("SmartBox/+/level");
@@ -272,7 +264,7 @@ void setup() // for initialisation
 
 void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 {
-  if (true) // degug cycle -- DELETE ON FINAL
+  if (true) // degug cycle -- DELETE ON FINAL TODO
   {
     digitalWrite(13, LOW);
     delay(1000);
@@ -280,7 +272,7 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     delay(1000);
   }
 
-  loopEmpty();
+  loopEmpty(); // loop until full
 
-  loopFull();
+  loopFull(); // loop until empty
 }
