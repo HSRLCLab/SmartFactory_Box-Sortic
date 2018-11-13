@@ -2,27 +2,30 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include "NetworkManager.h"
-#include "SensorArray.h"
-#include "MainConfiguration.h"
+#include <NetworkManager.h>
+#include <SensorArray.h>
+#include <MainConfiguration.h>
+#include <NetworkManagerStructs.h>
 
 // ===================================== Global Variables =====================================
-JsonObject **JSarra;        // defined in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
-int my_json_counter = 0;    //is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED
-NetworkManager *mNetwP = 0; // used for usign NetworkManager access outside setup()
-SensorArray *mSarrP = 0;    // used for using SensorArray access outside setup()
-const int log_level = 2;    // can have values from 0-3
-enum SBLevel
+myJSONStr *JSarra;                   // defined in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
+int my_json_counter = 0;             // is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED
+bool my_json_counter_isEmpty = true; // defined in NetworkManager.h
+NetworkManager *mNetwP = 0;          // used for usign NetworkManager access outside setup()
+SensorArray *mSarrP = 0;             // used for using SensorArray access outside setup()
+const int log_level = 1;             // can have values from 0-3
+enum SBLevel                         // -5 is default if not set!
 {
   full = 0,
   empty = 1
 }; // describes Smart Box level states
 // ===================================== my helper Functions =====================================
 
-double calcOptimum(JsonObject &obj) // returns Optimum for given values, higher is better
+double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better
 {
   // mögliche Parameter: Geschwindigkeit, Abstand zu SmartBox, Anzahl noch auszuführende Tasks
-  double val = 100 / (double)obj["distance"]; // better for shorter way, 100 just for factoring
+  double val = 100 / obj.level; // better for shorter way, 100 just for factoring
+  // TODO above
   return val;
 };
 
@@ -47,7 +50,7 @@ void loopEmpty() // loop until Box full
   bool isEmpty = false; // TODO set to true
   while (isEmpty)       // while empty
   {
-    if (mSarrP->getSensorData()) //  TODO
+    if (mSarrP->getSensorData())
       isEmpty = false;
     delay(SENSOR_ITERATION_SECONDS * 1000);
   }
@@ -55,24 +58,27 @@ void loopEmpty() // loop until Box full
 
 void loopFull() // loop until Box transported
 {
-  int mcount = my_json_counter;
+  int mcount = my_json_counter;          // needed for number of messages received during run full
   mNetwP->subscribe("Vehicle/+/params"); // when full
   mNetwP->subscribe("Vehicle/+/ack");
-  mNetwP->publishMessage("SmartBox/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
-  mNetwP->loop();
+  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
 
-  JSarra[my_json_counter]->prettyPrintTo(Serial); // test if runs for debugging, afterwards DELETE!
-
-  for (int i = 0; i < SMARTBOX_WAITFOR_VEHICLES_SECONDS; i++)
+  for (int i = 0; i < SMARTBOX_WAITFOR_VEHICLES_SECONDS; i++) // wait for vehicles to respond
   {
     mNetwP->loop();
-    delay(1000); // wait for vehicles to respond
+    delay(1000);
   }
   mNetwP->loop();
-  /*
+
+  // JSarra[my_json_counter].hostname
+
+  // i'm here
+  // next: Netzwerk-Kommunikation definieren (JSON Objekte), allenfalls neue Structs (aber aufwendig!)
+
   int mcount2 = my_json_counter;
+  if (mcount == mcount2)
+    Serial.println("no answers or exact MAX_JSON_MESSAGES_SAVED answers received");
   double *best_values;
-  // EXAMPLE:   double dist = JSarray[my_json_counter]->get<double>("distance");
   if (mcount2 < mcount) // get optimal vehicle values in best_values array
   {
     best_values = new double[(MAX_JSON_MESSAGES_SAVED - mcount) + mcount2 + 1]; // TODO überall bei new auch delete!
@@ -96,6 +102,8 @@ void loopFull() // loop until Box transported
     }
   }
   // get vehicle with best optimal value
+
+  /*
   
   // number of vehicle necessary? byte num_of_vehi = returnNumOfVehicles(); // TODO what if reading nothing?
   double index_max = 0; // index from best vehicle
@@ -141,7 +149,7 @@ void setup() // for initialisation
   if (true) // degug cycle -- DELETE ON FINAL
   {
     pinMode(13, OUTPUT); // debug LED
-    mNetwP->subscribe("SmartBox/level");
+    mNetwP->subscribe("SmartBox/+/level");
   }
 }
 
@@ -150,7 +158,7 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   if (true) // degug cycle -- DELETE ON FINAL
   {
     digitalWrite(13, LOW);
-    //mNetwP->publishMessage("Vehicle/V1/params", "{city1:Zurich,city2:Bern}");
+    //mNetwP->publishMessage("SmartBox/level", "{city1:Zurich,city2:Bern}");
     delay(1000);
     digitalWrite(13, HIGH);
     delay(1000);
@@ -158,5 +166,5 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 
   loopEmpty();
 
-  //loopFull();
+  loopFull();
 }

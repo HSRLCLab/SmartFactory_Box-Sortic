@@ -73,6 +73,10 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     connectToMQTT(); // connecting to MQTT-Broker
 }
 
+
+
+
+
 /*void NetworkManager::receiveMessage(char *topic, byte *payload, unsigned int length) // listens to incoming messages  (which were published to the Server to the subsribed topic)
 {
     if (myMQTTclient->connected())
@@ -113,7 +117,7 @@ void NetworkManager::connectToWiFi()
             delay(3000);
         }
     };
-    log("", "", "Board is connected to the Network");
+    log("WLAN connected", "", "Board is connected to the Network");
     status = WiFi.status(); // TODO status needed as class member?
 }
 
@@ -136,14 +140,14 @@ void NetworkManager::connectToMQTT()
 
 bool NetworkManager::publishMessage(const String &topic, const String &msg) // publishes a message to the server
 {
-    log("", "", "Publish message:" + msg);
+    log("", "", "try to publish message:" + msg);
 
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     if (myMQTTclient->connected())
     {
         myMQTTclient->publish(topic.c_str(), msg.c_str());
-        log("", "", "Publish message:" + msg);
+        log("", "Publish to topic [" + topic + "] message:" + msg, "");
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
@@ -210,6 +214,7 @@ bool NetworkManager::unsubscribe(const String &topic)
 
 void callback2(char *topic, byte *payload, unsigned int length) // listens to incoming messages (published to Server)
 {
+
     String topic_str;
     for (int i = 0; topic[i] != '\0'; i++) // iterate topic to topic_str
     {
@@ -217,7 +222,7 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     }
     if (log_level > 2)
     {
-        String msg = "Message arrived [" + topic_str + msg += "]: \t";
+        String msg = "Message arrived [" + topic_str + "]: \t message:";
         for (unsigned int i = 0; i < length; i++) // iterate message
         {
             msg += (char)payload[i];
@@ -225,24 +230,45 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
         Serial.println(msg);
     }
 
-    char inData[length + 1]; // convert message to JSON object
+    char inData[MAX_JSON_PARSE_SIZE]; // convert message to JSON object
     for (unsigned int i = 0; i < length; i++)
         inData[(i)] = (char)payload[i];
-    StaticJsonBuffer<200> jsonBuffer;
+
+    StaticJsonBuffer<MAX_JSON_PARSE_SIZE> jsonBuffer;
     JsonObject &my_JSON = jsonBuffer.parseObject(inData); // saves everything to my_JSON JSON Object
-    my_JSON["MQTT_topic"] = topic_str;
+    if (!my_JSON.success())
+    {
+        Serial.println("JSON parsing failed");
+        //log("parse failed", "my_JSON parsing failed in callback 2", "");
+        return;
+    }
+    my_json_counter_isEmpty = false;
+    myJSONStr temp;
+    temp.hostname = my_JSON.get<String>("hostname");
+    temp.level = my_JSON.get<int>("level");
+    temp.topic = my_JSON.get<String>("topic");
+    // MORE TO ADD HERE
+    // TODO direkt in unteren code -> temp muss nicht erstellt und kopiert werden
+
+
     if (my_json_counter < MAX_JSON_MESSAGES_SAVED) // saving json_messages to array
     {
         my_json_counter++;
-        JSarray[my_json_counter] = &my_JSON;
+        JSarray[my_json_counter] = temp;
     }
-    else
+    else if (my_json_counter == MAX_JSON_MESSAGES_SAVED)
     {
-        my_json_counter = 0;
-        JSarray[my_json_counter] = &my_JSON;
+        my_json_counter = 0; // JSarray[0] will be the MAX_JSON_MESSAGES_SAVED'ed element
+        JSarray[my_json_counter] = temp;
     }
+    // TODO else log
+
     if (log_level > 2)
-        my_JSON.prettyPrintTo(Serial); // prints JSON to Serial Monitor
+    {
+        Serial.println("------ new JSON Message in JSarray Array ------"); // TODO log?
+        my_JSON.prettyPrintTo(Serial);                                     // prints JSON to Serial Monitor, pay attention can output BS
+        Serial.println("\n------ end of JSON Message ------");
+    }
 
     // TODO if requestVehicles in Vehicle/presence answer (if vehicle) "Vehicle MQTT-ID"
     // TODO if requestVehicles in Vehicle/presence answer (if smart box) = Vehicle *, then count & save ids
