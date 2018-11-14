@@ -2,30 +2,31 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+// own files:
 #include <NetworkManager.h>
 #include <SensorArray.h>
 #include <MainConfiguration.h>
 #include <NetworkManagerStructs.h>
 
 // ===================================== Global Variables =====================================
-myJSONStr *JSarra;                   // used in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
-int my_json_counter = 0;             // is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED, DON'T TOUCH THIS: https://www.youtube.com/watch?v=otCpCn0l4Wo
-bool my_json_counter_isEmpty = true; // used in NetworkManager.h
-NetworkManager *mNetwP = 0;          // used for usign NetworkManager access outside setup()
-SensorArray *mSarrP = 0;             // used for using SensorArray access outside setup()
-const int log_level = 1;             // can have values from 0-3
-double value_max = 0;                // best optimal value from vehicle
-String hostname_max = "";            // name of Vehicle with best value
-double value_max2 = 0;               // second best optimal value from vehicle
-String hostname_max2 = "";           // name of Vehicle with second best value
-bool hasAnswered = false;            // variable used to see if Vehicle have answered
-byte isLastRoundonError = 1;         // currently two max values are included, if both are not responding, this Variable will be set to true, must be min 1
-enum SBLevel                         // describes Smart Box level states, -5 is default if not set!
+myJSONStr *JSarra;                                    // used in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
+int my_json_counter = 0;                              // is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED, DON'T TOUCH THIS: https://www.youtube.com/watch?v=otCpCn0l4Wo
+bool my_json_counter_isEmpty = true;                  // used in NetworkManager.h
+NetworkManager *mNetwP = 0;                           // used for usign NetworkManager access outside setup()
+SensorArray *mSarrP = 0;                              // used for using SensorArray access outside setup()
+const int log_level = 1;                              // can have values from 0-3
+double value_max[NUM_OF_MAXVALUES_VEHICLES_STORE];    // best optimal value from vehicle, Element 0 ist best, Element 1 is second best, etc. (decending order)
+String hostname_max[NUM_OF_MAXVALUES_VEHICLES_STORE]; // name of Vehicle with best value, Element 0 ist best, Element 1 is second best, etc. (decending order)
+bool hasAnswered = false;                             // variable used to see if Vehicle have answered
+byte isLastRoundonError = 1;                          // currently two max values are included, if both are not responding, this Variable will be set to true, must be min 1
+enum SBLevel                                          // describes Smart Box level states, -5 is default if not set!
 {
   full = 0,
   empty = 1
 };
 void (*myFuncPtr)(int) = NULL; // Pointer for the following Functions: getMaximumFromOptimumValues, checkVehicleAnswers, checkVehicleAck
+
+// ===================================== Function Headers of my helper Functions =====================================
 void getMaximumFromOptimumValues(int ii);
 void checkVehicleAnswers(int ii);
 void checkVehicleAck(int ii);
@@ -38,7 +39,7 @@ double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher i
   return val;
 };
 
-String *returnMQTTtopics(String top) // returns String-Array of topics, strings divided by /
+String *returnMQTTtopics(String top) // returns String-Array of topics from MQTT topic structure, strings divided by /
 {
   String tmp[MAX_MQTT_TOPIC_DEPTH];
   int k1 = 0; // lower cut-bound
@@ -90,12 +91,12 @@ void getMaximumFromOptimumValues(int ii)
   if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
   {
     double opt = calcOptimum(JSarra[ii]);
-    if (value_max < opt)
+    if (value_max[0] < opt)
     {
-      value_max2 = value_max;
-      hostname_max2 = hostname_max;
-      value_max = opt;
-      hostname_max = JSarra[ii].hostname;
+      value_max[1] = value_max[0];
+      hostname_max[1] = hostname_max[0];
+      value_max[0] = opt;
+      hostname_max[0] = JSarra[ii].hostname;
     }
   }
 }
@@ -103,7 +104,7 @@ void getMaximumFromOptimumValues(int ii)
 void checkVehicleAnswers(int ii)
 {
   String *ttop = returnMQTTtopics(JSarra[ii].topic);
-  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
+  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
   {
     if (JSarra[ii].hostname == mNetwP->getHostName()) // if answer is to this request
     {
@@ -115,7 +116,7 @@ void checkVehicleAnswers(int ii)
 void checkVehicleAck(int ii)
 {
   String *ttop = returnMQTTtopics(JSarra[ii].topic);
-  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
+  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
   {
     if (JSarra[ii].request == mNetwP->getHostName()) // if answer is to this request
     {
@@ -167,6 +168,7 @@ void loopEmpty() // loop until Box full
 
 void loopFull() // loop until Box transported
 {
+sendRequest:
   int mcount = my_json_counter;  // needed for number of messages received, lower num
   int mcount2 = my_json_counter; // needed for number of messages received, upper num
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- Subscriptions & publish
@@ -182,9 +184,21 @@ void loopFull() // loop until Box transported
   mNetwP->loop();
   mcount2 = my_json_counter;
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- calc Optimum Value & set hostname_max, hostname_max2 & publish
+  Serial.println("getMaximumFromOptimumValues");
+  hasAnswered = false;
   myFuncPtr = getMaximumFromOptimumValues; // get all Optimum Values for all vehicles & gets Optimal value
   iterateAnswers(mcount, mcount2);
-  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{hostname:" + hostname_max + "}"); // publishes decision, clientID is in topic
+  if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no vehicle responds in time, send error message
+  {
+    isLastRoundonError++;
+    goto sendRequest;
+  }
+  else
+  {
+    Serial.print("none of the " + String(NUM_OF_VEHICLES_IN_FIELD) + " Vehicles is responding");
+  }
+  isLastRoundonError = 1;
+  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{hostname:" + hostname_max[0] + "}"); // publishes decision, clientID is in topic
 
 // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answer (is Vehicle X responding?)
 sendAck:
@@ -199,20 +213,21 @@ sendAck:
 
   // TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered to get SmartBox transported
+  Serial.println("checkVehicleAnswers");
   hasAnswered = false;
   myFuncPtr = checkVehicleAnswers;
   iterateAnswers(mcount, mcount2);
   if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no ack in time, send request to next vehicle
   {
-    hostname_max = hostname_max2;
+    hostname_max[0] = hostname_max[1];
     isLastRoundonError++;
     goto sendAck;
   }
   else
   {
-    Serial.print("none of the "+String(NUM_OF_VEHICLES_IN_FIELD)+" Vehicles is responding");
+    Serial.print("none of the " + String(NUM_OF_VEHICLES_IN_FIELD) + " Vehicles is responding");
   }
-  isLastRoundonError=1;
+  isLastRoundonError = 1;
 // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answers (is SmartBox transported?)
 ackReceived:                                                       // when acknoledgement of desired is received, now waits for transport
   mcount = my_json_counter;                                        // needed for number of messages received during run full
@@ -225,17 +240,18 @@ ackReceived:                                                       // when ackno
   mcount2 = my_json_counter;
 
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered having SmartBox transported
+  Serial.println("checkVehicleAck");
   hasAnswered = false;
   myFuncPtr = checkVehicleAck;
   iterateAnswers(mcount, mcount2);
   if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no ack in time, send request to next vehicle
   {
-    hasAnswered = true; // otherwise endless if both not responding
+    isLastRoundonError++;
     goto ackReceived;
   }
   else
   {
-    Serial.print("none of the "+String(NUM_OF_VEHICLES_IN_FIELD)+" Vehicles is responding");
+    Serial.print("none of the " + String(NUM_OF_VEHICLES_IN_FIELD) + " Vehicles is responding");
   }
   // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- since transported and brought back to factory unsubsribe (is empty again)
   mNetwP->unsubscribe("Vehicle/+/params"); // when transported and brought back to factory

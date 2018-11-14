@@ -7,7 +7,7 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <cstring>
-// own files
+// own files:
 #include <NetworkConfiguration.h>
 #include <NetworkManagerStructs.h>
 
