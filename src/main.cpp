@@ -363,4 +363,6 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   loopFull(); // loop until empty
 }
 
+
+// TODO Modularität, siehe Notizen in MainVehicle
 // TODO: beide Main Funktionen, so dass Main/koop möglichst schneell durchläuft, augfrund Stati entscheiden, welcher Weg gewählt wird -> Modularität wichtigste, nicht Performance
