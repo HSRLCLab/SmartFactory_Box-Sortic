@@ -5,11 +5,13 @@
 
 /*
 used in:
-  FILE                PARAMS
+  FILE                
   -----------------------------------------------------
-  NetworkManager.h    (*JSarray, *JSarrP)
-  NetworkManager.cpp  (callback2)
-  main.cpp            (*JSarra, calcOptimum())
+  NetworkManager.h  
+  NetworkManager.cpp
+  MQTTTasks.h
+  MQTTTasks.cpp
+  main.cpp    
 used for:
   saving Messages to use them later on (asynchronous Communication)
 */

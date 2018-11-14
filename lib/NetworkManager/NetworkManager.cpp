@@ -4,7 +4,8 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
 {
     ssid = DEFAULT_WIFI_SSID;
     pass = DEFAULT_WIFI_PASSWORD;
-    JSarrP = JSarray;
+    //JSarrP = JSarray;
+    NetManTask_classPointer = &NetManTask;
     if (is_vehicle)
     {
         // String hostname_string = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
@@ -44,7 +45,8 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
     ssid = *ssid2;
     pass = *pass2;
-    JSarrP = JSarray;
+    //JSarrP = JSarray;
+    NetManTask_classPointer = &NetManTask;
     if (is_vehicle)
     {
         // String hostname_string = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
@@ -72,10 +74,6 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     myMQTTclient = new PubSubClient(brokerIP, mQTT_port, callback2, *myClient);
     connectToMQTT(); // connecting to MQTT-Broker
 }
-
-
-
-
 
 /*void NetworkManager::receiveMessage(char *topic, byte *payload, unsigned int length) // listens to incoming messages  (which were published to the Server to the subsribed topic)
 {
@@ -242,27 +240,15 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
         //log("parse failed", "my_JSON parsing failed in callback 2", "");
         return;
     }
-    my_json_counter_isEmpty = false;
+    //my_json_counter_isEmpty = false;
     myJSONStr temp;
     temp.hostname = my_JSON.get<String>("hostname");
     temp.level = my_JSON.get<int>("level");
     temp.topic = my_JSON.get<String>("topic");
     temp.request = my_JSON.get<String>("request");
     // MORE TO ADD HERE
-    // TODO direkt in unteren code -> temp muss nicht erstellt und kopiert werden
 
-
-    if (my_json_counter < MAX_JSON_MESSAGES_SAVED) // saving json_messages to array
-    {
-        my_json_counter++;
-        JSarray[my_json_counter] = temp;
-    }
-    else if (my_json_counter == MAX_JSON_MESSAGES_SAVED)
-    {
-        my_json_counter = 0; // JSarray[0] will be the MAX_JSON_MESSAGES_SAVED'ed element
-        JSarray[my_json_counter] = temp;
-    }
-    // TODO else log
+    NetManTask.addMessage(temp);    // adds to message save
 
     if (log_level > 2)
     {
