@@ -30,6 +30,22 @@ enum SBLevel                                          // describes Smart Box lev
   full = 0,
   empty = 1
 };
+myJSONStr *tmp_mess; // pointer to array of messages, used for iteration of messages
+// -.-.-.-.-.-.-.- used for Statuses -.-.-.-.-.-.-.-
+enum status_main // stores main status for Program run (main.cpp)
+{
+  status_isEmpty = 0,
+  status_justFullPublish = 1,
+  status_getOptimalVehicle = 2,
+  status_hasOptVehiclePublish = 3,
+  status_checkIfAckReceived = 4,
+  status_checkIfTranspored = 5
+};
+int mcount = 0; // needed for number of messages received, lower num
+int mcount2 = 0;
+status_main stat = status_main::status_isEmpty;
+bool toNextStatus = true; // true if changing state, false if staying in state, it's enshuring that certain code will only run once
+int loopTurns = 0;
 //void (*myFuncPtr)(int) = NULL; // Pointer for the following Functions: getMaximumFromOptimumValues, checkVehicleAnswers, checkVehicleAck
 
 // ===================================== Function Headers of my helper Functions =====================================
@@ -169,90 +185,134 @@ void iterateAnswers(int mmcount, int mmcount2) // helper function because of FIF
 // ===================================== my Functions =====================================
 void loopEmpty() // loop until Box full
 {
-  bool isEmpty = false; // TODO set to true
-  while (isEmpty)       // while empty
+  if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    if (mSarrP->getSensorData())
-      isEmpty = false;
-    delay(SENSOR_ITERATION_SECONDS * 1000);
+    Serial.println("loopEmpty");
+    toNextStatus = false;
   }
+  Serial.print(".");
+  if (mSarrP->getSensorData())
+    stat = status_main::status_justFullPublish;
 }
 
-void loopFull() // loop until Box transported
+void pubishLevel() // publishes SmartBox Level
 {
-sendRequest:
-  int mcount = TaskMain->returnCurrentIterator();  // needed for number of messages received, lower num
-  int mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
-  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- Subscriptions & publish
-  mNetwP->subscribe("Vehicle/+/params");
-  mNetwP->subscribe("Vehicle/+/ack");
-  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
-  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answer (which vehicles are there?)
-  for (int i = 0; i < SMARTBOX_WAITFOR_VEHICLES_SECONDS; i++) // wait for vehicles to respond
+  if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    mNetwP->loop();
-    delay(1000);
+    Serial.println("\npubishLevel");
+    mNetwP->subscribe("Vehicle/+/params");
+    mNetwP->subscribe("Vehicle/+/ack");
+    toNextStatus = false;
+    hasAnswered = false;
+    mcount = TaskMain->returnCurrentIterator();
   }
+  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
   mNetwP->loop();
-  mcount2 = TaskMain->returnCurrentIterator();
-  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- calc Optimum Value & set hostname_max, hostname_max2 & publish
-  Serial.println("getMaximumFromOptimumValues");
-  hasAnswered = false;
-  //myFuncPtr = getMaximumFromOptimumValues; // get all Optimum Values for all vehicles & gets Optimal value
-  myJSONStr *tmp_mess = TaskMain->getBetween(mcount, mcount2);
-  if (tmp_mess == nullptr)
-    Serial.println("no messages");
-  else
+  if (loopTurns < SMARTBOX_WAITFOR_VEHICLES_TURNS) // wait for vehicles to send their params
   {
-    for (int i = 0; i < sizeof(tmp_mess) / sizeof(tmp_mess[0]); i++)
+    loopTurns++;
+    mNetwP->loop();
+  }
+  else if (loopTurns == SMARTBOX_WAITFOR_VEHICLES_TURNS)
+  {
+    toNextStatus = true;
+    loopTurns = 0;
+    stat = status_main::status_getOptimalVehicle;
+  }
+  else
+    Serial.println("Error, loopTurns has wrong value: " + String(loopTurns));
+}
+
+void getOpcimalVehiclefromResponses() // gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
+{
+  if (toNextStatus) // do once
+  {
+    Serial.println("getOpcimalVehiclefromResponses");
+    toNextStatus = false;
+    hasAnswered = false;
+    //myFuncPtr = getMaximumFromOptimumValues; // get all Optimum Values for all vehicles & gets Optimal value
+    tmp_mess = TaskMain->getBetween(mcount, mcount2);
+    if (tmp_mess == nullptr)
     {
-      String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
-      if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
+      Serial.println("no messages");
+      stat = status_main::status_justFullPublish; // jump back to publish
+    }
+    else
+    {
+      for (int i = 0; i < sizeof(tmp_mess) / sizeof(tmp_mess[0]); i++)
       {
-        hasAnswered = true;
-        double opt = calcOptimum(tmp_mess[i]);
-        if (value_max[0] < opt)
+        String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
+        if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
         {
-          value_max[1] = value_max[0];
-          hostname_max[1] = hostname_max[0];
-          value_max[0] = opt;
-          hostname_max[0] = tmp_mess[i].hostname;
+          hasAnswered = true;
+          double opt = calcOptimum(tmp_mess[i]);
+          if (value_max[0] < opt)
+          {
+            value_max[1] = value_max[0];
+            hostname_max[1] = hostname_max[0];
+            value_max[0] = opt;
+            hostname_max[0] = tmp_mess[i].hostname;
+          }
+          // TODO else?
         }
-        // TODO else?
       }
     }
   }
   //iterateAnswers(mcount, mcount2);
-  if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no vehicle responds in time, send error message
+  toNextStatus = true;
+  stat = status_main::status_hasOptVehiclePublish;
+}
+
+void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart Box
+{
+  if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    isLastRoundonError++;
-    goto sendRequest;
+    Serial.println("hasOptVehiclePublish");
+    toNextStatus = false;
+    mcount = TaskMain->returnCurrentIterator();
+  }
+  if (hasAnswered)
+  {
+    mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{hostname:" + hostname_max[0] + "}"); // publishes decision, clientID is in topic
+    mNetwP->loop();
+    if (loopTurns < SMARTBOX_ITERATION_VACKS_TURNS) // wait for vehicles to send their acknoledgement to transport SB
+    {
+      loopTurns++;
+      mNetwP->loop();
+    }
+    else if (loopTurns == SMARTBOX_ITERATION_VACKS_TURNS)
+    {
+      toNextStatus = true;
+      loopTurns = 0;
+      stat = status_main::status_checkIfAckReceived;
+    }
+    else
+      Serial.println("Error, loopTurns has wrong value: " + String(loopTurns));
   }
   else
   {
-    Serial.print("none of the " + String(NUM_OF_VEHICLES_IN_FIELD) + " Vehicles is responding");
+    Serial.println("no answeres arrived");
+    stat = status_main::status_justFullPublish;
   }
-  isLastRoundonError = 1;
-  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{hostname:" + hostname_max[0] + "}"); // publishes decision, clientID is in topic
+}
 
-// -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answer (is Vehicle X responding?)
-sendAck:
-  mcount = TaskMain->returnCurrentIterator();                // needed for number of messages received during run full
-  for (int i = 0; i < SMARTBOX_ITERATION_VACKS_SECONDS; i++) // wait for vehicles to respond
+void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
+{
+  if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    mNetwP->loop();
-    delay(1000);
+    Serial.println("checkIfAckReceivedfromResponses");
+    hasAnswered = false;
+    toNextStatus = false;
+    isLastRoundonError = 0;
+    mcount = TaskMain->returnCurrentIterator();
   }
-  mNetwP->loop();
-  mcount2 = TaskMain->returnCurrentIterator();
-
-  // TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
-  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered to get SmartBox transported
-  Serial.println("checkVehicleAnswers");
-  hasAnswered = false;
   tmp_mess = TaskMain->getBetween(mcount, mcount2);
+  mNetwP->loop();
   if (tmp_mess == nullptr)
+  {
     Serial.println("no messages");
+    stat = status_main::status_getOptimalVehicle; // jump back to publish
+  }
   else
   {
     for (int i = 0; i < sizeof(tmp_mess) / sizeof(tmp_mess[0]); i++)
@@ -269,35 +329,40 @@ sendAck:
   }
   //myFuncPtr = checkVehicleAnswers;
   //iterateAnswers(mcount, mcount2);
-  if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no ack in time, send request to next vehicle
+  if (hasAnswered) // if right Vehicle answered, go next
   {
-    hostname_max[0] = hostname_max[1];
-    isLastRoundonError++;
-    goto sendAck;
+    toNextStatus = true;
+    stat = status_main::status_justFullPublish;
+  }
+  else if (isLastRoundonError <= NUM_OF_VEHICLES_IN_FIELD)
+  {
+    toNextStatus = true;
+    stat = status_main::status_hasOptVehiclePublish;
+    hostname_max[0] = hostname_max[isLastRoundonError];
   }
   else
   {
-    Serial.print("none of the " + String(NUM_OF_VEHICLES_IN_FIELD) + " Vehicles is responding");
+    Serial.println("none of the two desired vehicles ansered");
+    toNextStatus = true;
+    stat = status_main::status_justFullPublish;
   }
-  isLastRoundonError = 1;
-// -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- wait for Answers (is SmartBox transported?)
-ackReceived:                                                       // when acknoledgement of desired is received, now waits for transport
-  mcount = TaskMain->returnCurrentIterator();                      // needed for number of messages received during run full
-  for (int i = 0; i < SMARTBOX_ITERATION_VTRANSPORTS_SECONDS; i++) // wait for vehicles to respond
-  {
-    mNetwP->loop();
-    delay(1000);
-  }
-  mNetwP->loop();
-  mcount2 = TaskMain->returnCurrentIterator();
+}
 
-  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- check if right Vehicle answered having SmartBox transported
-  Serial.println("checkVehicleAck");
-  hasAnswered = false;
-  //myFuncPtr = checkVehicleAck;
+void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emtied and brought back to factory
+{
+  if (toNextStatus) // only subscribe once but publish repeatedly
+  {
+    Serial.println("checkIfTransporedfromResponses");
+    toNextStatus = false;
+    hasAnswered = false;
+    mcount = TaskMain->returnCurrentIterator();
+  }
   tmp_mess = TaskMain->getBetween(mcount, mcount2);
+  mNetwP->loop();
   if (tmp_mess == nullptr)
+  {
     Serial.println("no messages");
+  }
   else
   {
     for (int i = 0; i < (sizeof(tmp_mess) / sizeof(tmp_mess[0])); i++)
@@ -311,21 +376,20 @@ ackReceived:                                                       // when ackno
         }
       }
     }
+    //myFuncPtr = checkVehicleAck;
+    //iterateAnswers(mcount, mcount2);
+
+    if (hasAnswered) // if Vehicle is transported, since transported and brought back to factory unsubsribe (is empty again)
+    {
+      toNextStatus = true;
+      mNetwP->unsubscribe("Vehicle/+/params"); // when transported and brought back to factory
+      mNetwP->unsubscribe("Vehicle/+/ack");
+      stat = status_main::status_isEmpty;
+    }
   }
-  //iterateAnswers(mcount, mcount2);
-  if ((hasAnswered == false) && (isLastRoundonError < NUM_OF_VEHICLES_IN_FIELD)) // if no ack in time, send request to next vehicle
-  {
-    isLastRoundonError++;
-    goto ackReceived;
-  }
-  else
-  {
-    Serial.print("none of the " + String(NUM_OF_VEHICLES_IN_FIELD) + " Vehicles is responding");
-  }
-  // -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- since transported and brought back to factory unsubsribe (is empty again)
-  mNetwP->unsubscribe("Vehicle/+/params"); // when transported and brought back to factory
-  mNetwP->unsubscribe("Vehicle/+/ack");
 }
+
+// TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
 
 // ===================================== Arduino Functions =====================================
 void setup() // for initialisation
@@ -358,11 +422,33 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     delay(1000);
   }
 
-  loopEmpty(); // loop until full
+  // TODO switch statement
+  // TODO: Abfolge Logik überprüfen!
 
-  loopFull(); // loop until empty
+  if (stat == status_main::status_isEmpty)
+    loopEmpty();
+  else if (stat == status_main::status_justFullPublish)
+    pubishLevel();
+  else if (stat == status_main::status_getOptimalVehicle)
+  {
+    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
+    getOpcimalVehiclefromResponses();
+    mcount = TaskMain->returnCurrentIterator();
+  }
+  else if (stat == status_main::status_hasOptVehiclePublish)
+    hasOptVehiclePublish();
+  else if (stat == status_main::status_checkIfAckReceived)
+  {
+    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
+    checkIfAckReceivedfromResponses();
+    mcount = TaskMain->returnCurrentIterator();
+  }
+  else if (stat == status_main::status_checkIfTranspored)
+  {
+    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
+    checkIfTransporedfromResponses();
+    mcount = TaskMain->returnCurrentIterator();
+  }
+  else
+    Serial.print("Wrong Status");
 }
-
-
-// TODO Modularität, siehe Notizen in MainVehicle
-// TODO: beide Main Funktionen, so dass Main/koop möglichst schneell durchläuft, augfrund Stati entscheiden, welcher Weg gewählt wird -> Modularität wichtigste, nicht Performance

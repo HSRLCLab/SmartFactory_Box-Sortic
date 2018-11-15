@@ -9,6 +9,7 @@ SensorArray::SensorArray() // initialisation of Sensor
 
 bool SensorArray::getSensorData() // read sensor, true if full
 {
+    return false;   // TODO
     bool vals[MAX_SENSOR_ITERATIONS]; // saves measured values
     bool returns;
     byte trues = 0, falses = 0; // number of trues and falses measured from sensor
