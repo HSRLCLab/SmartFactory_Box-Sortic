@@ -17,12 +17,6 @@ const byte default_pins[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RS
 const bool is_vehicle = false; // true if is vehicle, used for MQTT
 static MQTTTasks NetManTask;         // saves all messages, saves all incoming messages as JSON Objects, FIFO order, num of items: MAX_JSON_MESSAGES_SAVED
 
-/*
-extern int my_json_counter;
-extern bool my_json_counter_isEmpty;
-static myJSONStr JSarray[MAX_JSON_MESSAGES_SAVED]; 
-*/
-
 void callback2(char *topic, byte *payload, unsigned int length); // needs to be outside class!
 
 class NetworkManager
@@ -37,7 +31,6 @@ public:
   void loop();                         // make client ready for receiving messages
   String getHostName();                // returns hostname of this object
   IPAddress getIP();                   // return current IP Address
-  //myJSONStr *JSarrP;                   // used to see saved Messages from outside this file
   MQTTTasks *NetManTask_classPointer;  // used to see saved Messages from outside this file
 
 private:
@@ -57,7 +50,6 @@ private:
   WiFiServer *myServer;
   WiFiClient *myClient;
   // MQTT stuff
-  //MQTT_CALLBACK_SIGNATURE;
   PubSubClient *myMQTTclient;
   IPAddress brokerIP;
   int mQTT_port;

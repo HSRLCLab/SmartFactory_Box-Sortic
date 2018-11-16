@@ -4,12 +4,9 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
 {
     ssid = DEFAULT_WIFI_SSID;
     pass = DEFAULT_WIFI_PASSWORD;
-    //JSarrP = JSarray;
     NetManTask_classPointer = &NetManTask;
     if (is_vehicle)
     {
-        // String hostname_string = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
-        // this->hostname = (char *)hostname_string.c_str();                                // set hostname to random ID
         hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
         // TODO: Doku: mmögliche Verbesserung überall Pointers
     }
@@ -45,12 +42,9 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
     ssid = *ssid2;
     pass = *pass2;
-    //JSarrP = JSarray;
     NetManTask_classPointer = &NetManTask;
     if (is_vehicle)
     {
-        // String hostname_string = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
-        // this->hostname = (char *)hostname_string.c_str();                                // set hostname to random ID
         hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
     }
     else
@@ -74,23 +68,6 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     myMQTTclient = new PubSubClient(brokerIP, mQTT_port, callback2, *myClient);
     connectToMQTT(); // connecting to MQTT-Broker
 }
-
-/*void NetworkManager::receiveMessage(char *topic, byte *payload, unsigned int length) // listens to incoming messages  (which were published to the Server to the subsribed topic)
-{
-    if (myMQTTclient->connected())
-        connectToMQTT();
-    myMQTTclient->loop();                        // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
-    if (myMQTTclient->connect(hostname.c_str())) // Attempt to connect
-    {
-        log("Message arrived [" + String(*topic) + "]", String(*payload), "MQTT recorded a message");
-        myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
-    }
-    else
-    {
-        log("Please connect to the Internet", "You are not connected to the MQTT Broker", "Client ID: " + hostname);
-    };
-}
-*/
 
 void NetworkManager::connectToWiFi()
 {
@@ -194,22 +171,6 @@ bool NetworkManager::unsubscribe(const String &topic)
     }
 }
 
-/*void NetworkManager::callback(char *topic, byte *payload, unsigned int length) // NOT WORKING! PUBSUBCLIENT CANT TAKE CLASS FUNCTIONS
-{
-    if (myMQTTclient->connect(String(*hostname).c_str())) // Attempt to connect
-    {
-        log("Message arrived [" + String(*topic) + "]", String(*payload), "MQTT recorded a message");
-        // TODO what to do???? -> see function callback for help
-        myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
-        //return true;
-    }
-    else
-    {
-        log("Please connect to the Internet", "You are not connected to the MQTT Broker", "Client ID: " + *hostname);
-        //return false;
-    };
-}*/
-
 void callback2(char *topic, byte *payload, unsigned int length) // listens to incoming messages (published to Server)
 {
 
@@ -240,7 +201,6 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
         //log("parse failed", "my_JSON parsing failed in callback 2", "");
         return;
     }
-    //my_json_counter_isEmpty = false;
     myJSONStr temp;
     temp.hostname = my_JSON.get<String>("hostname");
     temp.level = my_JSON.get<int>("level");

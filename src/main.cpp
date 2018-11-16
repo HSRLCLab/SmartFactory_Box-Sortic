@@ -10,13 +10,6 @@
 #include <MQTTTasks.h>
 
 // ===================================== Global Variables =====================================
-
-/*
-myJSONStr *JSarra;    // used in NetworkManager.h, used for saving incoming Messages, FIFO order, see also MAX_JSON_MESSAGES_SAVED
-int my_json_counter = 0;                              // is last element in array, used for referencing to the last Element, attention: pay attention to out of bound see MAX_JSON_MESSAGES_SAVED, DON'T TOUCH THIS: https://www.youtube.com/watch?v=otCpCn0l4Wo
-bool my_json_counter_isEmpty = true;                  // used in NetworkManager.h
-*/
-
 MQTTTasks *TaskMain;                                  // filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
 NetworkManager *mNetwP = 0;                           // used for usign NetworkManager access outside setup()
 SensorArray *mSarrP = 0;                              // used for using SensorArray access outside setup()
@@ -46,14 +39,7 @@ int mcount2 = 0;
 status_main stat = status_main::status_isEmpty;
 bool toNextStatus = true; // true if changing state, false if staying in state, it's enshuring that certain code will only run once
 int loopTurns = 0;
-//void (*myFuncPtr)(int) = NULL; // Pointer for the following Functions: getMaximumFromOptimumValues, checkVehicleAnswers, checkVehicleAck
 
-// ===================================== Function Headers of my helper Functions =====================================
-/*
-void getMaximumFromOptimumValues(int ii);
-void checkVehicleAnswers(int ii);
-void checkVehicleAck(int ii);
-*/
 // ===================================== my helper Functions =====================================
 
 double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better
@@ -61,124 +47,6 @@ double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher i
   double val = 100 / obj.vehicleParams[0]; // better for shorter way, 100 just for factoring, TODO
   return val;
 };
-
-/*
-String *returnMQTTtopics(String top) // returns String-Array of topics from MQTT topic structure, strings divided by /
-{
-  String tmp[MAX_MQTT_TOPIC_DEPTH];
-  int k1 = 0; // lower cut-bound
-  int k2 = 0; // upper cut-bound
-  int k3 = 0; // num of strings (must be below above!)
-  for (int i = 0; i < top.length(); i++)
-  {
-    if (top.charAt(i) == '/')
-    {
-      k1 = i + 1;
-      if (k3 == MAX_MQTT_TOPIC_DEPTH)
-        break;
-      else
-      {
-        tmp[k3] = top.substring(k1, k2);
-        k3++;
-      }
-    }
-    else
-    {
-      k2++;
-    }
-  }
-  String tmp2[k3];
-  for (int i = 0; i < k3; i++)
-  {
-    tmp2[i] = tmp[i];
-  }
-  return tmp2;
-};
-
-
-double returnNumOfVehicles() // TODO not needed?
-{
-  mNetwP->subscribe("Vehicle/presence");
-  mNetwP->publishMessage("Vehicle/presence", "requestVehicles");
-  for (int i = 0; i <= SMARTBOX_WAITFOR_ANSWERS_SECONDS; i++)
-  {
-    mNetwP->loop();
-    delay(1000);
-    // TODO see TODO in Networkmanager.cpp/callback2
-  };
-  mNetwP->unsubscribe("Vehicle/presence");
-  return 0;
-};
-
-void getMaximumFromOptimumValues(int ii)
-{
-  String *ttop = returnMQTTtopics(TaskMain->getDesiredLastMessage(ii).topic);
-  if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
-  {
-    myJSONStr temp = TaskMain->getDesiredLastMessage(ii);
-    double opt = calcOptimum(temp);
-    if (value_max[0] < opt)
-    {
-      value_max[1] = value_max[0];
-      hostname_max[1] = hostname_max[0];
-      value_max[0] = opt;
-      hostname_max[0] = TaskMain->getDesiredLastMessage(ii).hostname;
-    }
-  }
-}
-
-void checkVehicleAnswers(int ii)
-{
-  String *ttop = returnMQTTtopics(TaskMain->getDesiredLastMessage(ii).topic);
-  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
-  {
-    if (TaskMain->getDesiredLastMessage(ii).hostname == mNetwP->getHostName()) // if answer is to this request
-    {
-      hasAnswered = true;
-    }
-  }
-}
-
-void checkVehicleAck(int ii)
-{
-  String *ttop = returnMQTTtopics(TaskMain->getDesiredLastMessage(ii).topic);
-  if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
-  {
-    if (TaskMain->getDesiredLastMessage(ii).request == mNetwP->getHostName()) // if answer is to this request
-    {
-      hasAnswered = true;
-    }
-  }
-}
-
-
-void iterateAnswers(int mmcount, int mmcount2) // helper function because of FIFO order in TaskMain, nicer way, because needed three times below in loopFull
-{
-  if (mmcount == mmcount2)
-  {
-    Serial.println("no answers or exact MAX_JSON_MESSAGES_SAVED answers received");
-    return;
-  }
-  else if (mmcount2 < mmcount)
-  {
-    for (int i = mmcount; i < MAX_JSON_MESSAGES_SAVED; i++)
-    {
-      myFuncPtr(i);
-    }
-    for (int i = 0; i < mmcount2; i++)
-    {
-      myFuncPtr(i);
-    }
-  }
-  else
-  {
-    for (int i = mmcount; i < mmcount2 - mmcount; i++)
-    {
-      myFuncPtr(i);
-    }
-  }
-};
-*/
 
 // void getSmartBoxInfo(){}; // print Smart Box Information TODO
 
@@ -230,7 +98,6 @@ void getOpcimalVehiclefromResponses() // gets Vehicle with best Params due to ca
     Serial.println("getOpcimalVehiclefromResponses");
     toNextStatus = false;
     hasAnswered = false;
-    //myFuncPtr = getMaximumFromOptimumValues; // get all Optimum Values for all vehicles & gets Optimal value
     tmp_mess = TaskMain->getBetween(mcount, mcount2);
     if (tmp_mess == nullptr)
     {
@@ -258,7 +125,6 @@ void getOpcimalVehiclefromResponses() // gets Vehicle with best Params due to ca
       }
     }
   }
-  //iterateAnswers(mcount, mcount2);
   toNextStatus = true;
   stat = status_main::status_hasOptVehiclePublish;
 }
@@ -327,8 +193,6 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
       }
     }
   }
-  //myFuncPtr = checkVehicleAnswers;
-  //iterateAnswers(mcount, mcount2);
   if (hasAnswered) // if right Vehicle answered, go next
   {
     toNextStatus = true;
@@ -376,9 +240,6 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
         }
       }
     }
-    //myFuncPtr = checkVehicleAck;
-    //iterateAnswers(mcount, mcount2);
-
     if (hasAnswered) // if Vehicle is transported, since transported and brought back to factory unsubsribe (is empty again)
     {
       toNextStatus = true;
@@ -402,7 +263,6 @@ void setup() // for initialisation
   }
   mNetwP = new NetworkManager();
   mSarrP = new SensorArray();
-  //JSarra = mNetwP->JSarrP;
   TaskMain = mNetwP->NetManTask_classPointer;
 
   if (true) // for debugging purpose, DELETE ON FINAL TODO
@@ -424,31 +284,47 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 
   // TODO switch statement
   // TODO: Abfolge Logik überprüfen!
-
-  if (stat == status_main::status_isEmpty)
+  switch (stat)
+  {
+  case status_main::status_isEmpty:
+  {
     loopEmpty();
-  else if (stat == status_main::status_justFullPublish)
+    break;
+  }
+  case status_main::status_justFullPublish:
+  {
     pubishLevel();
-  else if (stat == status_main::status_getOptimalVehicle)
+    break;
+  }
+  case status_main::status_getOptimalVehicle:
   {
     mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
     getOpcimalVehiclefromResponses();
     mcount = TaskMain->returnCurrentIterator();
+    break;
   }
-  else if (stat == status_main::status_hasOptVehiclePublish)
+  case status_main::status_hasOptVehiclePublish:
+  {
     hasOptVehiclePublish();
-  else if (stat == status_main::status_checkIfAckReceived)
+    break;
+  }
+  case status_main::status_checkIfAckReceived:
   {
     mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
     checkIfAckReceivedfromResponses();
     mcount = TaskMain->returnCurrentIterator();
+    break;
   }
-  else if (stat == status_main::status_checkIfTranspored)
+  case status_main::status_checkIfTranspored:
   {
     mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
     checkIfTransporedfromResponses();
     mcount = TaskMain->returnCurrentIterator();
+    break;
   }
-  else
+  default:
+  {
     Serial.print("Wrong Status");
+  }
+  }
 }
