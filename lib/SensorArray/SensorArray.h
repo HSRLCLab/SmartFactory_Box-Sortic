@@ -9,8 +9,8 @@ class SensorArray // class for Sharp Sensor
 {
 public:
   SensorArray();                   // DEFAULT C'tor
-  bool getSensorData();            // getting current Sensor Values, true if full
-  bool getLastSensorData(int num); // getting mth-previous Sensor Values, if 0 its the current
+  bool getSensorData();            // getting current Sensor Values, true if full (only has two states: empty or full)
+  bool getLastSensorData(int num); // getting mth-previous Sensor Values, if num==0 it's the current
 
 private:
   bool SensValStore[MAX_SENSOR_VALUES]; // saving the last Sensor Values, LIFO Queue

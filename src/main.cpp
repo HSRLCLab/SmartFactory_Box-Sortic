@@ -42,7 +42,19 @@ double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher i
   return val;
 };
 
-// void getSmartBoxInfo(){}; // print Smart Box Information TODO
+void getSmartBoxInfo() // print Smart Box Information
+{
+  LOG2("Smart Box state: " + String(stat));
+  LOG2("Hostname with best value (" + String(value_max[0]) + "): " + hostname_max[0]);
+  LOG2("max Num of Vehicles in Field: " + String(NUM_OF_VEHICLES_IN_FIELD));
+  LOG2("num of maxvalues to store: " + String(NUM_OF_MAXVALUES_VEHICLES_STORE));
+  LOG2("Variable has answered: " + String(hasAnswered));
+  LOG2("Variable isLastRoundonError: " + String(isLastRoundonError));
+  LOG2("Variable mcount: " + String(mcount));
+  LOG2("Variable mcount2: " + String(mcount2));
+  LOG2("Variable toNextStatus: " + String(toNextStatus));
+  LOG2("Variable loopTurns: " + String(loopTurns));
+};
 
 // ===================================== my Functions =====================================
 void loopEmpty() // loop until Box full
@@ -72,7 +84,7 @@ void pubishLevel() // publishes SmartBox Level
     hasAnswered = false;
     mcount = TaskMain->returnCurrentIterator();
   }
-  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}"); // TODO: skalar als level variable?
+  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}");
   mNetwP->loop();
   if (loopTurns < SMARTBOX_WAITFOR_VEHICLES_TURNS) // wait for vehicles to send their params
   {
@@ -293,10 +305,11 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     delay(2000);
     digitalWrite(13, HIGH);
     delay(2000);
+    LOG1("now going to loop, have fun :)");
   }
 
   // TODO: Abfolge Logik überprüfen!
-  switch (100) // TODO change to stat
+  switch (stat)
   {
   case status_main::status_isEmpty:
   {
@@ -340,5 +353,3 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   }
   }
 }
-
-// TODO: mehr log()
