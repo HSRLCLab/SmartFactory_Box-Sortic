@@ -124,7 +124,7 @@ bool NetworkManager::publishMessage(const String &topic, const String &msg) // p
     if (myMQTTclient->connected())
     {
         myMQTTclient->publish(topic.c_str(), msg.c_str());
-        LOG2("Publish to topic [" + topic + "] message:" + msg);
+        LOG3("Publish to topic [" + topic + "] message:" + msg);
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }

@@ -14,6 +14,6 @@
 #define SMARTBOX_ITERATION_VTRANSPORTS_TURNS 10 // SB waits this amount of turns for vehicles to respond
 #define NUM_OF_VEHICLES_IN_FIELD 2              // maximum Number of vehicles in Field, TODO erkennen?
 #define NUM_OF_MAXVALUES_VEHICLES_STORE 2       // how much best values can be stored, must be smaller than NUM_OF_VEHICLES_IN_FIELD!
-
+#define PIN_FOR_FULL 12                         // if SmartBox is full, light up LED
 
 #endif

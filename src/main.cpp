@@ -47,7 +47,8 @@ double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher i
 // ===================================== my Functions =====================================
 void loopEmpty() // loop until Box full
 {
-  if (toNextStatus) // only subscribe once but publish repeatedly
+  digitalWrite(PIN_FOR_FULL, LOW); // if empty leave LED off or turn it off
+  if (toNextStatus)                // only subscribe once but publish repeatedly
   {
     LOG1("entering new state: loopEmpty");
     toNextStatus = false;
@@ -56,8 +57,8 @@ void loopEmpty() // loop until Box full
   {
     LOG3("is full, go next to status_justFullPublish");
     stat = status_main::status_justFullPublish;
+    digitalWrite(PIN_FOR_FULL, HIGH); // if full turn LED on
   }
-    
 }
 
 void pubishLevel() // publishes SmartBox Level
@@ -275,6 +276,7 @@ void setup() // for initialisation
   mNetwP = new NetworkManager();
   mSarrP = new SensorArray();
   TaskMain = mNetwP->NetManTask_classPointer;
+  pinMode(PIN_FOR_FULL, OUTPUT);
 
   if (true) // for debugging purpose, DELETE ON FINAL TODO
   {
@@ -288,13 +290,13 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   if (true) // degug cycle -- DELETE ON FINAL TODO
   {
     digitalWrite(13, LOW);
-    delay(1000);
+    delay(2000);
     digitalWrite(13, HIGH);
-    delay(1000);
+    delay(2000);
   }
 
   // TODO: Abfolge Logik überprüfen!
-  switch (stat)
+  switch (100) // TODO change to stat
   {
   case status_main::status_isEmpty:
   {
@@ -334,7 +336,7 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   }
   default:
   {
-    Serial.print("Wrong Status");
+    LOG1("Wrong Status");
   }
   }
 }

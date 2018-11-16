@@ -2,68 +2,61 @@
 
 SensorArray::SensorArray() // initialisation of Sensor
 {
-    pinMode(OUTPUT_PIN, OUTPUT); // light LED
-    pinMode(INPUT_PIN, INPUT);   // light sensitive diode
+    //pinMode(OUTPUT_PIN, OUTPUT); // light LED
+    pinMode(INPUT_PIN1, INPUT); // sharp sensor 1
+    pinMode(INPUT_PIN2, INPUT); // sharp sensor 2
+    pinMode(INPUT_PIN3, INPUT); // sharp sensor 3
     lastValuesSize = 0;
 }
 
 bool SensorArray::getSensorData() // read sensor, true if full
 {
-    return false;                     // TODO
-    bool vals[MAX_SENSOR_ITERATIONS]; // saves measured values
-    bool returns;
-    byte trues = 0, falses = 0; // number of trues and falses measured from sensor
-    double sum = 0;
+    LOG3("getting Sensor Data");
+    double sum1 = 0, sum2 = 0, sum3 = 0;
     digitalWrite(13, HIGH);
-    digitalWrite(OUTPUT_PIN, HIGH);
+    delay(10); // needed for time delay of Sensor
+    //digitalWrite(OUTPUT_PIN, HIGH);
     for (int i = 0; i < MAX_SENSOR_ITERATIONS; i++)
     {
-        double volts = analogRead(INPUT_PIN) * 0.0049;
-        sum += volts;
-        delay(10); // needed for reading out PIN
-        /*
-        if (volts > 0) // TODO: richtig? -> überprüfen
-        {
-            vals[i] = true;
-            trues++;
-        }
-        else
-        {
-            vals[i] = false;
-            falses++;
-        }
-        */
+        double volts = analogRead(INPUT_PIN1) * 0.0049;
+        sum1 += volts;
+        volts = analogRead(INPUT_PIN2) * 0.0049;
+        sum2 += volts;
+        volts = analogRead(INPUT_PIN3) * 0.0049;
+        sum3 += volts;
+        delay(5); // needed for reading out PIN
     }
-
-    sum = sum / MAX_SENSOR_ITERATIONS;
-    LOG1("Schnitt:\t");
-    LOG1(sum);
-
-    if (falses > trues)
-        returns = false;
+    sum1 = sum1 / MAX_SENSOR_ITERATIONS;
+    sum2 = sum2 / MAX_SENSOR_ITERATIONS;
+    sum3 = sum3 / MAX_SENSOR_ITERATIONS;
+    LOG3("SensorValue1: " + String(sum1) + "\tSensorValue2: " + String(sum2) + "\tSensorValue3: " + String(sum3));
+    if ((sum1 <= SENSOR_TOLLERANCE) && (sum2 <= SENSOR_TOLLERANCE) && (sum3 <= SENSOR_TOLLERANCE))
+    {
+        LOG3("Sensor found element in Box"); // true if within 0.5-5cm from Sensor, otherwise false
+        return true;
+    }
     else
-        returns = true;
-    pushToQueue(returns);
-    digitalWrite(OUTPUT_PIN, LOW);
-    digitalWrite(13, LOW);
-    return returns;
+    {
+        LOG3("Sensor found no Element");
+        return false;
+    }
 }
 
-void SensorArray::pushToQueue(bool val)
+void SensorArray::pushToQueue(bool &val)
 {
-    if (this->lastValuesSize == (MAX_SENSOR_VALUES - 1))
+    if (lastValuesSize == (MAX_SENSOR_VALUES - 2))
     {
-        this->lastValuesSize = -1;
+        lastValuesSize = -1;
     };
-    this->lastValuesSize++;
-    lastValues[lastValuesSize] = val;
+    lastValuesSize++;
+    SensValStore[lastValuesSize] = val;
 }
 
 bool SensorArray::getLastSensorData(int num)
 {
     if ((num < MAX_SENSOR_VALUES) && (num > 0))
     {
-        return this->lastValues[(this->lastValuesSize + num) % MAX_SENSOR_VALUES];
+        return SensValStore[(lastValuesSize + num) % MAX_SENSOR_VALUES];
     }
     else
     {

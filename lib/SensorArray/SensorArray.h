@@ -5,19 +5,19 @@
 #include <SensorConfiguration.h>
 #include <LogConfiguration.h>
 
-class SensorArray
+class SensorArray // class for Sharp Sensor
 {
 public:
-  SensorArray();                                                        // initialize everything, Übergabeparameter?
-  bool getSensorData();                                                 // getting current Sensor Value, true if full
-  bool getLastSensorData(int num);                                      // getting previous Sensor Values, 0 if error
+  SensorArray();                   // DEFAULT C'tor
+  bool getSensorData();            // getting current Sensor Values, true if full
+  bool getLastSensorData(int num); // getting mth-previous Sensor Values, if 0 its the current
 
 private:
-  bool lastValues[MAX_SENSOR_VALUES]; // saving the last Sensor Values, LIFO Queue
+  bool SensValStore[MAX_SENSOR_VALUES]; // saving the last Sensor Values, LIFO Queue
   int lastValuesSize;
 
   // helper functions
-  void pushToQueue(bool val); // push Sensor values to lastValues[] in LIFO order
+  void pushToQueue(bool &val); // push Sensor values to lastValues[] in LIFO order
 };
 
 #endif
