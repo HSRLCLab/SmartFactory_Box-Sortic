@@ -308,7 +308,7 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     LOG1("now going to loop, have fun :)");
   }
 
-  // TODO: Abfolge Logik überprüfen!
+  // TODO: Abfolge Logik überprüfen! -> finite state machine Diagramme zeichnen!
   switch (stat)
   {
   case status_main::status_isEmpty:

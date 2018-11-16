@@ -20,6 +20,8 @@ public:
   MQTTTasks *operator=(MQTTTasks *other);              // copy constructor
   myJSONStr *getBetween(int from, int to);             // returns messages between indexes, to use for iterations, from index to index, index = returnCurrentIterator
   String *returnMQTTtopics(myJSONStr &passingMessage); // returns String-Array of topics from MQTT topic structure, strings divided by /
+    // TODO function to return message from iterator of type returnCurrentIterator, return 0 if overridden
+	// TODO function to return difference (used in for loops)
 
 private:
   myJSONStr messages[MAX_JSON_MESSAGES_SAVED];                          // message save
