@@ -33,6 +33,7 @@ int mcount2 = 0;
 status_main stat = status_main::status_isEmpty;
 bool toNextStatus = true; // true if changing state, false if staying in state, it's enshuring that certain code will only run once
 int loopTurns = 0;
+void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state machine
 
 // ===================================== my helper Functions =====================================
 
@@ -69,11 +70,12 @@ void loopEmpty() // loop until Box full
   {
     LOG3("is full, go next to status_justFullPublish");
     stat = status_main::status_justFullPublish;
+    myFuncToCall = publishLevel;
     digitalWrite(PIN_FOR_FULL, HIGH); // if full turn LED on
   }
 }
 
-void pubishLevel() // publishes SmartBox Level
+void publishLevel() // publishes SmartBox Level
 {
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
@@ -89,7 +91,7 @@ void pubishLevel() // publishes SmartBox Level
   if (loopTurns < SMARTBOX_WAITFOR_VEHICLES_TURNS) // wait for vehicles to send their params
   {
     loopTurns++;
-    LOG3("no on iteration: " + String(loopTurns));
+    LOG3("now on iteration: " + String(loopTurns));
     mNetwP->loop();
   }
   else if (loopTurns == SMARTBOX_WAITFOR_VEHICLES_TURNS)
@@ -98,14 +100,17 @@ void pubishLevel() // publishes SmartBox Level
     toNextStatus = true;
     loopTurns = 0;
     stat = status_main::status_getOptimalVehicle;
+    myFuncToCall = getOptimalVehiclefromResponses;
   }
   else
     LOG1("Error, loopTurns has wrong value: " + String(loopTurns));
 }
 
-void getOpcimalVehiclefromResponses() // gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
+void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
 {
-  if (toNextStatus) // do once
+  mNetwP->loop();
+  mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
+  if (toNextStatus)                            // do once
   {
     LOG1("entering new state: getOpcimalVehiclefromResponses");
     toNextStatus = false;
@@ -115,6 +120,7 @@ void getOpcimalVehiclefromResponses() // gets Vehicle with best Params due to ca
     {
       LOG2("no messages");
       stat = status_main::status_justFullPublish; // jump back to publish
+      myFuncToCall = publishLevel;
     }
     else
     {
@@ -142,6 +148,7 @@ void getOpcimalVehiclefromResponses() // gets Vehicle with best Params due to ca
   LOG2("has calculated max Optimal Values");
   LOG3("go next to status_hasOptVehiclePublish");
   stat = status_main::status_hasOptVehiclePublish;
+  myFuncToCall = hasOptVehiclePublish;
 }
 
 void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart Box
@@ -168,6 +175,7 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
       toNextStatus = true;
       loopTurns = 0;
       stat = status_main::status_checkIfAckReceived;
+      myFuncToCall = checkIfAckReceivedfromResponses;
     }
     else
       LOG1("Error, loopTurns has wrong value: " + String(loopTurns));
@@ -176,11 +184,14 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
   {
     LOG2("no answeres arrived");
     stat = status_main::status_justFullPublish;
+    myFuncToCall = publishLevel;
   }
 }
 
 void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
 {
+  mNetwP->loop();
+  mcount2 = TaskMain->returnCurrentIterator();
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
     LOG1("entering new state: checkIfAckReceivedfromResponses");
@@ -190,11 +201,11 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
     mcount = TaskMain->returnCurrentIterator();
   }
   tmp_mess = TaskMain->getBetween(mcount, mcount2);
-  mNetwP->loop();
   if (tmp_mess == nullptr)
   {
     LOG2("no messages");
-    stat = status_main::status_getOptimalVehicle; // jump back to publish
+    stat = status_main::status_justFullPublish; // jump back to publish
+    myFuncToCall = publishLevel;
   }
   else
   {
@@ -213,15 +224,17 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
   }
   if (hasAnswered) // if right Vehicle answered, go next
   {
-    LOG3("go back to status_justFullPublish");
+    LOG3("go forward to status_checkIfTranspored"); // TODO logic! this and next case?
     toNextStatus = true;
-    stat = status_main::status_justFullPublish;
+    stat = status_main::status_checkIfTranspored;
+    myFuncToCall = checkIfTransporedfromResponses;
   }
   else if (isLastRoundonError <= NUM_OF_VEHICLES_IN_FIELD)
   {
     LOG3("go next to status_hasOptVehiclePublish, reset hostname");
     toNextStatus = true;
     stat = status_main::status_hasOptVehiclePublish;
+    myFuncToCall = hasOptVehiclePublish;
     hostname_max[0] = hostname_max[isLastRoundonError];
   }
   else
@@ -229,11 +242,15 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
     LOG1("none of the two desired vehicles ansered");
     toNextStatus = true;
     stat = status_main::status_justFullPublish;
+    myFuncToCall = publishLevel;
   }
+  mcount = mcount2;
 }
 
 void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emtied and brought back to factory
 {
+  mNetwP->loop();
+  mcount2 = TaskMain->returnCurrentIterator();
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
     LOG1("entering new state: checkIfTransporedfromResponses");
@@ -242,7 +259,6 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
     mcount = TaskMain->returnCurrentIterator();
   }
   tmp_mess = TaskMain->getBetween(mcount, mcount2);
-  mNetwP->loop();
   if (tmp_mess == nullptr)
   {
     LOG2("no messages");
@@ -268,8 +284,10 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
       mNetwP->unsubscribe("Vehicle/+/params"); // when transported and brought back to factory
       mNetwP->unsubscribe("Vehicle/+/ack");
       stat = status_main::status_isEmpty;
+      myFuncToCall = loopEmpty;
     }
   }
+  mcount = TaskMain->returnCurrentIterator();
 }
 
 // TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
@@ -289,6 +307,7 @@ void setup() // for initialisation
   mSarrP = new SensorArray();
   TaskMain = mNetwP->NetManTask_classPointer;
   pinMode(PIN_FOR_FULL, OUTPUT);
+  myFuncToCall = loopEmpty;
 
   if (true) // for debugging purpose, DELETE ON FINAL TODO
   {
@@ -309,47 +328,5 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   }
 
   // TODO: Abfolge Logik überprüfen! -> finite state machine Diagramme zeichnen!
-  switch (stat)
-  {
-  case status_main::status_isEmpty:
-  {
-    loopEmpty();
-    break;
-  }
-  case status_main::status_justFullPublish:
-  {
-    pubishLevel();
-    break;
-  }
-  case status_main::status_getOptimalVehicle:
-  {
-    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
-    getOpcimalVehiclefromResponses();
-    mcount = TaskMain->returnCurrentIterator();
-    break;
-  }
-  case status_main::status_hasOptVehiclePublish:
-  {
-    hasOptVehiclePublish();
-    break;
-  }
-  case status_main::status_checkIfAckReceived:
-  {
-    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
-    checkIfAckReceivedfromResponses();
-    mcount = TaskMain->returnCurrentIterator();
-    break;
-  }
-  case status_main::status_checkIfTranspored:
-  {
-    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
-    checkIfTransporedfromResponses();
-    mcount = TaskMain->returnCurrentIterator();
-    break;
-  }
-  default:
-  {
-    LOG1("Wrong Status");
-  }
-  }
+  myFuncToCall();
 }
