@@ -17,7 +17,10 @@ myJSONStr MQTTTasks::getLastMessage()
     if (!isEmpty)
         return messages[mqtt_class_counter];
     else
-        log("no messages", "there has been no messages saved", "");
+    {
+        LOG1("no messages");
+        LOG2("there has been no messages saved");
+    }
 }
 
 myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast)
@@ -34,7 +37,8 @@ myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast)
         }
         else
         {
-            log("request of desired message failed", "you entered: " + String(fromLast) + ", but there is a maximum of: " + String(MAX_JSON_MESSAGES_SAVED) + "and a minimum of 0!", "");
+            LOG1("request of desired message failed");
+            LOG2("you entered: " + String(fromLast) + ", but there is a maximum of: " + String(MAX_JSON_MESSAGES_SAVED) + "and a minimum of 0!");
         }
     }
 }
@@ -55,19 +59,20 @@ bool MQTTTasks::deleteMessage(int fromLast) // sets this struct to default
             if (res < 0)
             {
                 messages[MAX_JSON_MESSAGES_SAVED + res] = tmp;
-                log("", "", "message " + String(MAX_JSON_MESSAGES_SAVED + res) + " deleted successfully");
+                LOG3("message " + String(MAX_JSON_MESSAGES_SAVED + res) + " deleted successfully");
                 return true;
             }
             else
             {
                 messages[res] = tmp;
-                log("", "", "message " + String(res) + " deleted successfully");
+                LOG3("message " + String(res) + " deleted successfully");
                 return true;
             }
         }
         else
         {
-            log("deleting failed", "you entered: " + String(fromLast) + ", but there is a maximum of: " + String(MAX_JSON_MESSAGES_SAVED) + "and a minimum of 0!", "");
+            LOG1("deleting failed");
+            LOG2("you entered: " + String(fromLast) + ", but there is a maximum of: " + String(MAX_JSON_MESSAGES_SAVED) + "and a minimum of 0!");
             return false;
         }
     }
@@ -90,7 +95,7 @@ bool MQTTTasks::addMessage(myJSONStr mess)
         isEmpty = false;
         return true;
     }
-    log("", "", "message added successfully");
+    LOG3("message added successfully");
 }
 
 MQTTTasks *MQTTTasks::operator=(MQTTTasks *other) // needed in main.cpp
@@ -138,7 +143,9 @@ myJSONStr *MQTTTasks::getBetween(int from, int to) // from index to index
 {
     if ((to < 0) || (from < 0) || (from == to)) // if invalid values
     {
-        log("wrong value entered (same or negative)", "enteres from: " + String(from) + ", to: " + String(to), "minimum is 0, maximum is " + String(MAX_JSON_MESSAGES_SAVED));
+        LOG1("wrong value entered (same or negative)");
+        LOG2("enteres from: " + String(from) + ", to: " + String(to));
+        LOG3("minimum is 0, maximum is " + String(MAX_JSON_MESSAGES_SAVED));
         return nullptr;
     }
     else
@@ -151,7 +158,8 @@ myJSONStr *MQTTTasks::getBetween(int from, int to) // from index to index
         int tmp_from_cycles = (int)from / MAX_JSON_MESSAGES_SAVED; // how many times messages overridden
         if (from == to)
         {
-            // TODO log???
+            LOG1("nothing to do");
+            LOG2("you entered twice the same value: " + String(from));
             return nullptr;
         }
         else if (tmp_from_cycles == tmp_to_cycles)
@@ -184,27 +192,6 @@ myJSONStr *MQTTTasks::getBetween(int from, int to) // from index to index
             }
         }
         else
-            log("special case", "", "");
-    }
-}
-
-void MQTTTasks::log(const String &log1, const String &log2, const String &log3) // logging levels: 0-without, 1 error, 2 info, 3 verbose debugging
-{
-    switch (log_level)
-    {
-    case 0:
-        break;
-    case 1:
-        Serial.println(log1);
-        break;
-    case 2:
-        Serial.println(log1);
-        Serial.println(log2);
-        break;
-    case 3:
-        Serial.println(log1);
-        Serial.println(log2);
-        Serial.println(log3);
-        break;
+            LOG1("special case");
     }
 }

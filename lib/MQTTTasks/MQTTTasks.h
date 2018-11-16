@@ -6,8 +6,7 @@
 // own files:
 #include <MQTTTasksConfiguration.h>
 #include <NetworkManagerStructs.h>
-
-extern const int log_level; // defined in main.cpp
+#include <LogConfiguration.h>
 
 class MQTTTasks // this class saves all incoming messages in an struct-array and provides all necessary functions to access/handle with messages
 {
@@ -23,7 +22,6 @@ public:
   String *returnMQTTtopics(myJSONStr &passingMessage); // returns String-Array of topics from MQTT topic structure, strings divided by /
 
 private:
-  void log(const String &log1, const String &log2, const String &log3); // logging function, see log_level
   myJSONStr messages[MAX_JSON_MESSAGES_SAVED];                          // message save
   int mqtt_class_counter;                                               // iterator of last Element
   int mqtt_class_counter_full;                                          // same as above, but if first Element is overritten again, it increases, its equivivalent of how many times the messages have been rewritten

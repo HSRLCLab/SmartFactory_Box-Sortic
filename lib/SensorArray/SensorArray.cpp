@@ -9,18 +9,18 @@ SensorArray::SensorArray() // initialisation of Sensor
 
 bool SensorArray::getSensorData() // read sensor, true if full
 {
-    return false;   // TODO
+    return false;                     // TODO
     bool vals[MAX_SENSOR_ITERATIONS]; // saves measured values
     bool returns;
     byte trues = 0, falses = 0; // number of trues and falses measured from sensor
-    double sum=0;
+    double sum = 0;
     digitalWrite(13, HIGH);
     digitalWrite(OUTPUT_PIN, HIGH);
     for (int i = 0; i < MAX_SENSOR_ITERATIONS; i++)
     {
         double volts = analogRead(INPUT_PIN) * 0.0049;
-        sum+=volts;
-        delay(10);  // needed for reading out PIN
+        sum += volts;
+        delay(10); // needed for reading out PIN
         /*
         if (volts > 0) // TODO: richtig? -> überprüfen
         {
@@ -34,10 +34,10 @@ bool SensorArray::getSensorData() // read sensor, true if full
         }
         */
     }
-    
-    sum = sum/MAX_SENSOR_ITERATIONS;
-    Serial.print("Schnitt:\t");
-    Serial.println(sum);
+
+    sum = sum / MAX_SENSOR_ITERATIONS;
+    LOG1("Schnitt:\t");
+    LOG1(sum);
 
     if (falses > trues)
         returns = false;
@@ -67,27 +67,8 @@ bool SensorArray::getLastSensorData(int num)
     }
     else
     {
-        log("You entered a wrong number!", "you entered: " + num, "it must be between 0 and " + (MAX_SENSOR_VALUES - 1));
+        LOG1("You entered a wrong number!");
+        LOG2("you entered: " + num);
+        LOG3("it must be between 0 and " + String(MAX_SENSOR_VALUES - 1));
     }
-}
-
-void SensorArray::log(const String &log1, const String &log2, const String &log3) // logging levels: 0-without, 1 error, 2 info, 3 verbose debugging
-{
-    switch (log_level)
-    {
-    case 1:
-        Serial.println(log1);
-    case 2:
-        Serial.println(log1);
-        Serial.println(log2);
-    case 3:
-        Serial.println(log1);
-        Serial.println(log2);
-        Serial.println(log3);
-    default:
-        Serial.println("YOU HAVE ENTERED A WRONG log_level! -> PLEASE VERIFY");
-        Serial.println("logging levels: 0-without, 1 error, 2 info, 3 verbose debugging");
-    }
-    // TODO: gegebenenfalls anpassen auch auf anstatt Serial.println in File.write ???
-    // TODO: evt. debug.h
 }

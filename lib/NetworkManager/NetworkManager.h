@@ -11,8 +11,8 @@
 #include <NetworkConfiguration.h>
 #include <NetworkManagerStructs.h>
 #include <MQTTTasks.h>
+#include <LogConfiguration.h>
 
-extern const int log_level; // defined in main.cpp
 const byte default_pins[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN};
 const bool is_vehicle = false; // true if is vehicle, used for MQTT
 static MQTTTasks NetManTask;         // saves all messages, saves all incoming messages as JSON Objects, FIFO order, num of items: MAX_JSON_MESSAGES_SAVED
@@ -34,7 +34,6 @@ public:
   MQTTTasks *NetManTask_classPointer;  // used to see saved Messages from outside this file
 
 private:
-  void log(const String &log1, const String &log2, const String &log3); // logging function, see log_level
   void connectToWiFi();                                                 // connects to WiFi based on below stored attributes
   void connectToMQTT();                                                 // connects to MQTT Broker based on below stored attributes
   // WIFI stuff
@@ -46,7 +45,6 @@ private:
   byte mac[6];
   long rssi;
   byte encryption;
-  int status;
   WiFiServer *myServer;
   WiFiClient *myClient;
   // MQTT stuff

@@ -8,14 +8,12 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
     if (is_vehicle)
     {
         hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
-        // TODO: Doku: mmögliche Verbesserung überall Pointers
     }
     else
     {
         hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX); // Create a random client ID for vehicles                              // set hostname to random ID
     }
 
-    status = WL_IDLE_STATUS;
     WiFi.setPins(DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN);
 
     connectToWiFi(); // connect to WiFi
@@ -38,7 +36,6 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
 
 NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, byte *mmQTTport, byte pins[4]) //Initialize COSTOM serial & WiFi Module
 {
-    status = WL_IDLE_STATUS;
     WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
     ssid = *ssid2;
     pass = *pass2;
@@ -73,41 +70,47 @@ void NetworkManager::connectToWiFi()
 {
     if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shield:
     {
-        log("NO WiFi shield present", "WiFi Library could not find WiFi shield. WiFi.status returned " + WiFi.status(), "programm is not continuing");
+        LOG1("NO WiFi shield present");
+        LOG2("WiFi Library could not find WiFi shield. WiFi.status returned " + WiFi.status());
+        LOG3("programm is not continuing");
         while (true)
             ; // don't continue
     }
-    status = WiFi.status();
     String wifi_firmware = WiFi.firmwareVersion();
-    log("", "", "WiFi Firmware Version = " + wifi_firmware);
+    LOG3("WiFi Firmware Version = " + wifi_firmware);
 
     while (WiFi.status() != WL_CONNECTED) // connect to Wifi network
     {
-        log("Attempting WLAN connection (WEP)...", "SSID: " + ssid, "");
-        status = WiFi.begin(ssid, pass); // takes ssid, pass from private attributes
-        WiFi.hostname(hostname.c_str());
-        if (status != WL_CONNECTED)
+        LOG1("Attempting WLAN connection (WEP)...");
+        LOG2("SSID: " + ssid);
+        if (WiFi.begin(ssid, pass) != WL_CONNECTED)
         {
-            log("WLAN connection failed", "trying again in 3 seconds", "");
+            LOG1("WLAN connection failed");
+            LOG2("trying again in 3 seconds");
             delay(3000);
         }
+        else
+            WiFi.hostname(hostname.c_str());
     };
-    log("WLAN connected", "", "Board is connected to the Network");
-    status = WiFi.status(); // TODO status needed as class member?
+    LOG1("WLAN connected");
+    LOG3("Board is connected to the Network");
 }
 
 void NetworkManager::connectToMQTT()
 {
-    while (!myMQTTclient->connected()) // TODO: willTopic, willQoS, willRetain, willMessage)
+    while (!myMQTTclient->connected())
     {
-        log("Attempting MQTT connection...", "MQTT Client ID: " + hostname, "");
-        if (myMQTTclient->connect(hostname.c_str())) // Attempt to connect
+        LOG1("Attempting MQTT connection...");
+        LOG2("MQTT Client ID: " + hostname);
+        if (myMQTTclient->connect(hostname.c_str()))
         {
-            log("MQTT connected", "Variable myMQTT has successfully connected with hostname: " + hostname, "");
+            LOG1("MQTT connected");
+            LOG2("Variable myMQTT has successfully connected with hostname: " + hostname);
         }
         else
         {
-            log("MQTT connection failed, error code: " + String(myMQTTclient->state()), "trying again in 3 seconds", "");
+            LOG1("MQTT connection failed, error code: " + String(myMQTTclient->state()));
+            LOG2("trying again in 3 seconds");
             delay(3000);
         }
     }
@@ -115,20 +118,21 @@ void NetworkManager::connectToMQTT()
 
 bool NetworkManager::publishMessage(const String &topic, const String &msg) // publishes a message to the server
 {
-    log("", "", "try to publish message:" + msg);
-
+    LOG3("try to publish message:" + msg);
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     if (myMQTTclient->connected())
     {
         myMQTTclient->publish(topic.c_str(), msg.c_str());
-        log("", "Publish to topic [" + topic + "] message:" + msg, "");
+        LOG2("Publish to topic [" + topic + "] message:" + msg);
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
     else
     {
-        log("MQTT not connected", "You are not connected to the MQTT Broker, publish fails: " + msg, "Client ID: " + hostname);
+        LOG1("MQTT not connected");
+        LOG2("You are not connected to the MQTT Broker, publish fails: " + msg);
+        LOG3("Client ID: " + hostname);
         connectToMQTT();
         return false;
     };
@@ -141,13 +145,15 @@ bool NetworkManager::subscribe(const String &topic) // subscribes to a new MQTT 
     if (myMQTTclient->connected())
     {
         myMQTTclient->subscribe(topic.c_str());
-        log("", "", "subscribing to:" + topic);
+        LOG3("subscribing to:" + topic);
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
     else
     {
-        log("MQTT not connected", "You are not connected to the MQTT Broker, subscription fails: " + topic, "Client ID: " + hostname);
+        LOG1("MQTT not connected");
+        LOG2("You are not connected to the MQTT Broker, subscription fails: " + topic);
+        LOG3("Client ID: " + hostname);
         connectToMQTT();
         return false;
     }
@@ -165,7 +171,9 @@ bool NetworkManager::unsubscribe(const String &topic)
     }
     else
     {
-        log("MQTT not connected", "You are not connected to the MQTT Broker, unsubscribe will fail: " + topic, "Client ID: " + hostname);
+        LOG1("MQTT not connected");
+        LOG2("You are not connected to the MQTT Broker, unsubscribe will fail: " + topic);
+        LOG3("Client ID: " + hostname);
         connectToMQTT();
         return false;
     }
@@ -179,14 +187,14 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     {
         topic_str += topic[i];
     }
-    if (log_level > 2)
+    if (LOGLEVELCONFIGURATION > 2)
     {
         String msg = "Message arrived [" + topic_str + "]: \t message:";
         for (unsigned int i = 0; i < length; i++) // iterate message
         {
             msg += (char)payload[i];
         }
-        Serial.println(msg);
+        LOG3(msg);
     }
 
     char inData[MAX_JSON_PARSE_SIZE]; // convert message to JSON object
@@ -197,8 +205,8 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     JsonObject &my_JSON = jsonBuffer.parseObject(inData); // saves everything to my_JSON JSON Object
     if (!my_JSON.success())
     {
-        Serial.println("JSON parsing failed");
-        //log("parse failed", "my_JSON parsing failed in callback 2", "");
+        LOG1("JSON parsing failed");
+        LOG2("my_JSON parsing failed in callback 2");
         return;
     }
     myJSONStr temp;
@@ -208,17 +216,14 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     temp.request = my_JSON.get<String>("request");
     // MORE TO ADD HERE
 
-    NetManTask.addMessage(temp);    // adds to message save
+    NetManTask.addMessage(temp); // adds to message save
 
-    if (log_level > 2)
+    if (LOGLEVELCONFIGURATION > 2)
     {
-        Serial.println("------ new JSON Message in JSarray Array ------"); // TODO log?
-        my_JSON.prettyPrintTo(Serial);                                     // prints JSON to Serial Monitor, pay attention can output BS
-        Serial.println("\n------ end of JSON Message ------");
+        LOG3("------ new JSON Message in JSarray Array ------");
+        my_JSON.prettyPrintTo(Serial); // prints JSON to Serial Monitor, pay attention can output BS
+        LOG3("\n------ end of JSON Message ------");
     }
-
-    // TODO if requestVehicles in Vehicle/presence answer (if vehicle) "Vehicle MQTT-ID"
-    // TODO if requestVehicles in Vehicle/presence answer (if smart box) = Vehicle *, then count & save ids
 }
 
 void NetworkManager::loop()
@@ -252,75 +257,49 @@ void NetworkManager::getInfo() // prints Information to Network
     WiFi.BSSID(macRouter);
     rssi = WiFi.RSSI();
     encryption = WiFi.encryptionType();
-    Serial.println();
-    Serial.println();
-    Serial.println("-------------------- Information --------------------");
-    Serial.print("SSID: ");
-    Serial.println(ssid);
-    Serial.print("IP Address: ");
-    Serial.println(ip);
-    Serial.print("BSSID (MAC Address from Router): ");
-    Serial.print(macRouter[5], HEX);
-    Serial.print(":");
-    Serial.print(macRouter[4], HEX);
-    Serial.print(":");
-    Serial.print(macRouter[3], HEX);
-    Serial.print(":");
-    Serial.print(macRouter[2], HEX);
-    Serial.print(":");
-    Serial.print(macRouter[1], HEX);
-    Serial.print(":");
-    Serial.println(macRouter[0], HEX);
-    Serial.print("MAC Address (Device): ");
-    Serial.print(mac[5], HEX);
-    Serial.print(":");
-    Serial.print(mac[4], HEX);
-    Serial.print(":");
-    Serial.print(mac[3], HEX);
-    Serial.print(":");
-    Serial.print(mac[2], HEX);
-    Serial.print(":");
-    Serial.print(mac[1], HEX);
-    Serial.print(":");
-    Serial.println(mac[0], HEX);
-    Serial.print("RSSI (signal strenght in dBm): ");
-    Serial.println(rssi);
-    Serial.print("Encryption (WLAN): ");
-    Serial.println(encryption);
-    Serial.print("WLAN status (WiFi lib): ");
-    Serial.println(status);
-    Serial.println("-------------------- Information END --------------------");
-    Serial.println();
-    Serial.println();
+    if (Serial)
+    {
+        Serial.println();
+        Serial.println();
+        Serial.println("-------------------- Information --------------------");
+        Serial.print("SSID: ");
+        Serial.println(ssid);
+        Serial.print("IP Address: ");
+        Serial.println(ip);
+        Serial.print("BSSID (MAC Address from Router): ");
+        Serial.print(macRouter[5], HEX);
+        Serial.print(":");
+        Serial.print(macRouter[4], HEX);
+        Serial.print(":");
+        Serial.print(macRouter[3], HEX);
+        Serial.print(":");
+        Serial.print(macRouter[2], HEX);
+        Serial.print(":");
+        Serial.print(macRouter[1], HEX);
+        Serial.print(":");
+        Serial.println(macRouter[0], HEX);
+        Serial.print("MAC Address (Device): ");
+        Serial.print(mac[5], HEX);
+        Serial.print(":");
+        Serial.print(mac[4], HEX);
+        Serial.print(":");
+        Serial.print(mac[3], HEX);
+        Serial.print(":");
+        Serial.print(mac[2], HEX);
+        Serial.print(":");
+        Serial.print(mac[1], HEX);
+        Serial.print(":");
+        Serial.println(mac[0], HEX);
+        Serial.print("RSSI (signal strenght in dBm): ");
+        Serial.println(rssi);
+        Serial.print("Encryption (WLAN): ");
+        Serial.println(encryption);
+        Serial.print("WLAN status (WiFi lib): ");
+        Serial.println(WiFi.status());
+        Serial.println("-------------------- Information END --------------------");
+        Serial.println();
+        Serial.println();
+    }
     // Note: MQTT subscriptions and messages not displayed here!
     myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
-}
-
-void NetworkManager::log(const String &log1, const String &log2, const String &log3) // logging levels: 0-without, 1 error, 2 info, 3 verbose debugging
-{
-    switch (log_level)
-    {
-    case 0:
-        break;
-    case 1:
-        Serial.println(log1);
-        break;
-    case 2:
-        Serial.println(log1);
-        Serial.println(log2);
-        break;
-    case 3:
-        Serial.println(log1);
-        Serial.println(log2);
-        Serial.println(log3);
-        break;
-        /*
-    default:
-        Serial.println("YOU HAVE ENTERED A WRONG log_level! -> PLEASE VERIFY");
-        Serial.println("logging levels: 0-without, 1 error, 2 info, 3 verbose debugging");
-        */
-    }
-    // TODO: gegebenenfalls anpassen auch auf anstatt Serial.println in File.write ???
-    // TODO: files ändern, dass nur immer der String geprintet wird, von welchem log level (dass nicht zu viele Zeieln!)
-    // TODO: evt. debug.h
 }

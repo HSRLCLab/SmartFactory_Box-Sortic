@@ -24,6 +24,13 @@ struct myJSONStr {
   double vehicleParams[5]; // TODO 5?
 } ;
 
+enum SBLevel                                          // describes Smart Box level states, -5 is default if not set!
+{
+  dead = -1,
+  full = 0,
+  empty = 1
+};
+
 
 
 #endif
