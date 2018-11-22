@@ -1,7 +1,7 @@
 #ifndef LOGCONFIGURATION_H
 #define LOGCONFIGURATION_H
 
-#define LOGLEVELCONFIGURATION 2 // can have values from 0-3, 0-without, 1 error, 2 info, 3 verbose debugging
+#define LOGLEVELCONFIGURATION 3 // can have values from 0-3, 0-without, 1 error, 2 info, 3 verbose debugging
 
 #if LOGLEVELCONFIGURATION == 3
 #define LOG1(logg1) Serial.println(logg1)

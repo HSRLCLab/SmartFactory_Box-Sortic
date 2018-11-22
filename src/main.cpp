@@ -11,7 +11,7 @@
 
 // ===================================== Global Variables =====================================
 MQTTTasks *TaskMain;                                  // filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
-NetworkManager *mNetwP = 0;                           // used for usign NetworkManager access outside setup()
+NetworkManager *mNetwP;                           // used for usign NetworkManager access outside setup()
 SensorArray *mSarrP = 0;                              // used for using SensorArray access outside setup()
 double value_max[NUM_OF_MAXVALUES_VEHICLES_STORE];    // best optimal value from vehicle, Element 0 ist best, Element 1 is second best, etc. (decending order)
 String hostname_max[NUM_OF_MAXVALUES_VEHICLES_STORE]; // name of Vehicle with best value, Element 0 ist best, Element 1 is second best, etc. (decending order)
@@ -35,7 +35,26 @@ bool toNextStatus = true; // true if changing state, false if staying in state, 
 int loopTurns = 0;
 void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state machine
 
-// ===================================== my helper Functions =====================================
+// -.-.-.-.-.-.-.- used for Show-Case -.-.-.-.-.-.-.-
+bool showCase = true;
+int waitSeconds1 = 2; // wait between steps
+int waitSeconds2 = 4; // wait between loops
+/*
+Notes:
+  - connect only one sensor to: INPUT_PIN1
+*/
+
+// ===================================== my Function-Headers =====================================
+double calcOptimum(myJSONStr &obj);
+void getSmartBoxInfo();
+void loopEmpty();
+void publishLevel();
+void getOptimalVehiclefromResponses();
+void hasOptVehiclePublish();
+void checkIfAckReceivedfromResponses();
+void checkIfTransporedfromResponses();
+
+// ===================================== my Helper-Functions =====================================
 
 double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better
 {
@@ -71,6 +90,7 @@ void loopEmpty() // loop until Box full
     LOG3("is full, go next to status_justFullPublish");
     stat = status_main::status_justFullPublish;
     myFuncToCall = publishLevel;
+    toNextStatus = true;
     digitalWrite(PIN_FOR_FULL, HIGH); // if full turn LED on
   }
 }
@@ -86,7 +106,7 @@ void publishLevel() // publishes SmartBox Level
     hasAnswered = false;
     mcount = TaskMain->returnCurrentIterator();
   }
-  mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/level", "{hostname:" + mNetwP->getHostName() + ",level:" + String(SBLevel::full) + "}");
+  mNetwP->publishMessage("SmartBox/" + String(mNetwP->getHostName()) + "/level", "{hostname:" + String(mNetwP->getHostName()) + ",level:" + String(SBLevel::full) + "}");
   mNetwP->loop();
   if (loopTurns < SMARTBOX_WAITFOR_VEHICLES_TURNS) // wait for vehicles to send their params
   {
@@ -104,6 +124,9 @@ void publishLevel() // publishes SmartBox Level
   }
   else
     LOG1("Error, loopTurns has wrong value: " + String(loopTurns));
+
+  if (showCase)
+    delay(1000 * waitSeconds1);
 }
 
 void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
@@ -186,6 +209,8 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
     stat = status_main::status_justFullPublish;
     myFuncToCall = publishLevel;
   }
+  if (showCase)
+    delay(1000 * waitSeconds1);
 }
 
 void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
@@ -309,24 +334,26 @@ void setup() // for initialisation
   pinMode(PIN_FOR_FULL, OUTPUT);
   myFuncToCall = loopEmpty;
 
-  if (true) // for debugging purpose, DELETE ON FINAL TODO
+  if (showCase)
   {
     pinMode(13, OUTPUT); // debug LED
-    mNetwP->subscribe("SmartBox/+/level");
+    //mNetwP->subscribe("SmartBox/+/level");
   }
 }
 
 void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 {
-  if (true) // degug cycle -- DELETE ON FINAL TODO
+  if (showCase)
   {
     digitalWrite(13, LOW);
-    delay(2000);
+    delay(waitSeconds2 / 2 * 1000);
     digitalWrite(13, HIGH);
-    delay(2000);
-    LOG1("now going to loop, have fun :)");
+    delay(waitSeconds2 / 2 * 1000);
+    LOG1("------------------ now going to loop again, have fun :) ------------------ ");
   }
 
-  // TODO: Abfolge Logik überprüfen! -> finite state machine Diagramme zeichnen!
-  myFuncToCall();
+  //myFuncToCall();
+
+  mNetwP->subscribe("SmartBox/params");
+  //mNetwP->publishMessage("SmartBox/params","hello hier bin ich");
 }

@@ -1,5 +1,7 @@
 #include "SensorArray.h"
 
+extern bool showCase; // defined in main.cpp
+
 SensorArray::SensorArray() // initialisation of Sensor
 {
     //pinMode(OUTPUT_PIN, OUTPUT); // light LED
@@ -29,10 +31,23 @@ bool SensorArray::getSensorData() // read sensor, true if full
     sum1 = sum1 / MAX_SENSOR_ITERATIONS;
     sum2 = sum2 / MAX_SENSOR_ITERATIONS;
     sum3 = sum3 / MAX_SENSOR_ITERATIONS;
-    LOG3("SensorValue1: " + String(sum1) + "\tSensorValue2: " + String(sum2) + "\tSensorValue3: " + String(sum3));
-    if ((sum1 <= SENSOR_TOLLERANCE) && (sum2 <= SENSOR_TOLLERANCE) && (sum3 <= SENSOR_TOLLERANCE))
+    LOG3("SensorValue1: " + String(sum1));
+    if (showCase)
     {
-        LOG3("Sensor found element in Box"); // true if within 0.5-5cm from Sensor, otherwise false
+        if (sum1 <= SENSOR_TOLLERANCE)
+        {
+            LOG3("Sensor found Element in Box"); // true if within 0.5-5cm from Sensor, otherwise false
+            return true;
+        }
+        else
+        {
+            LOG3("Sensor found no Element");
+            return false;
+        }
+    }
+    else if ((sum1 <= SENSOR_TOLLERANCE) && (sum2 <= SENSOR_TOLLERANCE) && (sum3 <= SENSOR_TOLLERANCE))
+    {
+        LOG3("Sensor found Element in Box"); // true if within 0.5-5cm from Sensor, otherwise false
         return true;
     }
     else

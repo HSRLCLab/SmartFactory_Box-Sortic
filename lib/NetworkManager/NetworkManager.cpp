@@ -17,7 +17,8 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
     WiFi.setPins(DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN);
 
     connectToWiFi(); // connect to WiFi
-    myClient = new WiFiClient;
+    myServer = new WiFiServer(DEFAULT_MQTT_PORT);
+    myClient = myServer->available();
 
     ip = WiFi.localIP();
     ssid = WiFi.SSID();
@@ -26,11 +27,14 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
     rssi = WiFi.RSSI();
     encryption = WiFi.encryptionType();
 
-    IPAddress brokerIP(DEFAULT_MQTT_BROKER_IP1, DEFAULT_MQTT_BROKER_IP2, DEFAULT_MQTT_BROKER_IP3, DEFAULT_MQTT_BROKER_IP4);
-    this->brokerIP = brokerIP;
+    IPAddress bbrokerIIP(DEFAULT_MQTT_BROKER_IP1, DEFAULT_MQTT_BROKER_IP2, DEFAULT_MQTT_BROKER_IP3, DEFAULT_MQTT_BROKER_IP4);
+    this->brokerIP = bbrokerIIP;
     mQTT_port = DEFAULT_MQTT_PORT;
 
-    myMQTTclient = new PubSubClient(brokerIP, DEFAULT_MQTT_PORT, callback2, *myClient);
+    // myMQTTclient = new PubSubClient(brokerIP, DEFAULT_MQTT_PORT, callback2, *myClient);
+    myMQTTclient = new PubSubClient(myClient);
+    myMQTTclient->setServer(brokerIP, DEFAULT_MQTT_PORT);
+    myMQTTclient->setCallback(callback2);
     connectToMQTT(); // connecting to MQTT-Broker
 }
 
@@ -50,7 +54,6 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     }                                                                      // set hostname to random ID
 
     connectToWiFi(); //connect to WiFi
-    myClient = new WiFiClient;
 
     ip = WiFi.localIP();
     ssid = WiFi.SSID();
@@ -62,7 +65,7 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     this->brokerIP = broker;
     this->mQTT_port = *mmQTTport;
 
-    myMQTTclient = new PubSubClient(brokerIP, mQTT_port, callback2, *myClient);
+    myMQTTclient = new PubSubClient(brokerIP, mQTT_port, callback2, myClient);
     connectToMQTT(); // connecting to MQTT-Broker
 }
 
@@ -90,10 +93,29 @@ void NetworkManager::connectToWiFi()
             delay(3000);
         }
         else
+        {
             WiFi.hostname(hostname.c_str());
+        }
     };
     LOG1("WLAN connected");
     LOG3("Board is connected to the Network");
+    myClient.flush();
+    myClient.stop();
+    bool connec = false;
+    while (!connec)
+    {
+        if (myClient.connect(brokerIP, 80))
+        { 
+            LOG1("client connected");
+            connec = true;
+        }
+        else
+        {
+            LOG1("client not connected");
+            LOG3("status: " + String(myClient.status()));   // 0 = WL_IDLE_STATUS
+        }
+    }
+    LOG3("Board is connected to the Network and the client is connected");
 }
 
 void NetworkManager::connectToMQTT()
@@ -102,7 +124,8 @@ void NetworkManager::connectToMQTT()
     {
         LOG1("Attempting MQTT connection...");
         LOG2("MQTT Client ID: " + hostname);
-        if (myMQTTclient->connect(hostname.c_str()))
+        // if (myMQTTclient->connect(hostname.c_str())) // TODO
+        if (myMQTTclient->connect("halloWelt"))
         {
             LOG1("MQTT connected");
             LOG2("Variable myMQTT has successfully connected with hostname: " + hostname);
@@ -116,9 +139,9 @@ void NetworkManager::connectToMQTT()
     }
 }
 
-bool NetworkManager::publishMessage(const String &topic, const String &msg) // publishes a message to the server
+bool NetworkManager::publishMessage(const String topic, const String msg) // publishes a message to the server
 {
-    LOG3("try to publish message:" + msg);
+    LOG3("try to publish to[" + topic + "] message:" + msg);
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     if (myMQTTclient->connected())
@@ -138,14 +161,23 @@ bool NetworkManager::publishMessage(const String &topic, const String &msg) // p
     };
 }
 
-bool NetworkManager::subscribe(const String &topic) // subscribes to a new MQTT topic
+bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT topic
 {
+    LOG3("hey, here I am");
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
-    if (myMQTTclient->connected())
+    LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
+    if (myMQTTclient->connect("halloWelt"))
     {
-        myMQTTclient->subscribe(topic.c_str());
-        LOG3("subscribing to:" + topic);
+        LOG3("subscribing to: " + topic);
+        //const char *ttopp = topic.c_str();
+        //LOG3("hello" + String(myMQTTclient->subscribe("SmartBox")));
+        bool done = this->myMQTTclient->subscribe("blabla");
+        LOG3("done: " + String(done));
+        if (done)
+            LOG3("suscription done");
+        else
+            LOG3("suscription failed");
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
@@ -159,7 +191,7 @@ bool NetworkManager::subscribe(const String &topic) // subscribes to a new MQTT 
     }
 }
 
-bool NetworkManager::unsubscribe(const String &topic)
+bool NetworkManager::unsubscribe(const String topic)
 {
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
