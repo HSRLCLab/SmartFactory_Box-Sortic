@@ -4,7 +4,7 @@ extern bool showCase; // defined in main.cpp
 
 SensorArray::SensorArray() // initialisation of Sensor
 {
-    //pinMode(OUTPUT_PIN, OUTPUT); // light LED
+    pinMode(OUTPUT_PIN, OUTPUT); // light LED
     pinMode(INPUT_PIN1, INPUT); // sharp sensor 1
     pinMode(INPUT_PIN2, INPUT); // sharp sensor 2
     pinMode(INPUT_PIN3, INPUT); // sharp sensor 3

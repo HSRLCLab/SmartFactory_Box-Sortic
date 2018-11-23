@@ -2,9 +2,11 @@
 
 NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
 {
-    ssid = DEFAULT_WIFI_SSID;
-    pass = DEFAULT_WIFI_PASSWORD;
-    NetManTask_classPointer = &NetManTask;
+    IPAddress defaultIPbroker(DEFAULT_MQTT_BROKER_IP1, DEFAULT_MQTT_BROKER_IP2, DEFAULT_MQTT_BROKER_IP3, DEFAULT_MQTT_BROKER_IP4);
+    const int ppinss[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN};
+    initializeComponent(defaultIPbroker, DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD, DEFAULT_MQTT_PORT, ppinss);
+
+    /*
     if (is_vehicle)
     {
         hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
@@ -13,12 +15,13 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
     {
         hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX); // Create a random client ID for vehicles                              // set hostname to random ID
     }
+    */
 
+    /*
+    NetManTask_classPointer = &NetManTask;
     WiFi.setPins(DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN);
 
     connectToWiFi(); // connect to WiFi
-    myServer = new WiFiServer(DEFAULT_MQTT_PORT);
-    myClient = myServer->available();
 
     ip = WiFi.localIP();
     ssid = WiFi.SSID();
@@ -27,7 +30,6 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
     rssi = WiFi.RSSI();
     encryption = WiFi.encryptionType();
 
-    IPAddress bbrokerIIP(DEFAULT_MQTT_BROKER_IP1, DEFAULT_MQTT_BROKER_IP2, DEFAULT_MQTT_BROKER_IP3, DEFAULT_MQTT_BROKER_IP4);
     this->brokerIP = bbrokerIIP;
     mQTT_port = DEFAULT_MQTT_PORT;
 
@@ -36,13 +38,15 @@ NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
     myMQTTclient->setServer(brokerIP, DEFAULT_MQTT_PORT);
     myMQTTclient->setCallback(callback2);
     connectToMQTT(); // connecting to MQTT-Broker
+    */
 }
 
-NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, byte *mmQTTport, byte pins[4]) //Initialize COSTOM serial & WiFi Module
+NetworkManager::NetworkManager(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]) //Initialize COSTOM serial & WiFi Module
 {
-    WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
-    ssid = *ssid2;
-    pass = *pass2;
+    initializeComponent(broker, ssid2, pass2, mmQTTport, pins);
+    /*
+    ssid = ssid2;
+    pass = pass2;
     NetManTask_classPointer = &NetManTask;
     if (is_vehicle)
     {
@@ -50,9 +54,10 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     }
     else
     {
-        hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX); // Create a random client ID for vehicles                              // set hostname to random ID
-    }                                                                      // set hostname to random ID
+        hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX); // Create a random client ID for vehicles
+    }
 
+    WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
     connectToWiFi(); //connect to WiFi
 
     ip = WiFi.localIP();
@@ -63,9 +68,47 @@ NetworkManager::NetworkManager(IPAddress &broker, String *ssid2, String *pass2, 
     encryption = WiFi.encryptionType();
 
     this->brokerIP = broker;
-    this->mQTT_port = *mmQTTport;
+    this->mQTT_port = mmQTTport;
 
-    myMQTTclient = new PubSubClient(brokerIP, mQTT_port, callback2, myClient);
+    //myMQTTclient = new PubSubClient(brokerIP, mQTT_port, callback2, myClient);
+    myMQTTclient = new PubSubClient(myClient);
+    myMQTTclient->setServer(brokerIP, mmQTTport);
+    myMQTTclient->setCallback(callback2);
+    connectToMQTT(); // connecting to MQTT-Broker
+    */
+}
+
+void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4])
+{
+    ssid = ssid2;
+    pass = pass2;
+    NetManTask_classPointer = &NetManTask;
+    if (is_vehicle)
+    {
+        hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
+    }
+    else
+    {
+        hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX); // Create a random client ID for vehicles
+    }
+
+    WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
+    connectToWiFi(); //connect to WiFi
+
+    ip = WiFi.localIP();
+    ssid = WiFi.SSID();
+    WiFi.macAddress(mac);
+    WiFi.BSSID(macRouter);
+    rssi = WiFi.RSSI();
+    encryption = WiFi.encryptionType();
+
+    this->brokerIP = broker;
+    this->mQTT_port = mmQTTport;
+
+    //myMQTTclient = new PubSubClient(brokerIP, mQTT_port, callback2, myClient);
+    myMQTTclient = new PubSubClient(myClient);
+    myMQTTclient->setServer(brokerIP, mmQTTport);
+    myMQTTclient->setCallback(callback2);
     connectToMQTT(); // connecting to MQTT-Broker
 }
 
@@ -81,7 +124,6 @@ void NetworkManager::connectToWiFi()
     }
     String wifi_firmware = WiFi.firmwareVersion();
     LOG3("WiFi Firmware Version = " + wifi_firmware);
-
     while (WiFi.status() != WL_CONNECTED) // connect to Wifi network
     {
         LOG1("Attempting WLAN connection (WEP)...");
@@ -99,23 +141,24 @@ void NetworkManager::connectToWiFi()
     };
     LOG1("WLAN connected");
     LOG3("Board is connected to the Network");
-    myClient.flush();
-    myClient.stop();
+    /*
+    myClient.stop();    // TODO why fails?
     bool connec = false;
     while (!connec)
     {
         if (myClient.connect(brokerIP, 80))
-        { 
+        {
             LOG1("client connected");
             connec = true;
         }
         else
         {
             LOG1("client not connected");
-            LOG3("status: " + String(myClient.status()));   // 0 = WL_IDLE_STATUS
+            LOG3("status: " + String(myClient.status())); // 0 = WL_IDLE_STATUS
         }
     }
     LOG3("Board is connected to the Network and the client is connected");
+    */
 }
 
 void NetworkManager::connectToMQTT()
@@ -124,8 +167,7 @@ void NetworkManager::connectToMQTT()
     {
         LOG1("Attempting MQTT connection...");
         LOG2("MQTT Client ID: " + hostname);
-        // if (myMQTTclient->connect(hostname.c_str())) // TODO
-        if (myMQTTclient->connect("halloWelt"))
+        if (myMQTTclient->connect(hostname.c_str()))
         {
             LOG1("MQTT connected");
             LOG2("Variable myMQTT has successfully connected with hostname: " + hostname);
@@ -141,7 +183,7 @@ void NetworkManager::connectToMQTT()
 
 bool NetworkManager::publishMessage(const String topic, const String msg) // publishes a message to the server
 {
-    LOG3("try to publish to[" + topic + "] message:" + msg);
+    LOG3("try to publish to[" + topic + "] message: " + msg);
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     if (myMQTTclient->connected())
@@ -163,17 +205,15 @@ bool NetworkManager::publishMessage(const String topic, const String msg) // pub
 
 bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT topic
 {
-    LOG3("hey, here I am");
+    LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
-    LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
-    if (myMQTTclient->connect("halloWelt"))
+    if (myMQTTclient->connected())
     {
         LOG3("subscribing to: " + topic);
-        //const char *ttopp = topic.c_str();
+
         //LOG3("hello" + String(myMQTTclient->subscribe("SmartBox")));
-        bool done = this->myMQTTclient->subscribe("blabla");
-        LOG3("done: " + String(done));
+        bool done = myMQTTclient->subscribe(topic.c_str());
         if (done)
             LOG3("suscription done");
         else

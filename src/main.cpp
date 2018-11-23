@@ -11,8 +11,8 @@
 
 // ===================================== Global Variables =====================================
 MQTTTasks *TaskMain;                                  // filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
-NetworkManager *mNetwP;                           // used for usign NetworkManager access outside setup()
-SensorArray *mSarrP = 0;                              // used for using SensorArray access outside setup()
+NetworkManager *mNetwP;                               // used for usign NetworkManager access outside setup()
+SensorArray *mSarrP;                                  // used for using SensorArray access outside setup()
 double value_max[NUM_OF_MAXVALUES_VEHICLES_STORE];    // best optimal value from vehicle, Element 0 ist best, Element 1 is second best, etc. (decending order)
 String hostname_max[NUM_OF_MAXVALUES_VEHICLES_STORE]; // name of Vehicle with best value, Element 0 ist best, Element 1 is second best, etc. (decending order)
 bool hasAnswered = false;                             // variable used to see if Vehicle have answered
@@ -337,7 +337,8 @@ void setup() // for initialisation
   if (showCase)
   {
     pinMode(13, OUTPUT); // debug LED
-    //mNetwP->subscribe("SmartBox/+/level");
+    // mNetwP->subscribe("SmartBox/+/level");
+    // mNetwP->subscribe("SmartBox/+/params");
   }
 }
 
@@ -345,15 +346,18 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 {
   if (showCase)
   {
+    static int i = 0;
+    // mNetwP->subscribe("hello");
+    // mNetwP->publishMessage("hello", "{hostname:heyhey-" + String(i) + "}");
+    i++;
     digitalWrite(13, LOW);
     delay(waitSeconds2 / 2 * 1000);
     digitalWrite(13, HIGH);
     delay(waitSeconds2 / 2 * 1000);
+    LOG1();
+    LOG1();
     LOG1("------------------ now going to loop again, have fun :) ------------------ ");
   }
 
-  //myFuncToCall();
-
-  mNetwP->subscribe("SmartBox/params");
-  //mNetwP->publishMessage("SmartBox/params","hello hier bin ich");
+  myFuncToCall();
 }
