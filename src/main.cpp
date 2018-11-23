@@ -38,11 +38,13 @@ void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state
 // -.-.-.-.-.-.-.- used for Show-Case -.-.-.-.-.-.-.-
 bool showCase = true;
 int waitSeconds1 = 2; // wait between steps
-int waitSeconds2 = 4; // wait between loops
+int waitSeconds2 = 6; // wait between loops
 /*
 Notes:
   - connect only one sensor to: INPUT_PIN1
 */
+
+// TODO: wait turns to wait in seconds
 
 // ===================================== my Function-Headers =====================================
 double calcOptimum(myJSONStr &obj);
@@ -347,7 +349,7 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   if (showCase)
   {
     static int i = 0;
-    // mNetwP->subscribe("hello");
+    mNetwP->subscribe("hello");
     // mNetwP->publishMessage("hello", "{hostname:heyhey-" + String(i) + "}");
     i++;
     digitalWrite(13, LOW);
@@ -359,5 +361,15 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     LOG1("------------------ now going to loop again, have fun :) ------------------ ");
   }
 
-  myFuncToCall();
+  //myFuncToCall();
 }
+
+
+
+/*
+Show Case:
+commands on Raspb
+mosquitto_pub -t Vehicle/Vehicle1234/params -m "{hostname:Vehicle1234,	params:[1,1,1,1]}"
+mosquitto_pub -t Vehicle/Vehicle1234/ack -m "{hostname:SmartBox1234}"
+mosquitto_pub -t Vehicle/Vehicle1234/ack -m "{request:SmartBox1234}"
+*/
