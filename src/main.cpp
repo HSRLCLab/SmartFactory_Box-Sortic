@@ -37,8 +37,8 @@ void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state
 
 // -.-.-.-.-.-.-.- used for Show-Case -.-.-.-.-.-.-.-
 bool showCase = true;
-int waitSeconds1 = 2; // wait between steps
-int waitSeconds2 = 6; // wait between loops
+int waitSeconds1 = 2;  // wait between steps
+int waitSeconds2 = 10; // wait between loops
 /*
 Notes:
   - connect only one sensor to: INPUT_PIN1
@@ -84,7 +84,8 @@ void loopEmpty() // loop until Box full
   digitalWrite(PIN_FOR_FULL, LOW); // if empty leave LED off or turn it off
   if (toNextStatus)                // only subscribe once but publish repeatedly
   {
-    LOG1("entering new state: loopEmpty");
+    LOG1("-.-.-.- reading Sensor Values -.-.-.-");
+    LOG3("entering new state: loopEmpty");
     toNextStatus = false;
   }
   if (mSarrP->getSensorData())
@@ -101,7 +102,8 @@ void publishLevel() // publishes SmartBox Level
 {
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    LOG1("entering new state: pubishLevel");
+    LOG1("-.-.-.- pubilsh SmartBox level -.-.-.-");
+    LOG3("entering new state: pubishLevel");
     mNetwP->subscribe("Vehicle/+/params");
     mNetwP->subscribe("Vehicle/+/ack");
     toNextStatus = false;
@@ -137,7 +139,8 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
   mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
   if (toNextStatus)                            // do once
   {
-    LOG1("entering new state: getOpcimalVehiclefromResponses");
+    LOG1("-.-.-.- calculation of Optimal Values through Iterations -.-.-.-");
+    LOG3("entering new state: getOpcimalVehiclefromResponses");
     toNextStatus = false;
     hasAnswered = false;
     tmp_mess = TaskMain->getBetween(mcount, mcount2);
@@ -155,7 +158,7 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
         if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
         {
           hasAnswered = true;
-          LOG3("has answered");
+          LOG3("has answered, calculating Optimum for: " + ttop[1]);
           double opt = calcOptimum(tmp_mess[i]);
           if (value_max[0] < opt)
           {
@@ -180,7 +183,8 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
 {
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    LOG1("entering new state: hasOptVehiclePublish");
+    LOG1("-.-.-.- publish decision for Vehicle -.-.-.-");
+    LOG3("entering new state: hasOptVehiclePublish");
     toNextStatus = false;
     mcount = TaskMain->returnCurrentIterator();
   }
@@ -221,7 +225,8 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
   mcount2 = TaskMain->returnCurrentIterator();
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    LOG1("entering new state: checkIfAckReceivedfromResponses");
+    LOG1("-.-.-.- check for transport acknoledgement -.-.-.-");
+    LOG3("entering new state: checkIfAckReceivedfromResponses");
     hasAnswered = false;
     toNextStatus = false;
     isLastRoundonError = 0;
@@ -244,7 +249,7 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
         if (tmp_mess[i].hostname == mNetwP->getHostName()) // if answer is to this request
         {
           hasAnswered = true;
-          LOG3("has answered");
+          LOG3("right Vehicle has answered and send acknoledgement to transport it");
         }
       }
     }
@@ -280,7 +285,8 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
   mcount2 = TaskMain->returnCurrentIterator();
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
-    LOG1("entering new state: checkIfTransporedfromResponses");
+    LOG1("-.-.-.- check if SmartBox is transported -.-.-.-");
+    LOG3("entering new state: checkIfTransporedfromResponses");
     toNextStatus = false;
     hasAnswered = false;
     mcount = TaskMain->returnCurrentIterator();
@@ -300,7 +306,7 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
         if (tmp_mess[i].request == mNetwP->getHostName()) // if answer is to this request
         {
           hasAnswered = true;
-          LOG3("has answered");
+          LOG3("right Vehicle has answered and sent transported acknoledgement");
         }
       }
     }
@@ -328,8 +334,8 @@ void setup() // for initialisation
     while (!Serial)
       ; // wait for serial port to connect
   }
-  LOG1("entering setup");
-  LOG2("initializing components");
+  LOG1("-.-.-.- SETUP -.-.-.-");
+  LOG3("entering setup - initializing components");
   mNetwP = new NetworkManager();
   mSarrP = new SensorArray();
   TaskMain = mNetwP->NetManTask_classPointer;
@@ -349,22 +355,22 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   if (showCase)
   {
     static int i = 0;
-    mNetwP->subscribe("hello");
+    // mNetwP->subscribe("hello");
     // mNetwP->publishMessage("hello", "{hostname:heyhey-" + String(i) + "}");
-    i++;
     digitalWrite(13, LOW);
     delay(waitSeconds2 / 2 * 1000);
     digitalWrite(13, HIGH);
     delay(waitSeconds2 / 2 * 1000);
     LOG1();
     LOG1();
-    LOG1("------------------ now going to loop again, have fun :) ------------------ ");
+    LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
+    LOG1("STATE: "+String(stat));
+    LOG1("--------------------------");
+    i++;
   }
 
-  //myFuncToCall();
+  myFuncToCall();
 }
-
-
 
 /*
 Show Case:

@@ -127,7 +127,7 @@ void NetworkManager::connectToWiFi()
     while (WiFi.status() != WL_CONNECTED) // connect to Wifi network
     {
         LOG1("Attempting WLAN connection (WEP)...");
-        LOG2("SSID: " + ssid);
+        LOG3("SSID: " + ssid);
         if (WiFi.begin(ssid, pass) != WL_CONNECTED)
         {
             LOG1("WLAN connection failed");
@@ -166,11 +166,11 @@ void NetworkManager::connectToMQTT()
     while (!myMQTTclient->connected())
     {
         LOG1("Attempting MQTT connection...");
-        LOG2("MQTT Client ID: " + hostname);
+        LOG3("MQTT Client ID: " + hostname);
         if (myMQTTclient->connect(hostname.c_str()))
         {
             LOG1("MQTT connected");
-            LOG2("Variable myMQTT has successfully connected with hostname: " + hostname);
+            LOG3("Variable myMQTT has successfully connected with hostname: " + hostname);
         }
         else
         {
@@ -186,6 +186,7 @@ bool NetworkManager::publishMessage(const String topic, const String msg) // pub
     LOG3("try to publish to[" + topic + "] message: " + msg);
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
+    //connectToMQTT();
     if (myMQTTclient->connected())
     {
         myMQTTclient->publish(topic.c_str(), msg.c_str());
@@ -208,6 +209,7 @@ bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT t
     LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
+    //connectToMQTT();
     if (myMQTTclient->connected())
     {
         LOG3("subscribing to: " + topic);
@@ -304,7 +306,8 @@ void NetworkManager::loop()
         connectToWiFi();
     if (!myMQTTclient->connected())
         connectToMQTT();
-    myMQTTclient->loop();
+    else
+        myMQTTclient->loop();
 }
 
 String NetworkManager::getHostName()
@@ -316,8 +319,7 @@ IPAddress NetworkManager::getIP()
 {
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
-    ip = WiFi.localIP();
-    return ip;
+    return WiFi.localIP();
 }
 
 void NetworkManager::getInfo() // prints Information to Network
