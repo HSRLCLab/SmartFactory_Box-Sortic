@@ -12,23 +12,26 @@ class MQTTTasks // this class saves all incoming messages in an struct-array and
 {
 public:
   MQTTTasks();
-  myJSONStr getLastMessage();                          // returns the most current/last message
-  myJSONStr getDesiredLastMessage(int fromLast);       // returns the message, which is fromLast from current (e.g. getDesiredLastMessage(1) returns second last/current message)
-  int returnCurrentIterator();                         // returns absolute current value of message counter, 0 if empty, if MAX_JSON_MESSAGES_SAVED reached and first message is overridden it can be detected from outside!
-  bool deleteMessage(int fromLast);                    // deletes message, which is fromLast from current
-  bool addMessage(myJSONStr mess);                     // saves message, FIFO order
-  MQTTTasks *operator=(MQTTTasks *other);              // copy constructor
-  myJSONStr *getBetween(int from, int to);             // returns messages between indexes, to use for iterations, from index to index, index = returnCurrentIterator
-  String *returnMQTTtopics(myJSONStr &passingMessage); // returns String-Array of topics from MQTT topic structure, strings divided by /
-    // TODO function to return message from iterator of type returnCurrentIterator, return 0 if overridden
-	// TODO function to return difference (used in for loops)
+  myJSONStr getLastMessage();                         // returns the most current/last message
+  myJSONStr getDesiredLastMessage(int fromLast);      // returns the message, which is fromLast from current (e.g. getDesiredLastMessage(1) returns second last/current message)
+  int returnCurrentIterator();                        // returns absolute current value of message counter, 0 if empty, if MAX_JSON_MESSAGES_SAVED reached and first message is overridden it can be detected from outside!
+  bool deleteMessage(int fromLast);                   // deletes message, which is fromLast from current
+  bool addMessage(myJSONStr mess);                    // saves message, FIFO order
+  MQTTTasks *operator=(MQTTTasks *other);             // copy constructor
+  myJSONStr *getBetween(int from, int to);            // returns messages between indexes, to use for iterations, from index to index, index = returnCurrentIterator, 0-th Element.level is array size
+  String *returnMQTTtopics(myJSONStr passingMessage); // returns String-Array of topics from MQTT topic structure, strings divided by /
+  void printAllMessages(byte choice);                 // prints all saved messages on serial output; 0 for hostname, 1 level, 2 request, 3 params
+                                                      // TODO function to return message from iterator of type returnCurrentIterator, return 0 if overridden
+                                                      // TODO function to return difference (used in for loops)
 
 private:
-  myJSONStr messages[MAX_JSON_MESSAGES_SAVED];                          // message save
-  int mqtt_class_counter;                                               // iterator of last Element
-  int mqtt_class_counter_full;                                          // same as above, but if first Element is overritten again, it increases, its equivivalent of how many times the messages have been rewritten
+  myJSONStr messages[MAX_JSON_MESSAGES_SAVED]; // message save
+  int mqtt_class_counter;                      // iterator of last Element
+  int mqtt_class_counter_full;                 // same as above, but if first Element is overritten again, it increases, its equivivalent of how many times the messages have been rewritten
   bool isEmpty;
-  myJSONStr *returnBetween;
+  myJSONStr returnBetween[MAX_JSON_MESSAGES_SAVED + 2];
+  //myJSONStr *returnBetween;
+  String *stringpassing;
 };
 
 #endif

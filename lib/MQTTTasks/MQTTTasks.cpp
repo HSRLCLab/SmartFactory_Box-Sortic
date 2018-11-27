@@ -90,7 +90,7 @@ bool MQTTTasks::addMessage(myJSONStr mess)
     }
     else
     {
-        mqtt_class_counter++;
+        mqtt_class_counter++; // Attention: messages[0] is the MAX_JSON_MESSAGES_SAVED-th message!
         messages[mqtt_class_counter] = mess;
         isEmpty = false;
         return true;
@@ -103,36 +103,41 @@ MQTTTasks *MQTTTasks::operator=(MQTTTasks *other) // needed in main.cpp
     return this;
 }
 
-String *MQTTTasks::returnMQTTtopics(myJSONStr &passingMessage)
+String *MQTTTasks::returnMQTTtopics(myJSONStr passingMessage)
 {
     String tmp[MAX_MQTT_TOPIC_DEPTH];
     int k1 = 0; // lower cut-bound
     int k2 = 0; // upper cut-bound
     int k3 = 0; // num of strings (must be below above!)
-    for (int i = 0; i < passingMessage.topic.length(); i++)
+    for (int i = 0; i < passingMessage.topic.length() - 2; i++)
     {
-        if (passingMessage.topic.charAt(i) == '/')
+        if (passingMessage.topic[i] == '/')
         {
-            k1 = i + 1;
+            k2 = i;
             if (k3 == MAX_MQTT_TOPIC_DEPTH)
                 break;
             else
             {
                 tmp[k3] = passingMessage.topic.substring(k1, k2);
+                k1 = i + 1;
                 k3++;
             }
         }
-        else
-        {
-            k2++;
-        }
     }
-    String tmp2[k3];
-    for (int i = 0; i < k3; i++)
+    k2 = passingMessage.topic.length();
+    tmp[k3] = passingMessage.topic.substring(k1, k2);
+    delete stringpassing;
+    if (k3 > 0)
     {
-        tmp2[i] = tmp[i];
+        stringpassing = new String[k3 + 1];
+        for (int i = 0; i <= k3; i++)
+        {
+            stringpassing[i] = tmp[i];
+        }
+        return stringpassing;
     }
-    return tmp2;
+    else
+        LOG3("k3 has no reasonable value");
 }
 
 int returnNumOfVehicles(String &topicToNumOf)
@@ -141,57 +146,136 @@ int returnNumOfVehicles(String &topicToNumOf)
 
 myJSONStr *MQTTTasks::getBetween(int from, int to) // from index to index
 {
-    if ((to < 0) || (from < 0) || (from == to)) // if invalid values
+    /*
+    if (from == MAX_JSON_MESSAGES_SAVED)
+        from = 0;
+    else
+        from++;
+    */
+    int tmp_to = to % MAX_JSON_MESSAGES_SAVED;
+    int tmp_from = from % MAX_JSON_MESSAGES_SAVED;
+    int tmp_to_cycles = (int)to / MAX_JSON_MESSAGES_SAVED;     // how many times messages overridden
+    int tmp_from_cycles = (int)from / MAX_JSON_MESSAGES_SAVED; // how many times messages overriddenF
+    if ((to < 0) || (from < 0) || (from == to) || (from > to)) // if invalid values
     {
         LOG1("wrong value entered (same or negative)");
-        LOG2("enteres from: " + String(from) + ", to: " + String(to));
+        LOG2("entered from: " + String(from) + ", to: " + String(to) + "\t\t relative from: " + String(tmp_from) + ", to: " + String(tmp_to));
         LOG3("minimum is 0, maximum is " + String(MAX_JSON_MESSAGES_SAVED));
         return nullptr;
     }
     else
     {
-        delete returnBetween;
-        returnBetween = nullptr;
-        int tmp_to = to % MAX_JSON_MESSAGES_SAVED;
-        int tmp_from = from % MAX_JSON_MESSAGES_SAVED;
-        int tmp_to_cycles = (int)to / MAX_JSON_MESSAGES_SAVED;     // how many times messages overridden
-        int tmp_from_cycles = (int)from / MAX_JSON_MESSAGES_SAVED; // how many times messages overridden
+        LOG3("tmp_from_cycles :" + String(tmp_from_cycles) + "\t tmp_to_cycles: " + String(tmp_to_cycles) + "\t tmp_from: " + String(tmp_from) + "\t tmp_to: " + String(tmp_to)); // TODO
+
         if (from == to)
         {
-            LOG1("nothing to do");
-            LOG2("you entered twice the same value: " + String(from));
+            LOG2("nothing to do");
+            LOG3("you entered twice the same value: " + String(from));
             return nullptr;
         }
         else if (tmp_from_cycles == tmp_to_cycles)
         {
-            int tmp = to - from;
-            returnBetween = new myJSONStr[tmp + 1];
-            for (int i = 0; i <= tmp; i++)
+            int tmp = tmp_to - tmp_from;
+            // returnBetween = new myJSONStr[tmp + 2];
+            returnBetween[0].level = tmp + 1; // this[0].level is array size
+            for (int i = 1; i < tmp + 1; i++)
             {
                 returnBetween[i] = messages[tmp_from + i];
             }
         }
         else if ((tmp_from_cycles + 1) < tmp_to_cycles) // if more then one time all messages overridden
         {
-            returnBetween = new myJSONStr[MAX_JSON_MESSAGES_SAVED];
-            for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++)
+            // returnBetween = new myJSONStr[MAX_JSON_MESSAGES_SAVED + 2];
+            returnBetween[0].level = MAX_JSON_MESSAGES_SAVED + 2; // this.level is array size
+            for (int i = 1; i < MAX_JSON_MESSAGES_SAVED + 1; i++)
             {
                 returnBetween[i] = messages[i]; // not returnBetween = messages since then access to private variable of class
             }
         }
         else if ((tmp_from_cycles + 1) == tmp_to_cycles)
         {
-            returnBetween = new myJSONStr[MAX_JSON_MESSAGES_SAVED - tmp_from + tmp_to];
+            // returnBetween = new myJSONStr[MAX_JSON_MESSAGES_SAVED - tmp_from + tmp_to + 2];
+            returnBetween[0].level = MAX_JSON_MESSAGES_SAVED - tmp_from + tmp_to + 2; // this.level is array size
             for (int i = 0; i < (MAX_JSON_MESSAGES_SAVED - tmp_from); i++)
             {
-                returnBetween[i] = messages[tmp_from + i];
+                returnBetween[i + 1] = messages[tmp_from + i];
             }
-            for (int i = 0; i < tmp_to; i++)
+            for (int i = 0; i < tmp_to + 1; i++)
             {
-                returnBetween[i + MAX_JSON_MESSAGES_SAVED - tmp_from] = messages[i];
+                returnBetween[i + 1 + MAX_JSON_MESSAGES_SAVED - tmp_from] = messages[i];
             }
         }
         else
             LOG1("special case");
+
+        //LOG2("size to return: " + String(returnBetween[0].level)); // TODO
+        //for (int i = 1; i < returnBetween[0].level; i++)
+        //    LOG3("the " + String(i) + "-th Element to return is: " + returnBetween[i].hostname);
+        return returnBetween;
+        //delete[] returnBetween;
+    }
+}
+
+void MQTTTasks::printAllMessages(byte choice) // 0 for hostname, 1 level, 2 request, 3 params
+{
+    String printable = "";
+    int myModulo = 5; // number of how many entries in one row
+    switch (choice)
+    {
+    case 0: // hostname
+        for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++)
+        {
+            //LOG1("in the save are the following (" + String(i) + "): " + messages[i].hostname);
+            printable += "\t[" + String(i) + "]: " + messages[i].hostname;
+            if ((i % myModulo == 0) && (i > 1))
+            {
+                LOG1(printable);
+                printable = "";
+            }
+        }
+        LOG1(printable);
+        break;
+    case 1: // level
+        for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++)
+        {
+            //LOG1("in the save are the following (" + String(i) + "): " + messages[i].hostname);
+            printable += "\t[" + String(i) + "]: " + messages[i].level;
+            if ((i % myModulo == 0) && (i > 1))
+            {
+                LOG1(printable);
+                printable = "";
+            }
+        }
+        LOG1(printable);
+        break;
+    case 2: // request
+        for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++)
+        {
+            //LOG1("in the save are the following (" + String(i) + "): " + messages[i].hostname);
+            printable += "\t[" + String(i) + "]: " + messages[i].request;
+            if ((i % myModulo == 0) && (i > 1))
+            {
+                LOG1(printable);
+                printable = "";
+            }
+        }
+        LOG1(printable);
+        break;
+    case 3: // params
+        for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++)
+        {
+            //LOG1("in the save are the following (" + String(i) + "): " + messages[i].hostname);
+            printable += "\t[" + String(i) + "]: [";
+            for (int j = 0; j < 3; j++)
+                printable += String(messages[i].vehicleParams[j]) + "; ";
+            printable += String(messages[i].vehicleParams[4]) + "]";
+            if ((i % myModulo == 0) && (i > 1))
+            {
+                LOG1(printable);
+                printable = "";
+            }
+        }
+        LOG1(printable);
+        break;
     }
 }

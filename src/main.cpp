@@ -37,8 +37,8 @@ void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state
 
 // -.-.-.-.-.-.-.- used for Show-Case -.-.-.-.-.-.-.-
 bool showCase = true;
-int waitSeconds1 = 2;  // wait between steps
-int waitSeconds2 = 10; // wait between loops
+int waitSeconds1 = 0;  // wait between steps
+int waitSeconds2 = 5; // wait between loops
 /*
 Notes:
   - connect only one sensor to: INPUT_PIN1
@@ -91,6 +91,8 @@ void loopEmpty() // loop until Box full
   if (mSarrP->getSensorData())
   {
     LOG3("is full, go next to status_justFullPublish");
+    if (showCase)
+      LOG2(">>>>>>>>>>>>>>>>>>>>> please now choose Option 1 in the Script (after level publish)");
     stat = status_main::status_justFullPublish;
     myFuncToCall = publishLevel;
     toNextStatus = true;
@@ -120,11 +122,21 @@ void publishLevel() // publishes SmartBox Level
   }
   else if (loopTurns == SMARTBOX_WAITFOR_VEHICLES_TURNS)
   {
-    LOG3("go to status_getOptimalVehicle");
-    toNextStatus = true;
-    loopTurns = 0;
-    stat = status_main::status_getOptimalVehicle;
-    myFuncToCall = getOptimalVehiclefromResponses;
+    mNetwP->loop();
+    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
+    tmp_mess = TaskMain->getBetween(mcount, mcount2);
+    if (tmp_mess == nullptr)
+    {
+      LOG2("no messages");
+    }
+    else
+    {
+      LOG3("go to status_getOptimalVehicle");
+      toNextStatus = true;
+      loopTurns = 0;
+      stat = status_main::status_getOptimalVehicle;
+      myFuncToCall = getOptimalVehiclefromResponses;
+    }
   }
   else
     LOG1("Error, loopTurns has wrong value: " + String(loopTurns));
@@ -135,46 +147,40 @@ void publishLevel() // publishes SmartBox Level
 
 void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
 {
-  mNetwP->loop();
-  mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
-  if (toNextStatus)                            // do once
+  if (toNextStatus) // do once
   {
     LOG1("-.-.-.- calculation of Optimal Values through Iterations -.-.-.-");
     LOG3("entering new state: getOpcimalVehiclefromResponses");
     toNextStatus = false;
     hasAnswered = false;
+    mNetwP->loop();
+    mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
     tmp_mess = TaskMain->getBetween(mcount, mcount2);
-    if (tmp_mess == nullptr)
+    for (int i = 1; i < tmp_mess[0].level - 1; i++)
     {
-      LOG2("no messages");
-      stat = status_main::status_justFullPublish; // jump back to publish
-      myFuncToCall = publishLevel;
-    }
-    else
-    {
-      for (int i = 0; i < sizeof(tmp_mess) / sizeof(tmp_mess[0]); i++)
+      String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
+      // LOG3("received Topics: " + ttop[0] + ", " + ttop[1] + ", " + ttop[2]);
+      if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
       {
-        String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
-        if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
+        hasAnswered = true;
+        LOG3("has answered, calculating Optimum for: " + ttop[1]);
+        double opt = calcOptimum(tmp_mess[i]);
+        if (value_max[0] < opt)
         {
-          hasAnswered = true;
-          LOG3("has answered, calculating Optimum for: " + ttop[1]);
-          double opt = calcOptimum(tmp_mess[i]);
-          if (value_max[0] < opt)
-          {
-            value_max[1] = value_max[0];
-            hostname_max[1] = hostname_max[0];
-            value_max[0] = opt;
-            hostname_max[0] = tmp_mess[i].hostname;
-          }
-          // TODO else?
+          value_max[1] = value_max[0];
+          hostname_max[1] = hostname_max[0];
+          value_max[0] = opt;
+          hostname_max[0] = tmp_mess[i].hostname;
         }
+        // TODO else?
       }
     }
   }
   toNextStatus = true;
   LOG2("has calculated max Optimal Values");
   LOG3("go next to status_hasOptVehiclePublish");
+  if (showCase)
+    LOG2(">>>>>>>>>>>>>>>>>>>>> please now choose Option 2 in the Script (after decision getOptimalVehiclefromResponses)");
   stat = status_main::status_hasOptVehiclePublish;
   myFuncToCall = hasOptVehiclePublish;
 }
@@ -200,18 +206,34 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
     }
     else if (loopTurns == SMARTBOX_ITERATION_VACKS_TURNS)
     {
-      LOG3("go next to status_checkIfAckReceived");
-      toNextStatus = true;
-      loopTurns = 0;
-      stat = status_main::status_checkIfAckReceived;
-      myFuncToCall = checkIfAckReceivedfromResponses;
+      mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
+      tmp_mess = TaskMain->getBetween(mcount, mcount2);
+      if (tmp_mess == nullptr)
+      {
+        LOG2("no messages");
+        LOG3("going back to publish level!");
+        stat = status_main::status_justFullPublish;
+        myFuncToCall = publishLevel;
+      }
+      else
+      {
+        LOG3("go next to status_checkIfAckReceived");
+        if (showCase)
+          LOG2(">>>>>>>>>>>>>>>>>>>>> please now choose Option 2 in the Script (after decision publish)");
+        toNextStatus = true;
+        loopTurns = 0;
+        stat = status_main::status_checkIfAckReceived;
+        myFuncToCall = checkIfAckReceivedfromResponses;
+        mcount = TaskMain->returnCurrentIterator();
+        mNetwP->loop();
+      }
     }
     else
       LOG1("Error, loopTurns has wrong value: " + String(loopTurns));
   }
   else
   {
-    LOG2("no answeres arrived");
+    LOG2("unfortunately no answeres arrived");
     stat = status_main::status_justFullPublish;
     myFuncToCall = publishLevel;
   }
@@ -230,59 +252,56 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
     hasAnswered = false;
     toNextStatus = false;
     isLastRoundonError = 0;
-    mcount = TaskMain->returnCurrentIterator();
   }
   tmp_mess = TaskMain->getBetween(mcount, mcount2);
   if (tmp_mess == nullptr)
   {
-    LOG2("no messages");
-    stat = status_main::status_justFullPublish; // jump back to publish
-    myFuncToCall = publishLevel;
+    LOG2("no messages for transport acknoledgement received yet");
+    //stat = status_main::status_justFullPublish; // jump back to publish
+    //myFuncToCall = publishLevel;
   }
   else
   {
-    for (int i = 0; i < sizeof(tmp_mess) / sizeof(tmp_mess[0]); i++)
+    for (int i = 1; i < tmp_mess[0].level - 1; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
-      if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
+      LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].hostname: " + tmp_mess[i].hostname);                        // TODO
+      if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false) && (tmp_mess[i].hostname == mNetwP->getHostName())) // if desired Vehicle answered
       {
-        if (tmp_mess[i].hostname == mNetwP->getHostName()) // if answer is to this request
-        {
-          hasAnswered = true;
-          LOG3("right Vehicle has answered and send acknoledgement to transport it");
-        }
+        hasAnswered = true;
+        LOG3("right Vehicle has answered and send acknoledgement to transport it");
       }
     }
+    if (hasAnswered) // if right Vehicle answered, go next
+    {
+      LOG3("go forward to status_checkIfTranspored"); // TODO logic! this and next case?
+      if (showCase)
+        LOG2(">>>>>>>>>>>>>>>>>>>>> please now choose Option 3 in the Script");
+      toNextStatus = true;
+      stat = status_main::status_checkIfTranspored;
+      myFuncToCall = checkIfTransporedfromResponses;
+    }
+    else if (isLastRoundonError <= NUM_OF_VEHICLES_IN_FIELD)
+    {
+      LOG3("go next to status_hasOptVehiclePublish, reset hostname");
+      toNextStatus = true;
+      stat = status_main::status_hasOptVehiclePublish;
+      myFuncToCall = hasOptVehiclePublish;
+      hostname_max[0] = hostname_max[isLastRoundonError];
+    }
+    else
+    {
+      LOG1("none of the two desired vehicles ansered");
+      toNextStatus = true;
+      stat = status_main::status_justFullPublish;
+      myFuncToCall = publishLevel;
+    }
   }
-  if (hasAnswered) // if right Vehicle answered, go next
-  {
-    LOG3("go forward to status_checkIfTranspored"); // TODO logic! this and next case?
-    toNextStatus = true;
-    stat = status_main::status_checkIfTranspored;
-    myFuncToCall = checkIfTransporedfromResponses;
-  }
-  else if (isLastRoundonError <= NUM_OF_VEHICLES_IN_FIELD)
-  {
-    LOG3("go next to status_hasOptVehiclePublish, reset hostname");
-    toNextStatus = true;
-    stat = status_main::status_hasOptVehiclePublish;
-    myFuncToCall = hasOptVehiclePublish;
-    hostname_max[0] = hostname_max[isLastRoundonError];
-  }
-  else
-  {
-    LOG1("none of the two desired vehicles ansered");
-    toNextStatus = true;
-    stat = status_main::status_justFullPublish;
-    myFuncToCall = publishLevel;
-  }
-  mcount = mcount2;
+  //mcount = mcount2;
 }
 
 void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emtied and brought back to factory
 {
-  mNetwP->loop();
-  mcount2 = TaskMain->returnCurrentIterator();
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
     LOG1("-.-.-.- check if SmartBox is transported -.-.-.-");
@@ -291,24 +310,28 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
     hasAnswered = false;
     mcount = TaskMain->returnCurrentIterator();
   }
+  mNetwP->loop();
+  mcount2 = TaskMain->returnCurrentIterator();
   tmp_mess = TaskMain->getBetween(mcount, mcount2);
+  LOG3("size of array: " + String(tmp_mess[0].level)); // TODO
   if (tmp_mess == nullptr)
   {
     LOG2("no messages");
   }
   else
   {
-    for (int i = 0; i < (sizeof(tmp_mess) / sizeof(tmp_mess[0])); i++)
+    LOG3("now im here");
+    for (int i = 1; i < tmp_mess[0].level - 1; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
-      if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false)) // if desired Vehicle answered
+      LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].request:" + tmp_mess[i].request);                          // TODO
+      if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false) && (tmp_mess[i].request == mNetwP->getHostName())) // if desired Vehicle answered
       {
-        if (tmp_mess[i].request == mNetwP->getHostName()) // if answer is to this request
-        {
-          hasAnswered = true;
-          LOG3("right Vehicle has answered and sent transported acknoledgement");
-        }
+        hasAnswered = true;
+        LOG2("right Vehicle has answered and sent transported acknoledgement");
       }
+      else
+        LOG3("not the right answer");
     }
     if (hasAnswered) // if Vehicle is transported, since transported and brought back to factory unsubsribe (is empty again)
     {
@@ -320,7 +343,7 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
       myFuncToCall = loopEmpty;
     }
   }
-  mcount = TaskMain->returnCurrentIterator();
+  //mcount = TaskMain->returnCurrentIterator();
 }
 
 // TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
@@ -352,24 +375,38 @@ void setup() // for initialisation
 
 void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 {
+  static int i;
+  TaskMain->printAllMessages(0); // to show all saved Tasks
+
   if (showCase)
   {
-    static int i = 0;
     // mNetwP->subscribe("hello");
     // mNetwP->publishMessage("hello", "{hostname:heyhey-" + String(i) + "}");
-    digitalWrite(13, LOW);
-    delay(waitSeconds2 / 2 * 1000);
-    digitalWrite(13, HIGH);
-    delay(waitSeconds2 / 2 * 1000);
+    for (int j = 0; j < waitSeconds2; j++)
+    {
+      digitalWrite(13, LOW);
+      delay(500);
+      digitalWrite(13, HIGH);
+      delay(500);
+      mNetwP->loop(); // needed to be called regularly to keep connection alive
+    }
+    LOG1();
     LOG1();
     LOG1();
     LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
-    LOG1("STATE: "+String(stat));
-    LOG1("--------------------------");
+    LOG2("STATE: " + String(stat));
+    LOG2("--------------------------");
+    myFuncToCall();
     i++;
   }
-
-  myFuncToCall();
+  else
+  {
+    LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
+    LOG2("STATE: " + String(stat));
+    LOG2("--------------------------");
+    myFuncToCall();
+    mNetwP->loop(); // needed to be called regularly to keep connection alive
+  }
 }
 
 /*

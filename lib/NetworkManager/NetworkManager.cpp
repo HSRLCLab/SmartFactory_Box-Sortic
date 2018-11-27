@@ -176,6 +176,7 @@ void NetworkManager::connectToMQTT()
         {
             LOG1("MQTT connection failed, error code: " + String(myMQTTclient->state()));
             LOG2("trying again in 3 seconds");
+            LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
             delay(3000);
         }
     }
@@ -190,6 +191,7 @@ bool NetworkManager::publishMessage(const String topic, const String msg) // pub
     if (myMQTTclient->connected())
     {
         myMQTTclient->publish(topic.c_str(), msg.c_str());
+        LOG2("message published");
         LOG3("Publish to topic [" + topic + "] message:" + msg);
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
@@ -199,6 +201,7 @@ bool NetworkManager::publishMessage(const String topic, const String msg) // pub
         LOG1("MQTT not connected");
         LOG2("You are not connected to the MQTT Broker, publish fails: " + msg);
         LOG3("Client ID: " + hostname);
+        LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
         connectToMQTT();
         return false;
     };
@@ -206,20 +209,18 @@ bool NetworkManager::publishMessage(const String topic, const String msg) // pub
 
 bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT topic
 {
-    LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     //connectToMQTT();
     if (myMQTTclient->connected())
     {
         LOG3("subscribing to: " + topic);
-
         //LOG3("hello" + String(myMQTTclient->subscribe("SmartBox")));
         bool done = myMQTTclient->subscribe(topic.c_str());
         if (done)
-            LOG3("suscription done");
+            LOG2("suscription done");
         else
-            LOG3("suscription failed");
+            LOG2("suscription failed");
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
@@ -228,6 +229,7 @@ bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT t
         LOG1("MQTT not connected");
         LOG2("You are not connected to the MQTT Broker, subscription fails: " + topic);
         LOG3("Client ID: " + hostname);
+        LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
         connectToMQTT();
         return false;
     }
@@ -240,6 +242,7 @@ bool NetworkManager::unsubscribe(const String topic)
     if (myMQTTclient->connected())
     {
         myMQTTclient->unsubscribe(topic.c_str());
+        LOG2("unsubscribed successfully");
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
@@ -248,6 +251,7 @@ bool NetworkManager::unsubscribe(const String topic)
         LOG1("MQTT not connected");
         LOG2("You are not connected to the MQTT Broker, unsubscribe will fail: " + topic);
         LOG3("Client ID: " + hostname);
+        LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
         connectToMQTT();
         return false;
     }
@@ -255,7 +259,7 @@ bool NetworkManager::unsubscribe(const String topic)
 
 void callback2(char *topic, byte *payload, unsigned int length) // listens to incoming messages (published to Server)
 {
-
+    LOG2("a new message arrived (no: " + String(NetManTask.returnCurrentIterator()) + ")");
     String topic_str;
     for (int i = 0; topic[i] != '\0'; i++) // iterate topic to topic_str
     {
@@ -286,7 +290,7 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     myJSONStr temp;
     temp.hostname = my_JSON.get<String>("hostname");
     temp.level = my_JSON.get<int>("level");
-    temp.topic = my_JSON.get<String>("topic");
+    temp.topic = topic_str;
     temp.request = my_JSON.get<String>("request");
     // MORE TO ADD HERE
 
