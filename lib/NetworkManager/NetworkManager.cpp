@@ -292,7 +292,10 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     temp.level = my_JSON.get<int>("level");
     temp.topic = topic_str;
     temp.request = my_JSON.get<String>("request");
+    temp.urgent = my_JSON.get<bool>("urgent");
     // MORE TO ADD HERE
+
+    String *mytop = NetManTask.returnMQTTtopics(temp);
 
     NetManTask.addMessage(temp); // adds to message save
 

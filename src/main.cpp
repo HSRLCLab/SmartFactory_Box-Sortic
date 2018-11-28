@@ -9,6 +9,23 @@
 #include <NetworkManagerStructs.h>
 #include <MQTTTasks.h>
 
+/*
+TODO
+mcount = TaskMain->returnCurrentIterator();
+  durch
+    setCurrentIteratorforIterations()
+
+tmp_mess = TaskMain->getBetween(mcount, mcount2);
+for (int i = 1; i < tmp_mess[0].level - 1; i++)
+  durch
+    ... = iterateAndDoMessages();
+
+
+setStartforIterations(mcount);
+setCurrentIteratorforIterations();
+iterateAndDoMessages();
+*/
+
 // ===================================== Global Variables =====================================
 MQTTTasks *TaskMain;                                  // filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
 NetworkManager *mNetwP;                               // used for usign NetworkManager access outside setup()
@@ -37,7 +54,7 @@ void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state
 
 // -.-.-.-.-.-.-.- used for Show-Case -.-.-.-.-.-.-.-
 bool showCase = true;
-int waitSeconds1 = 0;  // wait between steps
+int waitSeconds1 = 0; // wait between steps
 int waitSeconds2 = 5; // wait between loops
 /*
 Notes:
@@ -369,6 +386,7 @@ void setup() // for initialisation
   {
     pinMode(13, OUTPUT); // debug LED
     // mNetwP->subscribe("SmartBox/+/level");
+    // mNetwP->subscribe("Vehicle/+/params");
     // mNetwP->subscribe("SmartBox/+/params");
   }
 }
@@ -376,7 +394,7 @@ void setup() // for initialisation
 void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 {
   static int i;
-  TaskMain->printAllMessages(0); // to show all saved Tasks
+  // TaskMain->printAllMessages(0); // to show all saved Tasks (hostnames)
 
   if (showCase)
   {
@@ -394,6 +412,7 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     LOG1();
     LOG1();
     LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
+    i++;
     LOG2("STATE: " + String(stat));
     LOG2("--------------------------");
     myFuncToCall();
@@ -402,6 +421,7 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
   else
   {
     LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
+    i++;
     LOG2("STATE: " + String(stat));
     LOG2("--------------------------");
     myFuncToCall();

@@ -16,21 +16,21 @@ used for:
   saving Messages to use them later on (asynchronous Communication)
 */
 
-struct myJSONStr {
-  String topic = "";
-  String hostname = "";
-  String request = "";
+struct myJSONStr
+{
+  bool urgent = false;
+  String topic = "default";
+  String hostname = "default";
+  String request = "default";
   int level = -5;
   double vehicleParams[5]; // TODO 5?
-} ;
+};
 
-enum SBLevel                                          // describes Smart Box level states, -5 is default if not set!
+enum SBLevel // describes Smart Box level states, -5 is default if not set!
 {
   dead = -1,
   full = 0,
   empty = 1
 };
-
-
 
 #endif

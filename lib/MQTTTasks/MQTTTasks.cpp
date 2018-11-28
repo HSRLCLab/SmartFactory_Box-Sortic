@@ -10,6 +10,8 @@ MQTTTasks::MQTTTasks()
     mqtt_class_counter = 0;
     mqtt_class_counter_full = 0;
     isEmpty = false;
+    urgentMessage = 0;
+    startIteration = 0;
 }
 
 myJSONStr MQTTTasks::getLastMessage()
@@ -21,6 +23,36 @@ myJSONStr MQTTTasks::getLastMessage()
         LOG1("no messages");
         LOG2("there has been no messages saved");
     }
+}
+myJSONStr MQTTTasks::doLastMessage()
+{
+    myJSONStr tmp = getLastMessage();
+    deleteMessage(0);
+    return tmp;
+}
+
+myJSONStr MQTTTasks::doLastUrgentMessage()
+{
+    myJSONStr tmp;
+    for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++)
+    {
+        if (getDesiredLastMessage(i).urgent)
+        {
+            tmp = getDesiredLastMessage(i);
+            deleteMessage(i);
+            return tmp;
+            break;
+        }
+    }
+    return tmp;
+}
+
+bool MQTTTasks::hasUrgentMessage()
+{
+    if (urgentMessage == 0)
+        return false;
+    else
+        return true;
 }
 
 myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast)
@@ -43,6 +75,77 @@ myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast)
     }
 }
 
+myJSONStr MQTTTasks::getDesiredMessage(int certainCurrentIterator)
+{
+    if (!isEmpty)
+    {
+        if (certainCurrentIterator >= 0)
+        {
+            int currIt = certainCurrentIterator % MAX_JSON_MESSAGES_SAVED;
+            return messages[currIt];
+        }
+        else
+        {
+            LOG1("request of desired message failed");
+            LOG2("you entered: " + String(certainCurrentIterator) + ", but there is a minimum of 0!");
+        }
+    }
+}
+myJSONStr MQTTTasks::getDoDesiredMessage(int certainCurrentIterator)
+{
+    if (!isEmpty)
+    {
+        if (certainCurrentIterator >= 0)
+        {
+            int currIt = certainCurrentIterator % MAX_JSON_MESSAGES_SAVED;
+            myJSONStr tmp = doLastMessage();
+            return tmp;
+        }
+        else
+        {
+            LOG1("request of desired message failed");
+            LOG2("you entered: " + String(certainCurrentIterator) + ", but there is a minimum of 0!");
+        }
+    }
+}
+
+bool MQTTTasks::setStartforIterations(int fromCurrentIterator)
+{
+    if (fromCurrentIterator <= fromCurrentIterator)
+    {
+        startIteration = fromCurrentIterator;
+        return true;
+    }
+
+    else
+    {
+        LOG2("Iterator is wrong");
+        LOG3("you entered: " + String(fromCurrentIterator));
+        return false;
+    }
+}
+
+bool MQTTTasks::setCurrentIteratorforIterations()
+{
+    startIteration = mqtt_class_counter;
+    return true;
+}
+
+myJSONStr MQTTTasks::iterateAndDoMessages()
+{
+    if (startIteration == mqtt_class_counter)
+    {
+        myJSONStr tmp;
+        return tmp; // if default values from myJSONStr are returned, it will be shown here
+    }
+    else
+    {
+        myJSONStr tmp = getDesiredMessage(startIteration);
+        startIteration++;
+        return tmp;
+    }
+}
+
 int MQTTTasks::returnCurrentIterator() // returns absolute counter, if MAX_JSON_MESSAGES_SAVED reached and first message is overridden it can be detected from outside!
 {
     return (mqtt_class_counter + mqtt_class_counter_full * MAX_JSON_MESSAGES_SAVED);
@@ -51,6 +154,7 @@ int MQTTTasks::returnCurrentIterator() // returns absolute counter, if MAX_JSON_
 bool MQTTTasks::deleteMessage(int fromLast) // sets this struct to default
 {
     myJSONStr tmp;
+    tmp.hostname = "del"; // to clearly see which one were deleted
     if (!isEmpty)
     {
         if ((fromLast < MAX_JSON_MESSAGES_SAVED) && (fromLast >= 0))
@@ -58,12 +162,16 @@ bool MQTTTasks::deleteMessage(int fromLast) // sets this struct to default
             int res = mqtt_class_counter - fromLast;
             if (res < 0)
             {
+                if (messages[MAX_JSON_MESSAGES_SAVED + res].urgent)
+                    urgentMessage--;
                 messages[MAX_JSON_MESSAGES_SAVED + res] = tmp;
                 LOG3("message " + String(MAX_JSON_MESSAGES_SAVED + res) + " deleted successfully");
                 return true;
             }
             else
             {
+                if (messages[res].urgent)
+                    urgentMessage--;
                 messages[res] = tmp;
                 LOG3("message " + String(res) + " deleted successfully");
                 return true;
@@ -95,6 +203,8 @@ bool MQTTTasks::addMessage(myJSONStr mess)
         isEmpty = false;
         return true;
     }
+    if (mess.urgent)
+        urgentMessage++;
     LOG3("message added successfully");
 }
 
