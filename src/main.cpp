@@ -56,9 +56,9 @@ unsigned long previousMillis = 0; // will store last time
 
 // -.-.-.-.-.-.-.- used for Show-Case -.-.-.-.-.-.-.-
 bool showCase = true;
-int waitSeconds1 = 0; // wait between loops, without blinking LED
-int waitSeconds2 = 5; // wait between loops, blinking LED
-int ledState = LOW;   // used for debugging LED
+int waitSeconds1 = 0;  // wait between loops, without blinking LED
+int waitSeconds2 = 10; // wait between loops, blinking LED
+int ledState = LOW;    // used for debugging LED
 /*
 Notes:
   - connect only one sensor to: INPUT_PIN1
@@ -116,15 +116,9 @@ void loopEmpty() // loop until Box full
     toNextStatus = true;
     digitalWrite(PIN_FOR_FULL, HIGH); // if full turn LED on
   }
-  int timeIt = 0;
   previousMillis = millis();
-  while ((timeIt <= waitSeconds1) && (showCase)) // wait before next loop
+  while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
   {
-    if (currentMillis - previousMillis >= 1000)
-    {
-      timeIt++;
-      previousMillis = currentMillis;
-    }
     currentMillis = millis();
   }
 }
@@ -137,20 +131,21 @@ void publishLevel() // publishes SmartBox Level
     LOG3("entering new state: pubishLevel");
     mNetwP->subscribe("Vehicle/+/params");
     mNetwP->subscribe("Vehicle/+/ack");
-    toNextStatus = false;
     hasAnswered = false;
     mcount = TaskMain->returnCurrentIterator();
+    toNextStatus = false;
     previousMillis = millis();
   }
-  mNetwP->publishMessage("SmartBox/" + String(mNetwP->getHostName()) + "/level", "{hostname:" + String(mNetwP->getHostName()) + ",level:" + String(SBLevel::full) + "}");
+  mNetwP->publishMessage("SmartBox/" + String(mNetwP->getHostName()) + "/level", "{\"hostname\":\"" + String(mNetwP->getHostName()) + "\",\"level\":" + String(SBLevel::full) + "}");
   mNetwP->loop();
-  if ((currentMillis - previousMillis) < SMARTBOX_WAITFOR_VEHICLES_SECONDS) // wait for vehicles to send their params
+  currentMillis = millis();
+  if ((currentMillis - previousMillis) / 1000 < SMARTBOX_WAITFOR_VEHICLES_SECONDS) // wait for vehicles to send their params
   {
     currentMillis = millis();
-    LOG3("now on time: " + String(currentMillis - previousMillis));
+    LOG3("now on time: " + String((currentMillis - previousMillis) / 1000) + "\t\t currentMillis: " + String(currentMillis) + "\t previousMillis: " + String(previousMillis));
     mNetwP->loop();
   }
-  else if ((currentMillis - previousMillis) >= SMARTBOX_WAITFOR_VEHICLES_SECONDS)
+  else if ((currentMillis - previousMillis) / 1000 >= SMARTBOX_WAITFOR_VEHICLES_SECONDS)
   {
     mNetwP->loop();
     mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
@@ -165,22 +160,15 @@ void publishLevel() // publishes SmartBox Level
       toNextStatus = true;
       stat = status_main::status_getOptimalVehicle;
       myFuncToCall = getOptimalVehiclefromResponses;
+      previousMillis = millis();
+      while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
+      {
+        currentMillis = millis();
+      }
     }
   }
   else
     LOG1("Error, time has wrong value;\tpreviousMillis: " + String(previousMillis) + "\tcurrentMillis: " + String(currentMillis));
-
-  int timeIt = 0;
-  previousMillis = millis();
-  while ((timeIt < waitSeconds1) && (showCase)) // wait before next loop
-  {
-    if (currentMillis - previousMillis >= 1000)
-    {
-      timeIt++;
-      previousMillis = currentMillis;
-    }
-    currentMillis = millis();
-  }
 }
 
 void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
@@ -216,20 +204,15 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
   }
   toNextStatus = true;
   LOG2("has calculated max Optimal Values");
+  LOG3("optimal is Vehicle: " + hostname_max[0]);
   LOG3("go next to status_hasOptVehiclePublish");
   if (showCase)
     LOG2(">>>>>>>>>>>>>>>>>>>>> please now choose Option 2 in the Script (after decision getOptimalVehiclefromResponses)");
   stat = status_main::status_hasOptVehiclePublish;
   myFuncToCall = hasOptVehiclePublish;
-  int timeIt = 0;
   previousMillis = millis();
-  while ((timeIt < waitSeconds1) && (showCase)) // wait before next loop
+  while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
   {
-    if (currentMillis - previousMillis >= 1000)
-    {
-      timeIt++;
-      previousMillis = currentMillis;
-    }
     currentMillis = millis();
   }
 }
@@ -246,8 +229,9 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
   }
   if (hasAnswered)
   {
-    mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{hostname:" + hostname_max[0] + "}"); // publishes decision, clientID is in topic
+    mNetwP->publishMessage("SmartBox/" + mNetwP->getHostName() + "/decision", "{\"hostname\":\"" + hostname_max[0] + "\"}"); // publishes decision, clientID is in topic
     mNetwP->loop();
+    currentMillis = millis();
     if ((currentMillis - previousMillis) < SMARTBOX_ITERATION_VACKS_SECONDS) // wait for vehicles to send their acknoledgement to transport SB
     {
       LOG3("now on time: " + String(currentMillis - previousMillis));
@@ -275,6 +259,11 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
         myFuncToCall = checkIfAckReceivedfromResponses;
         mcount = TaskMain->returnCurrentIterator();
         mNetwP->loop();
+        previousMillis = millis();
+        while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
+        {
+          currentMillis = millis();
+        }
       }
     }
     else
@@ -285,17 +274,6 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
     LOG2("unfortunately no answeres arrived");
     stat = status_main::status_justFullPublish;
     myFuncToCall = publishLevel;
-  }
-  int timeIt = 0;
-  previousMillis = millis();
-  while ((timeIt < waitSeconds1) && (showCase)) // wait before next loop
-  {
-    if (currentMillis - previousMillis >= 1000)
-    {
-      timeIt++;
-      previousMillis = currentMillis;
-    }
-    currentMillis = millis();
   }
 }
 
@@ -320,7 +298,7 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
   }
   else
   {
-    for (int i = 1; i < tmp_mess[0].level - 1; i++)
+    for (int i = 1; i < tmp_mess[0].level; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
       LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].hostname: " + tmp_mess[i].hostname);                        // TODO
@@ -358,13 +336,9 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
   //mcount = mcount2;
   int timeIt = 0;
   previousMillis = millis();
-  while ((timeIt < waitSeconds1) && (showCase)) // wait before next loop
+  previousMillis = millis();
+  while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
   {
-    if (currentMillis - previousMillis >= 1000)
-    {
-      timeIt++;
-      previousMillis = currentMillis;
-    }
     currentMillis = millis();
   }
 }
@@ -413,15 +387,9 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
     }
   }
   //mcount = TaskMain->returnCurrentIterator();
-  int timeIt = 0;
   previousMillis = millis();
-  while ((timeIt < waitSeconds1) && (showCase)) // wait before next loop
+  while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
   {
-    if (currentMillis - previousMillis >= 1000)
-    {
-      timeIt++;
-      previousMillis = currentMillis;
-    }
     currentMillis = millis();
   }
 }
@@ -465,13 +433,13 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     // mNetwP->publishMessage("hello", "{hostname:heyhey-" + String(i) + "}");
 
     int timeIt = 0;
-    previousMillis = millis();
+    int previousMilliss = millis();
     while ((timeIt < waitSeconds2) && (showCase)) // wait before next loop
     {
-      if (currentMillis - previousMillis >= 500)
+      if (currentMillis - previousMilliss >= 500)
       {
         timeIt++;
-        previousMillis = currentMillis;
+        previousMilliss = currentMillis;
         if (ledState == LOW)
         {
           ledState = HIGH;
@@ -494,7 +462,6 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     LOG2("STATE: " + String(stat));
     LOG2("--------------------------");
     myFuncToCall();
-    i++;
   }
   else
   {
