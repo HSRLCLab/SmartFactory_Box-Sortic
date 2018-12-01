@@ -16,7 +16,7 @@ mcount = TaskMain->returnCurrentIterator();
     setCurrentIteratorforIterations()
 
 tmp_mess = TaskMain->getBetween(mcount, mcount2);
-for (int i = 1; i < tmp_mess[0].level - 1; i++)
+for (int i = 1; i < tmp_mess[0].level ; i++)
   durch
     ... = iterateAndDoMessages();
 
@@ -182,7 +182,7 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
     mNetwP->loop();
     mcount2 = TaskMain->returnCurrentIterator(); // needed for number of messages received, upper num
     tmp_mess = TaskMain->getBetween(mcount, mcount2);
-    for (int i = 1; i < tmp_mess[0].level - 1; i++)
+    for (int i = 1; i < tmp_mess[0].level; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
       // LOG3("received Topics: " + ttop[0] + ", " + ttop[1] + ", " + ttop[2]);
@@ -364,7 +364,7 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
   else
   {
     LOG3("now im here");
-    for (int i = 1; i < tmp_mess[0].level - 1; i++)
+    for (int i = 1; i < tmp_mess[0].level; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
       LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].request:" + tmp_mess[i].request);                          // TODO
