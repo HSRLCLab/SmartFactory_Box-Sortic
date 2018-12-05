@@ -78,7 +78,7 @@ void checkIfTransporedfromResponses();
 
 double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better
 {
-  double val = 100 / obj.vehicleParams[0]; // better for shorter way, 100 just for factoring, TODO
+  double val = 100 *(0.2/obj.vehicleParams[0] + 0.2/obj.vehicleParams[1] + 0.4/obj.vehicleParams[2] + 0.2/obj.vehicleParams[3]); // better for shorter way, 100 just for factoring, TODO
   return val;
 };
 

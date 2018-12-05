@@ -22,11 +22,11 @@ struct myJSONStr
   String topic = "default";
   String hostname = "default";
   String request = "default";
-  int level = -5;
-  double vehicleParams[5]; // TODO 5?
+  int level = -5;          // describes Smart Box level states, -5 is default if not set!
+  double vehicleParams[5]; // see documentation for parameters
 };
 
-enum SBLevel // describes Smart Box level states, -5 is default if not set!
+enum SBLevel
 {
   dead = -1,
   full = 0,
