@@ -190,9 +190,16 @@ bool NetworkManager::publishMessage(const String topic, const String msg) // pub
     //connectToMQTT();
     if (myMQTTclient->connected())
     {
-        myMQTTclient->publish(topic.c_str(), msg.c_str());
-        LOG2("message published");
-        LOG3("Publish to topic [" + topic + "] message:" + msg);
+        if (myMQTTclient->publish(topic.c_str(), msg.c_str()))
+        {
+            LOG2("message published");
+            LOG3("Publish to topic [" + topic + "] message:" + msg);
+        }
+        else
+        {
+            LOG2("publish failed");
+            return false;
+        }
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
@@ -215,12 +222,13 @@ bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT t
     if (myMQTTclient->connected())
     {
         LOG3("subscribing to: " + topic);
-        //LOG3("hello" + String(myMQTTclient->subscribe("SmartBox")));
-        bool done = myMQTTclient->subscribe(topic.c_str());
-        if (done)
+        if (myMQTTclient->subscribe(topic.c_str()))
             LOG2("suscription done");
         else
+        {
             LOG2("suscription failed");
+            return false;
+        }
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }
@@ -241,8 +249,13 @@ bool NetworkManager::unsubscribe(const String topic)
         connectToWiFi();
     if (myMQTTclient->connected())
     {
-        myMQTTclient->unsubscribe(topic.c_str());
-        LOG2("unsubscribed successfully");
+        if (myMQTTclient->unsubscribe(topic.c_str()))
+            LOG2("unsubscribed successfully");
+        else
+        {
+            LOG2("unsubscribe failed");
+            return false;
+        }
         myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
     }

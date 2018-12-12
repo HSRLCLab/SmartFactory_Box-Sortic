@@ -49,7 +49,6 @@ int mcount = 0; // needed for number of messages received, lower num
 int mcount2 = 0;
 status_main stat = status_main::status_isEmpty;
 bool toNextStatus = true; // true if changing state, false if staying in state, it's enshuring that certain code will only run once
-//int loopTurns = 0; // TODO to delete
 void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state machine
 unsigned long currentMillis = 0;  // will store current time
 unsigned long previousMillis = 0; // will store last time
@@ -76,10 +75,19 @@ void checkIfTransporedfromResponses();
 
 // ===================================== my Helper-Functions =====================================
 
-double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better
+double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better, -1 if not valuable entries
 {
-  double val = 100 *(0.2/obj.vehicleParams[0] + 0.2/obj.vehicleParams[1] + 0.4/obj.vehicleParams[2] + 0.2/obj.vehicleParams[3]); // better for shorter way, 100 just for factoring, TODO
-  return val;
+  if (obj.vehicleParams[0] != 0 && obj.vehicleParams[1] != 0 && obj.vehicleParams[2] != 0 && obj.vehicleParams[3] != 0)
+  {
+    double val = 100 * (0.2 / obj.vehicleParams[0] + 0.2 / obj.vehicleParams[1] + 0.4 / obj.vehicleParams[2] + 0.2 / obj.vehicleParams[3]); // better for shorter way, 100 just for factoring
+    return val;
+  }
+  else
+  {
+    LOG2("wrong parameters given to calcOptimum");
+    LOG3("obj.vehicleParams[0]: " + String(obj.vehicleParams[0]) + ", obj.vehicleParams[1]: " + String(obj.vehicleParams[1]) + ", obj.vehicleParams[2]: " + String(obj.vehicleParams[2]) + ", obj.vehicleParams[3]: " + String(obj.vehicleParams[3]));
+    return -1;
+  }
 };
 
 void getSmartBoxInfo() // print Smart Box Information
@@ -185,7 +193,9 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
     for (int i = 1; i < tmp_mess[0].level; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
-      // LOG3("received Topics: " + ttop[0] + ", " + ttop[1] + ", " + ttop[2]);
+      if (ttop == nullptr)
+        LOG1("no topics found, function returnMQTTtopics failed to return topics");
+      // LOG3("received Topics: " + ttop[0] + ", " + ttop[1] + ", " + ttop[2]); // could be uncommented for debugging
       if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
       {
         hasAnswered = true;
@@ -198,7 +208,7 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
           value_max[0] = opt;
           hostname_max[0] = tmp_mess[i].hostname;
         }
-        // TODO else?
+        // else case not needed, two best hostnames are enough
       }
     }
   }
@@ -301,7 +311,9 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
     for (int i = 1; i < tmp_mess[0].level; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
-      LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].hostname: " + tmp_mess[i].hostname);                        // TODO
+      if (ttop == nullptr)
+        LOG1("no topics found, function returnMQTTtopics failed to return topics");
+      // LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].hostname: " + tmp_mess[i].hostname);                        // could be uncommented for debugging
       if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false) && (tmp_mess[i].hostname == mNetwP->getHostName())) // if desired Vehicle answered
       {
         hasAnswered = true;
@@ -310,7 +322,7 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
     }
     if (hasAnswered) // if right Vehicle answered, go next
     {
-      LOG3("go forward to status_checkIfTranspored"); // TODO logic! this and next case?
+      LOG3("go forward to status_checkIfTranspored");
       if (showCase)
         LOG2(">>>>>>>>>>>>>>>>>>>>> please now choose Option 3 in the Script");
       toNextStatus = true;
@@ -356,7 +368,7 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
   mNetwP->loop();
   mcount2 = TaskMain->returnCurrentIterator();
   tmp_mess = TaskMain->getBetween(mcount, mcount2);
-  LOG3("size of array: " + String(tmp_mess[0].level)); // TODO
+  // LOG3("size of array: " + String(tmp_mess[0].level)); // could be used for debugging
   if (tmp_mess == nullptr)
   {
     LOG2("no messages");
@@ -367,7 +379,9 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
     for (int i = 1; i < tmp_mess[0].level; i++)
     {
       String *ttop = TaskMain->returnMQTTtopics(tmp_mess[i]);
-      LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].request:" + tmp_mess[i].request);                          // TODO
+      if (ttop == nullptr)
+        LOG1("no topics found, function returnMQTTtopics failed to return topics");
+      // LOG3("ttop[0]: " + ttop[0] + "\t ttop[1]: " + ttop[1] + "\t ttop[2]: " + ttop[2] + "\t tmp_mess[i].request:" + tmp_mess[i].request);                          // could be uncommented for debugging
       if ((ttop[0] == "Vehicle") && (ttop[1] == hostname_max[0]) && (ttop[2] == "ack") && (hasAnswered == false) && (tmp_mess[i].request == mNetwP->getHostName())) // if desired Vehicle answered
       {
         hasAnswered = true;
@@ -393,8 +407,6 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
     currentMillis = millis();
   }
 }
-
-// TODO überall fail save einbauen (was wenn nichts einliest?) -> keine assertions und auch keine Expeptions
 
 // ===================================== Arduino Functions =====================================
 void setup() // for initialisation

@@ -57,15 +57,16 @@ bool MQTTTasks::hasUrgentMessage()
 
 myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast)
 {
+    myJSONStr tmp;
     if (!isEmpty)
     {
         if ((fromLast <= MAX_JSON_MESSAGES_SAVED) && (fromLast >= 0))
         {
             int res = mqtt_class_counter - fromLast;
             if (res < 0)
-                return messages[MAX_JSON_MESSAGES_SAVED + res];
+                tmp = messages[MAX_JSON_MESSAGES_SAVED + res];
             else
-                return messages[res];
+                tmp = messages[res];
         }
         else
         {
@@ -73,16 +74,18 @@ myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast)
             LOG2("you entered: " + String(fromLast) + ", but there is a maximum of: " + String(MAX_JSON_MESSAGES_SAVED) + "and a minimum of 0!");
         }
     }
+    return tmp;
 }
 
 myJSONStr MQTTTasks::getDesiredMessage(int certainCurrentIterator)
 {
+    myJSONStr tmp;
     if (!isEmpty)
     {
         if (certainCurrentIterator >= 0)
         {
             int currIt = certainCurrentIterator % MAX_JSON_MESSAGES_SAVED;
-            return messages[currIt];
+            tmp = messages[currIt];
         }
         else
         {
@@ -90,16 +93,17 @@ myJSONStr MQTTTasks::getDesiredMessage(int certainCurrentIterator)
             LOG2("you entered: " + String(certainCurrentIterator) + ", but there is a minimum of 0!");
         }
     }
+    return tmp;
 }
 myJSONStr MQTTTasks::getDoDesiredMessage(int certainCurrentIterator)
 {
+    myJSONStr tmp;
     if (!isEmpty)
     {
         if (certainCurrentIterator >= 0)
         {
             int currIt = certainCurrentIterator % MAX_JSON_MESSAGES_SAVED;
-            myJSONStr tmp = doLastMessage();
-            return tmp;
+            tmp = doLastMessage();
         }
         else
         {
@@ -107,6 +111,7 @@ myJSONStr MQTTTasks::getDoDesiredMessage(int certainCurrentIterator)
             LOG2("you entered: " + String(certainCurrentIterator) + ", but there is a minimum of 0!");
         }
     }
+    return tmp;
 }
 
 bool MQTTTasks::setStartforIterations(int fromCurrentIterator)
@@ -133,17 +138,17 @@ bool MQTTTasks::setCurrentIteratorforIterations()
 
 myJSONStr MQTTTasks::iterateAndDoMessages()
 {
+    myJSONStr tmp;
     if (startIteration == mqtt_class_counter)
     {
-        myJSONStr tmp;
-        return tmp; // if default values from myJSONStr are returned, it will be shown here
+        ; // if default values from myJSONStr are returned, it will be shown here
     }
     else
     {
-        myJSONStr tmp = getDesiredMessage(startIteration);
+        tmp = getDesiredMessage(startIteration);
         startIteration++;
-        return tmp;
     }
+    return tmp;
 }
 
 int MQTTTasks::returnCurrentIterator() // returns absolute counter, if MAX_JSON_MESSAGES_SAVED reached and first message is overridden it can be detected from outside!
@@ -247,11 +252,15 @@ String *MQTTTasks::returnMQTTtopics(myJSONStr passingMessage)
         return stringpassing;
     }
     else
-        LOG3("k3 has no reasonable value");
+    {
+        LOG3("k3 has no reasonable value: " + String(k3));
+        return nullptr;
+    }
 }
 
 int returnNumOfVehicles(String &topicToNumOf)
 {
+    //TODO
 }
 
 myJSONStr *MQTTTasks::getBetween(int from, int to) // from index to index

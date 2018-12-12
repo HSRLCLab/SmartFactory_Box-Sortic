@@ -5,9 +5,9 @@ extern bool showCase; // defined in main.cpp
 SensorArray::SensorArray() // initialisation of Sensor
 {
     pinMode(OUTPUT_PIN, OUTPUT); // light LED
-    pinMode(INPUT_PIN1, INPUT); // sharp sensor 1
-    pinMode(INPUT_PIN2, INPUT); // sharp sensor 2
-    pinMode(INPUT_PIN3, INPUT); // sharp sensor 3
+    pinMode(INPUT_PIN1, INPUT);  // sharp sensor 1
+    pinMode(INPUT_PIN2, INPUT);  // sharp sensor 2
+    pinMode(INPUT_PIN3, INPUT);  // sharp sensor 3
     lastValuesSize = 0;
 }
 
@@ -34,7 +34,7 @@ bool SensorArray::getSensorData() // read sensor, true if full
     LOG3("SensorValue1: " + String(sum1));
     if (showCase)
     {
-        if (sum1 <= SENSOR_TOLLERANCE)
+        if ((sum1 <= SENSOR_TOLLERANCE) && (sum1 >= SENSOR_TOLLERANCE_MIN))
         {
             LOG3("Sensor found Element in Box"); // true if within 0.5-5cm from Sensor, otherwise false
             return true;
@@ -45,7 +45,7 @@ bool SensorArray::getSensorData() // read sensor, true if full
             return false;
         }
     }
-    else if ((sum1 <= SENSOR_TOLLERANCE) && (sum2 <= SENSOR_TOLLERANCE) && (sum3 <= SENSOR_TOLLERANCE))
+    else if ((sum1 <= SENSOR_TOLLERANCE) && (sum1 >= SENSOR_TOLLERANCE_MIN) && (sum2 <= SENSOR_TOLLERANCE) && (sum2 >= SENSOR_TOLLERANCE_MIN) && (sum3 <= SENSOR_TOLLERANCE) && (sum3 >= SENSOR_TOLLERANCE_MIN))
     {
         LOG3("Sensor found Element in Box"); // true if within 0.5-5cm from Sensor, otherwise false
         return true;
