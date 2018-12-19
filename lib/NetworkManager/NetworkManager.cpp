@@ -306,6 +306,12 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     temp.topic = topic_str;
     temp.request = my_JSON.get<String>("request");
     temp.urgent = my_JSON.get<bool>("urgent");
+    JsonArray& parms = my_JSON["params"];
+    temp.vehicleParams[0] = parms.get<double>(0);
+    temp.vehicleParams[1] = parms.get<double>(1);
+    temp.vehicleParams[2] = parms.get<double>(2);
+    temp.vehicleParams[3] = parms.get<double>(3);
+    // vehicleParams
     // MORE TO ADD HERE
 
     String *mytop = NetManTask.returnMQTTtopics(temp);

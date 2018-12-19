@@ -48,7 +48,7 @@ enum status_main // stores main status for Program run (main.cpp)
 int mcount = 0; // needed for number of messages received, lower num
 int mcount2 = 0;
 status_main stat = status_main::status_isEmpty;
-bool toNextStatus = true; // true if changing state, false if staying in state, it's enshuring that certain code will only run once
+bool toNextStatus = true;         // true if changing state, false if staying in state, it's enshuring that certain code will only run once
 void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state machine
 unsigned long currentMillis = 0;  // will store current time
 unsigned long previousMillis = 0; // will store last time
@@ -80,6 +80,7 @@ double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher i
   if (obj.vehicleParams[0] != 0 && obj.vehicleParams[1] != 0 && obj.vehicleParams[2] != 0 && obj.vehicleParams[3] != 0)
   {
     double val = 100 * (0.2 / obj.vehicleParams[0] + 0.2 / obj.vehicleParams[1] + 0.4 / obj.vehicleParams[2] + 0.2 / obj.vehicleParams[3]); // better for shorter way, 100 just for factoring
+    // LOG3("Hostname: " + obj.hostname +"\tobj.vehicleParams[0]: " + String(obj.vehicleParams[0]) + ", obj.vehicleParams[1]: " + String(obj.vehicleParams[1]) + ", obj.vehicleParams[2]: " + String(obj.vehicleParams[2]) + ", obj.vehicleParams[3]: " + String(obj.vehicleParams[3]));
     return val;
   }
   else
@@ -199,8 +200,9 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
       if ((ttop[0] == "Vehicle") && (ttop[2] == "params")) // if in MQTT topic == Vehicle/+/params
       {
         hasAnswered = true;
-        LOG3("has answered, calculating Optimum for: " + ttop[1]);
+        LOG3("has answered, calculating Optimum for:\t" + ttop[1]);
         double opt = calcOptimum(tmp_mess[i]);
+        LOG3("\t\tOptimum is:\t" + String(opt));
         if (value_max[0] < opt)
         {
           value_max[1] = value_max[0];
