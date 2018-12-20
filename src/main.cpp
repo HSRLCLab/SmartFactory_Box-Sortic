@@ -9,23 +9,6 @@
 #include <NetworkManagerStructs.h>
 #include <MQTTTasks.h>
 
-/*
-TODO
-mcount = TaskMain->returnCurrentIterator();
-  durch
-    setCurrentIteratorforIterations()
-
-tmp_mess = TaskMain->getBetween(mcount, mcount2);
-for (int i = 1; i < tmp_mess[0].level ; i++)
-  durch
-    ... = iterateAndDoMessages();
-
-
-setStartforIterations(mcount);
-setCurrentIteratorforIterations();
-iterateAndDoMessages();
-*/
-
 // ===================================== Global Variables =====================================
 MQTTTasks *TaskMain;                                  // filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
 NetworkManager *mNetwP;                               // used for usign NetworkManager access outside setup()
@@ -58,10 +41,6 @@ bool showCase = true;
 int waitSeconds1 = 0;  // wait between loops, without blinking LED
 int waitSeconds2 = 10; // wait between loops, blinking LED
 int ledState = LOW;    // used for debugging LED
-/*
-Notes:
-  - connect only one sensor to: INPUT_PIN1
-*/
 
 // ===================================== my Function-Headers =====================================
 double calcOptimum(myJSONStr &obj);
@@ -210,7 +189,7 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
           value_max[0] = opt;
           hostname_max[0] = tmp_mess[i].hostname;
         }
-        // else case not needed, two best hostnames are enough
+        // else case not needed, two best hostnames are enough, if more are requested: code can be added here
       }
     }
   }
@@ -305,8 +284,6 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
   if (tmp_mess == nullptr)
   {
     LOG2("no messages for transport acknoledgement received yet");
-    //stat = status_main::status_justFullPublish; // jump back to publish
-    //myFuncToCall = publishLevel;
   }
   else
   {
@@ -347,7 +324,6 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
       myFuncToCall = publishLevel;
     }
   }
-  //mcount = mcount2;
   int timeIt = 0;
   previousMillis = millis();
   previousMillis = millis();
@@ -402,7 +378,6 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
       myFuncToCall = loopEmpty;
     }
   }
-  //mcount = TaskMain->returnCurrentIterator();
   previousMillis = millis();
   while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
   {
@@ -430,9 +405,6 @@ void setup() // for initialisation
   if (showCase)
   {
     pinMode(13, OUTPUT); // debug LED
-    // mNetwP->subscribe("SmartBox/+/level");
-    // mNetwP->subscribe("Vehicle/+/params");
-    // mNetwP->subscribe("SmartBox/+/params");
   }
 }
 
@@ -443,9 +415,6 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
 
   if (showCase)
   {
-    // mNetwP->subscribe("hello");
-    // mNetwP->publishMessage("hello", "{hostname:heyhey-" + String(i) + "}");
-
     int timeIt = 0;
     int previousMilliss = millis();
     while ((timeIt < waitSeconds2) && (showCase)) // wait before next loop
@@ -487,11 +456,3 @@ void loop() // one loop per one cycle (SB full -> transported -> returned empty)
     mNetwP->loop(); // needed to be called regularly to keep connection alive
   }
 }
-
-/*
-Show Case:
-commands on Raspb
-mosquitto_pub -t Vehicle/Vehicle1234/params -m "{hostname:Vehicle1234,	params:[1,1,1,1]}"
-mosquitto_pub -t Vehicle/Vehicle1234/ack -m "{hostname:SmartBox1234}"
-mosquitto_pub -t Vehicle/Vehicle1234/ack -m "{request:SmartBox1234}"
-*/

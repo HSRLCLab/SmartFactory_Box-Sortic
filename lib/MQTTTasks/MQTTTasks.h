@@ -30,9 +30,6 @@ public:
   void printAllMessages(byte choice);                        // prints all saved messages on serial output; 0 for hostname, 1 level, 2 request, 3 params
   bool hasUrgentMessage();                                   // shows if urgent messages arrived
 
-  // TODO function to return message from iterator of type returnCurrentIterator, return 0 if overridden
-  // TODO function to add only not already existing entries
-
 private:
   myJSONStr messages[MAX_JSON_MESSAGES_SAVED]; // message save
   int mqtt_class_counter;                      // iterator of last Element

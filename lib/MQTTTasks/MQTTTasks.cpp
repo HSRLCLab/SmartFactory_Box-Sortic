@@ -265,12 +265,6 @@ int returnNumOfVehicles(String &topicToNumOf)
 
 myJSONStr *MQTTTasks::getBetween(int from, int to) // from index to index
 {
-    /*
-    if (from == MAX_JSON_MESSAGES_SAVED)
-        from = 0;
-    else
-        from++;
-    */
     int tmp_to = to % MAX_JSON_MESSAGES_SAVED;
     int tmp_from = from % MAX_JSON_MESSAGES_SAVED;
     int tmp_to_cycles = (int)to / MAX_JSON_MESSAGES_SAVED;     // how many times messages overridden
@@ -327,7 +321,7 @@ myJSONStr *MQTTTasks::getBetween(int from, int to) // from index to index
         else
             LOG1("special case");
 
-        //LOG2("size to return: " + String(returnBetween[0].level)); // TODO
+        //LOG2("size to return: " + String(returnBetween[0].level)); // can be used for debugging
         //for (int i = 1; i < returnBetween[0].level; i++)
         //    LOG3("the " + String(i) + "-th Element to return is: " + returnBetween[i].hostname);
         return returnBetween;

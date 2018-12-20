@@ -15,6 +15,5 @@
 #define SENSOR_TOLLERANCE 0.20     // when object is detected, 0.18 volts measured if object in box
 #define SENSOR_TOLLERANCE_MIN 0.01 // when object is detected, must be bigger than 0 to detect voltage cut
 #define OUTPUT_PIN 13              // LED lamp, must be digital
-//#define NUMBER_OF_SENSORS 3     // this is the number of Sensors in one Smart Box
 
 #endif
