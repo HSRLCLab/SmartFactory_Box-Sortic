@@ -1,14 +1,28 @@
+/**
+ * @file SensorArray.cpp
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * @brief The Sensor Array
+ * 
+ * This is the implementation of the Sensor Array.
+ * 
+ * @version 0.1
+ * @date 2019-03-06
+ * 
+ * @copyright Copyright (c) 2019
+ * @bug No know bugs.
+ */
+
 #include "SensorArray.h"
 
 extern bool showCase; // defined in main.cpp
 
 SensorArray::SensorArray() // initialisation of Sensor
 {
-    pinMode(OUTPUT_PIN, OUTPUT); // light LED
-    pinMode(INPUT_PIN1, INPUT);  // sharp sensor 1
-    pinMode(INPUT_PIN2, INPUT);  // sharp sensor 2
-    pinMode(INPUT_PIN3, INPUT);  // sharp sensor 3
-    lastValuesSize = 0;
+    pinMode(OUTPUT_PIN, OUTPUT); /// initialize light LED, Output
+    pinMode(INPUT_PIN1, INPUT);  /// initialize sharp sensor 1, Input
+    pinMode(INPUT_PIN2, INPUT);  /// initialize sharp sensor 2, Input
+    pinMode(INPUT_PIN3, INPUT);  /// initialize sharp sensor 3, Input
+    lastValuesSize = 0;          /// initialize lastValuesSize, 0
 }
 
 bool SensorArray::getSensorData() // read sensor, true if full

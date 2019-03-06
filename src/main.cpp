@@ -1,4 +1,14 @@
 // Smart Box main file
+/**
+ * @file main.cpp
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * @brief 
+ * @version 0.1
+ * @date 2019-03-06
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
@@ -10,37 +20,44 @@
 #include <MQTTTasks.h>
 
 // ===================================== Global Variables =====================================
-MQTTTasks *TaskMain;                                  // filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
-NetworkManager *mNetwP;                               // used for usign NetworkManager access outside setup()
-SensorArray *mSarrP;                                  // used for using SensorArray access outside setup()
-double value_max[NUM_OF_MAXVALUES_VEHICLES_STORE];    // best optimal value from vehicle, Element 0 ist best, Element 1 is second best, etc. (decending order)
-String hostname_max[NUM_OF_MAXVALUES_VEHICLES_STORE]; // name of Vehicle with best value, Element 0 ist best, Element 1 is second best, etc. (decending order)
-bool hasAnswered = false;                             // variable used to see if Vehicle have answered
-byte isLastRoundonError = 1;                          // currently two max values are included, if both are not responding, this Variable will be set to true, must be min 1
-myJSONStr *tmp_mess;                                  // pointer to array of messages, used for iteration of messages
+MQTTTasks *TaskMain;                                  ///< filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
+NetworkManager *mNetwP;                               ///< used for usign NetworkManager access outside setup()
+SensorArray *mSarrP;                                  ///< used for using SensorArray access outside setup()
+double value_max[NUM_OF_MAXVALUES_VEHICLES_STORE];    ///< best optimal value from vehicle, Element 0 ist best, Element 1 is second best, etc. (decending order)
+String hostname_max[NUM_OF_MAXVALUES_VEHICLES_STORE]; ///< name of Vehicle with best value, Element 0 ist best, Element 1 is second best, etc. (decending order)
+bool hasAnswered = false;                             ///< variable used to see if Vehicle have answered
+byte isLastRoundonError = 1;                          ///< currently two max values are included, if both are not responding, this Variable will be set to true, must be min 1
+myJSONStr *tmp_mess;                                  ///< pointer to array of messages, used for iteration of messages
+
 // -.-.-.-.-.-.-.- used for Statuses -.-.-.-.-.-.-.-
-enum status_main // stores main status for Program run (main.cpp)
+/**
+ * \enum status_main
+ * @brief stores main status for Program run (main.cpp)
+ * 
+ */
+enum status_main
 {
-  status_isEmpty = 0,
-  status_justFullPublish = 1,
-  status_getOptimalVehicle = 2,
-  status_hasOptVehiclePublish = 3,
-  status_checkIfAckReceived = 4,
-  status_checkIfTranspored = 5
+  status_isEmpty = 0,              ///< 0
+  status_justFullPublish = 1,      ///< 1
+  status_getOptimalVehicle = 2,    ///< 2
+  status_hasOptVehiclePublish = 3, ///< 3
+  status_checkIfAckReceived = 4,   ///< 4
+  status_checkIfTranspored = 5     ///< 5
 };
-int mcount = 0; // needed for number of messages received, lower num
-int mcount2 = 0;
+
+int mcount = 0;  ///< needed for number of messages received, lower num
+int mcount2 = 0; ///< needed for number of messages received, lower num
 status_main stat = status_main::status_isEmpty;
-bool toNextStatus = true;         // true if changing state, false if staying in state, it's enshuring that certain code will only run once
-void (*myFuncToCall)() = nullptr; // func to call in main-loop, for finite state machine
-unsigned long currentMillis = 0;  // will store current time
-unsigned long previousMillis = 0; // will store last time
+bool toNextStatus = true;         ///< true if changing state, false if staying in state, it's enshuring that certain code will only run once
+void ( *myFuncToCall)() = nullptr; ///< func to call in main-loop, for finite state machine
+unsigned long currentMillis = 0;  ///< will store current time
+unsigned long previousMillis = 0; ///< will store last time
 
 // -.-.-.-.-.-.-.- used for Show-Case -.-.-.-.-.-.-.-
 bool showCase = true;
-int waitSeconds1 = 0;  // wait between loops, without blinking LED
-int waitSeconds2 = 10; // wait between loops, blinking LED
-int ledState = LOW;    // used for debugging LED
+int waitSeconds1 = 0;  ///< wait between loops, without blinking LED
+int waitSeconds2 = 10; ///< wait between loops, blinking LED
+int ledState = LOW;    ///< used for debugging LED
 
 // ===================================== my Function-Headers =====================================
 double calcOptimum(myJSONStr &obj);
@@ -53,8 +70,13 @@ void checkIfAckReceivedfromResponses();
 void checkIfTransporedfromResponses();
 
 // ===================================== my Helper-Functions =====================================
-
-double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher is better, -1 if not valuable entries
+/**
+ * @brief Returns Optimum for given values, higher is better, -1 if not valuable entries
+ * 
+ * @param obj 
+ * @return double 
+ */
+double calcOptimum(myJSONStr &obj)
 {
   if (obj.vehicleParams[0] != 0 && obj.vehicleParams[1] != 0 && obj.vehicleParams[2] != 0 && obj.vehicleParams[3] != 0)
   {
@@ -70,7 +92,11 @@ double calcOptimum(myJSONStr &obj) // returns Optimum for given values, higher i
   }
 };
 
-void getSmartBoxInfo() // print Smart Box Information
+/**
+ * @brief Get the Smart Box Info if LOG2 is Defined
+ * 
+ */
+void getSmartBoxInfo()
 {
   LOG2("Smart Box state: " + String(stat));
   LOG2("Hostname with best value (" + String(value_max[0]) + "): " + hostname_max[0]);
@@ -85,10 +111,14 @@ void getSmartBoxInfo() // print Smart Box Information
 };
 
 // ===================================== my Functions =====================================
-void loopEmpty() // loop until Box full
+/**
+ * @brief loop until Box full
+ * 
+ */
+void loopEmpty()
 {
-  digitalWrite(PIN_FOR_FULL, LOW); // if empty leave LED off or turn it off
-  if (toNextStatus)                // only subscribe once but publish repeatedly
+  digitalWrite(PIN_FOR_FULL, LOW); ///< if empty leave LED off or turn it off
+  if (toNextStatus)                ///< only subscribe once but publish repeatedly
   {
     LOG1("-.-.-.- reading Sensor Values -.-.-.-");
     LOG3("entering new state: loopEmpty");
@@ -102,7 +132,7 @@ void loopEmpty() // loop until Box full
     stat = status_main::status_justFullPublish;
     myFuncToCall = publishLevel;
     toNextStatus = true;
-    digitalWrite(PIN_FOR_FULL, HIGH); // if full turn LED on
+    digitalWrite(PIN_FOR_FULL, HIGH); ///< if the Box is full turn the LED on
   }
   previousMillis = millis();
   while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase))
@@ -111,7 +141,11 @@ void loopEmpty() // loop until Box full
   }
 }
 
-void publishLevel() // publishes SmartBox Level
+/**
+ * @brief publishes SmartBox Level
+ * 
+ */
+void publishLevel()
 {
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
@@ -159,7 +193,12 @@ void publishLevel() // publishes SmartBox Level
     LOG1("Error, time has wrong value;\tpreviousMillis: " + String(previousMillis) + "\tcurrentMillis: " + String(currentMillis));
 }
 
-void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
+/**
+ * @brief Get the Optimal Vehicle from Responses object
+ * 
+ * gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
+ */
+void getOptimalVehiclefromResponses()
 {
   if (toNextStatus) // do once
   {
@@ -208,7 +247,11 @@ void getOptimalVehiclefromResponses() // gets Vehicle with best Params due to ca
   }
 }
 
-void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart Box
+/**
+ * @brief publishes decision for vehicle to transport Smart Box
+ * 
+ */
+void hasOptVehiclePublish()
 {
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
@@ -268,7 +311,11 @@ void hasOptVehiclePublish() // publishes decision for vehicle to transport Smart
   }
 }
 
-void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
+/**
+ * @brief runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
+ * 
+ */
+void checkIfAckReceivedfromResponses()
 {
   mNetwP->loop();
   mcount2 = TaskMain->returnCurrentIterator();
@@ -333,7 +380,11 @@ void checkIfAckReceivedfromResponses() // runs until acknoledgement of desired V
   }
 }
 
-void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emtied and brought back to factory
+/**
+ * @brief runs until SmartBox is transpored, emtied and brought back to factory
+ * 
+ */
+void checkIfTransporedfromResponses()
 {
   if (toNextStatus) // only subscribe once but publish repeatedly
   {
@@ -386,7 +437,14 @@ void checkIfTransporedfromResponses() // runs until SmartBox is transpored, emti
 }
 
 // ===================================== Arduino Functions =====================================
-void setup() // for initialisation
+/**
+ * @brief for initialisation of the Board
+ * 
+ * Use it to initialize variables, pin modes, start using libraries, etc.
+ * The setup() function will only run once,
+ * after each powerup or reset of the board
+ */
+void setup()
 {
   if (LOGLEVELCONFIGURATION > 0)
   {
@@ -408,7 +466,15 @@ void setup() // for initialisation
   }
 }
 
-void loop() // one loop per one cycle (SB full -> transported -> returned empty)
+/**
+ * @brief one loop per cycle (SB full -> transported -> returned empty)
+ * 
+ * After creating a setup() function, which initializes and sets the initial values,
+ * the loop() function does precisely what its name suggests,
+ * and loops consecutively, allowing your program to change and respond.
+ * Use it to actively control the board.
+ */
+void loop()
 {
   static int i;
   // TaskMain->printAllMessages(0); // to show all saved Tasks (hostnames)
