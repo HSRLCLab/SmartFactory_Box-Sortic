@@ -1,33 +1,40 @@
+/**
+ * @file NetworkManager.cpp
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * @brief 
+ * @version 0.1
+ * @date 2019-03-07
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
 #include "NetworkManager.h"
 
-NetworkManager::NetworkManager() //Initialize DEFAULT serial & WiFi Module
+NetworkManager::NetworkManager()  //Initialize DEFAULT serial & WiFi Module
 {
     IPAddress defaultIPbroker(DEFAULT_MQTT_BROKER_IP1, DEFAULT_MQTT_BROKER_IP2, DEFAULT_MQTT_BROKER_IP3, DEFAULT_MQTT_BROKER_IP4);
     const int ppinss[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN};
     initializeComponent(defaultIPbroker, DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD, DEFAULT_MQTT_PORT, ppinss);
 }
 
-NetworkManager::NetworkManager(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]) //Initialize COSTOM serial & WiFi Module
+NetworkManager::NetworkManager(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4])  //Initialize COSTOM serial & WiFi Module
 {
     initializeComponent(broker, ssid2, pass2, mmQTTport, pins);
 }
 
-void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4])
-{
+void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]) {
     ssid = ssid2;
     pass = pass2;
     NetManTask_classPointer = &NetManTask;
-    if (is_vehicle)
-    {
-        hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX); // Create a random client ID for vehicles
-    }
-    else
-    {
-        hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX); // Create a random client ID for vehicles
+    if (is_vehicle) {
+        hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX);  // Create a random client ID for vehicles
+    } else {
+        hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX);  // Create a random client ID for vehicles
     }
 
     WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
-    connectToWiFi(); //connect to WiFi
+    connectToWiFi();  //connect to WiFi
 
     ip = WiFi.localIP();
     ssid = WiFi.SSID();
@@ -43,33 +50,29 @@ void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String 
     myMQTTclient = new PubSubClient(myClient);
     myMQTTclient->setServer(brokerIP, mmQTTport);
     myMQTTclient->setCallback(callback2);
-    connectToMQTT(); // connecting to MQTT-Broker
+    connectToMQTT();  // connecting to MQTT-Broker
 }
 
-void NetworkManager::connectToWiFi()
-{
-    if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shield:
+void NetworkManager::connectToWiFi() {
+    if (WiFi.status() == WL_NO_SHIELD)  // check for the presence of the shield:
     {
         LOG1("NO WiFi shield present");
         LOG2("WiFi Library could not find WiFi shield. WiFi.status returned " + WiFi.status());
         LOG3("programm is not continuing");
         while (true)
-            ; // don't continue
+            ;  // don't continue
     }
     String wifi_firmware = WiFi.firmwareVersion();
     LOG3("WiFi Firmware Version = " + wifi_firmware);
-    while (WiFi.status() != WL_CONNECTED) // connect to Wifi network
+    while (WiFi.status() != WL_CONNECTED)  // connect to Wifi network
     {
         LOG1("Attempting WLAN connection (WEP)...");
         LOG3("SSID: " + ssid);
-        if (WiFi.begin(ssid, pass) != WL_CONNECTED)
-        {
+        if (WiFi.begin(ssid, pass) != WL_CONNECTED) {
             LOG1("WLAN connection failed");
             LOG2("trying again in 3 seconds");
             delay(3000);
-        }
-        else
-        {
+        } else {
             WiFi.hostname(hostname.c_str());
         }
     };
@@ -77,19 +80,14 @@ void NetworkManager::connectToWiFi()
     LOG3("Board is connected to the Network");
 }
 
-void NetworkManager::connectToMQTT()
-{
-    while (!myMQTTclient->connected())
-    {
+void NetworkManager::connectToMQTT() {
+    while (!myMQTTclient->connected()) {
         LOG1("Attempting MQTT connection...");
         LOG3("MQTT Client ID: " + hostname);
-        if (myMQTTclient->connect(hostname.c_str()))
-        {
+        if (myMQTTclient->connect(hostname.c_str())) {
             LOG1("MQTT connected");
             LOG3("Variable myMQTT has successfully connected with hostname: " + hostname);
-        }
-        else
-        {
+        } else {
             LOG1("MQTT connection failed, error code: " + String(myMQTTclient->state()));
             LOG2("trying again in 3 seconds");
             LOG3("client status:" + String(myMQTTclient->state()) + ", WiFi Status: " + String(WiFi.status()));
@@ -98,29 +96,23 @@ void NetworkManager::connectToMQTT()
     }
 }
 
-bool NetworkManager::publishMessage(const String topic, const String msg) // publishes a message to the server
+bool NetworkManager::publishMessage(const String topic, const String msg)  // publishes a message to the server
 {
     LOG3("try to publish to[" + topic + "] message: " + msg);
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     //connectToMQTT();
-    if (myMQTTclient->connected())
-    {
-        if (myMQTTclient->publish(topic.c_str(), msg.c_str()))
-        {
+    if (myMQTTclient->connected()) {
+        if (myMQTTclient->publish(topic.c_str(), msg.c_str())) {
             LOG2("message published");
             LOG3("Publish to topic [" + topic + "] message:" + msg);
-        }
-        else
-        {
+        } else {
             LOG2("publish failed");
             return false;
         }
-        myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+        myMQTTclient->loop();  // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
-    }
-    else
-    {
+    } else {
         LOG1("MQTT not connected");
         LOG2("You are not connected to the MQTT Broker, publish fails: " + msg);
         LOG3("Client ID: " + hostname);
@@ -130,26 +122,22 @@ bool NetworkManager::publishMessage(const String topic, const String msg) // pub
     };
 }
 
-bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT topic
+bool NetworkManager::subscribe(const String topic)  // subscribes to a new MQTT topic
 {
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     //connectToMQTT();
-    if (myMQTTclient->connected())
-    {
+    if (myMQTTclient->connected()) {
         LOG3("subscribing to: " + topic);
         if (myMQTTclient->subscribe(topic.c_str()))
             LOG2("suscription done");
-        else
-        {
+        else {
             LOG2("suscription failed");
             return false;
         }
-        myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+        myMQTTclient->loop();  // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
-    }
-    else
-    {
+    } else {
         LOG1("MQTT not connected");
         LOG2("You are not connected to the MQTT Broker, subscription fails: " + topic);
         LOG3("Client ID: " + hostname);
@@ -159,24 +147,19 @@ bool NetworkManager::subscribe(const String topic) // subscribes to a new MQTT t
     }
 }
 
-bool NetworkManager::unsubscribe(const String topic)
-{
+bool NetworkManager::unsubscribe(const String topic) {
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
-    if (myMQTTclient->connected())
-    {
+    if (myMQTTclient->connected()) {
         if (myMQTTclient->unsubscribe(topic.c_str()))
             LOG2("unsubscribed successfully");
-        else
-        {
+        else {
             LOG2("unsubscribe failed");
             return false;
         }
-        myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+        myMQTTclient->loop();  // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
         return true;
-    }
-    else
-    {
+    } else {
         LOG1("MQTT not connected");
         LOG2("You are not connected to the MQTT Broker, unsubscribe will fail: " + topic);
         LOG3("Client ID: " + hostname);
@@ -186,32 +169,30 @@ bool NetworkManager::unsubscribe(const String topic)
     }
 }
 
-void callback2(char *topic, byte *payload, unsigned int length) // listens to incoming messages (published to Server)
+void callback2(char *topic, byte *payload, unsigned int length)  // listens to incoming messages (published to Server)
 {
     LOG2("a new message arrived (no: " + String(NetManTask.returnCurrentIterator()) + ")");
     String topic_str;
-    for (int i = 0; topic[i] != '\0'; i++) // iterate topic to topic_str
+    for (int i = 0; topic[i] != '\0'; i++)  // iterate topic to topic_str
     {
         topic_str += topic[i];
     }
-    if (LOGLEVELCONFIGURATION > 2)
-    {
+    if (LOGLEVELCONFIGURATION > 2) {
         String msg = "Message arrived [" + topic_str + "]: \t message:";
-        for (unsigned int i = 0; i < length; i++) // iterate message
+        for (unsigned int i = 0; i < length; i++)  // iterate message
         {
             msg += (char)payload[i];
         }
         LOG3(msg);
     }
 
-    char inData[MAX_JSON_PARSE_SIZE]; // convert message to JSON object
+    char inData[MAX_JSON_PARSE_SIZE];  // convert message to JSON object
     for (unsigned int i = 0; i < length; i++)
         inData[(i)] = (char)payload[i];
 
     StaticJsonBuffer<MAX_JSON_PARSE_SIZE> jsonBuffer;
-    JsonObject &my_JSON = jsonBuffer.parseObject(inData); // saves everything to my_JSON JSON Object
-    if (!my_JSON.success())
-    {
+    JsonObject &my_JSON = jsonBuffer.parseObject(inData);  // saves everything to my_JSON JSON Object
+    if (!my_JSON.success()) {
         LOG1("JSON parsing failed");
         LOG2("my_JSON parsing failed in callback 2");
         return;
@@ -222,7 +203,7 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
     temp.topic = topic_str;
     temp.request = my_JSON.get<String>("request");
     temp.urgent = my_JSON.get<bool>("urgent");
-    JsonArray& parms = my_JSON["params"];
+    JsonArray &parms = my_JSON["params"];
     temp.vehicleParams[0] = parms.get<double>(0);
     temp.vehicleParams[1] = parms.get<double>(1);
     temp.vehicleParams[2] = parms.get<double>(2);
@@ -231,18 +212,16 @@ void callback2(char *topic, byte *payload, unsigned int length) // listens to in
 
     String *mytop = NetManTask.returnMQTTtopics(temp);
 
-    NetManTask.addMessage(temp); // adds to message save
+    NetManTask.addMessage(temp);  // adds to message save
 
-    if (LOGLEVELCONFIGURATION > 2)
-    {
+    if (LOGLEVELCONFIGURATION > 2) {
         LOG3("------ new JSON Message in JSarray Array ------");
-        my_JSON.prettyPrintTo(Serial); // prints JSON to Serial Monitor, pay attention can output BS
+        my_JSON.prettyPrintTo(Serial);  // prints JSON to Serial Monitor, pay attention can output BS
         LOG3("\n------ end of JSON Message ------");
     }
 }
 
-void NetworkManager::loop()
-{
+void NetworkManager::loop() {
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     if (!myMQTTclient->connected())
@@ -251,29 +230,26 @@ void NetworkManager::loop()
         myMQTTclient->loop();
 }
 
-String NetworkManager::getHostName()
-{
+String NetworkManager::getHostName() {
     return this->hostname;
 }
 
-IPAddress NetworkManager::getIP()
-{
+IPAddress NetworkManager::getIP() {
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     return WiFi.localIP();
 }
 
-void NetworkManager::getInfo() // prints Information to Network
+void NetworkManager::getInfo()  // prints Information to Network
 {
-    myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+    myMQTTclient->loop();  // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
     ip = WiFi.localIP();
     ssid = WiFi.SSID();
     WiFi.macAddress(mac);
     WiFi.BSSID(macRouter);
     rssi = WiFi.RSSI();
     encryption = WiFi.encryptionType();
-    if (Serial)
-    {
+    if (Serial) {
         Serial.println();
         Serial.println();
         Serial.println("-------------------- Information --------------------");
@@ -316,5 +292,5 @@ void NetworkManager::getInfo() // prints Information to Network
         Serial.println();
     }
     // Note: MQTT subscriptions and messages not displayed here!
-    myMQTTclient->loop(); // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
+    myMQTTclient->loop();  // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
 }
