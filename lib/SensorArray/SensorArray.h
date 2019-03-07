@@ -1,7 +1,9 @@
 /**
  * @file SensorArray.h
  * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
- * @brief 
+ * @brief The Sensor Array
+ * 
+ * 
  * @version 0.1
  * @date 2019-03-06
  * 
@@ -13,33 +15,32 @@
 #define SENSORARRAY_H
 
 #include <Arduino.h>
-#include <SensorConfiguration.h>
 #include <LogConfiguration.h>
+#include <SensorConfiguration.h>
 
 /**
  * @brief class for Sharp Sensor
  * 
  */
-class SensorArray
-{
-public:
-  /**
- * @brief Construct a new Sensor Array object
- * 
- */
-  SensorArray();
+class SensorArray {
+   public:
+    /**
+   * @brief Construct a new Sensor Array object
+   * 
+   */
+    SensorArray();
 
-  /**
+    /**
    * @brief Read the Sensor Values
    * 
-   * Checks for an Element within 0.5-5cm (\link SENSOR_TOLLERANCE_MIN \endlink - \link SENSOR_TOLLERANCE \endlink) from Sensor
+   * Checks for an Element within 0.5-5cm (\link SENSOR_RANGE_MIN \endlink - \link SENSOR_RANGE_MAX \endlink) from Sensor
    * 
    * @return true Sensor found an Element (full)
    * @return false Sensor found no Element (empty)
    */
-  bool getSensorData();
+    bool getSensorData();
 
-  /**
+    /**
    * @brief Get the nth-previous Sensor Values
    * 
    * if num==0 the current SensorValue will be returned.
@@ -49,31 +50,31 @@ public:
    * @param num 
    * @return true 
    * @return false 
-   * @bug true return isn't a bool
    */
-  bool getLastSensorData(int num);
+    bool getLastSensorData(int num);
 
-private:
-  /**
- * @brief saving the last Sensor Values, LIFO Queue
- * @param \link MAX_SENSOR_VALUES \endlink
- */
-  bool SensValStore[MAX_SENSOR_VALUES];
+   private:
+    /**
+   * @brief saving the last Sensor Values, LIFO Queue
+   * 
+   * \link MAX_SENSOR_VALUES \endlink
+   */
+    bool SensValStore[MAX_SENSOR_VALUES];
 
-  /**
+    /**
    * @brief last Values Size
    * 
    */
-  int lastValuesSize;
+    int lastValuesSize;
 
-  // helper functions
-  /**
+    // helper functions
+    /**
    * @brief push Sensor values to lastValues[] in LIFO order.
    * 
    * This is a Helper-Function
    * @param val 
    */
-  void pushToQueue(bool &val);
+    void pushToQueue(bool &val);
 };
 
 #endif
