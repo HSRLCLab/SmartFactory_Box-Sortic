@@ -1,0 +1,1602 @@
+[
+    {
+        "id": "e97ed8e8.1a8608",
+        "type": "tab",
+        "label": "Luciano/SmartBox",
+        "disabled": false,
+        "info": "This Flow enables the Visualisation for the SmartBox working with the Smart Vehicles from Sortic industries.\nFor more details see documentation."
+    },
+    {
+        "id": "720ec46.e71543c",
+        "type": "mqtt in",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "SmartBox/+/level",
+        "qos": "2",
+        "broker": "51280c75.863c24",
+        "x": 92.90000915527344,
+        "y": 172.79998779296875,
+        "wires": [
+            [
+                "808c028b.4e589"
+            ]
+        ]
+    },
+    {
+        "id": "1456857a.1b234b",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle1234/params",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 1001.9000244140625,
+        "y": 134.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "808c028b.4e589",
+        "type": "json",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 258.5,
+        "y": 171.39999389648438,
+        "wires": [
+            [
+                "df9aacc8.d87e88"
+            ]
+        ]
+    },
+    {
+        "id": "df9aacc8.d87e88",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "publish params",
+        "func": "var V1234 = flow.get(\"V1234_answer\");\nvar V9876 = flow.get(\"V9876_answer\");\nvar V1010 = flow.get(\"V1010_answer\");\nvar V4567 = flow.get(\"V4567_answer\");\n\nif(msg.payload.level === 0) // 0 means SB is full\n{\n    var outPut1 = {payload : false}, outPut2 = {payload : false}, outPut3 = {payload : false}, outPut4 = {payload : false};\n    if(V1234 === true)\n    {\n        var pos1 = flow.get('positionVehicle1234');\n        outPut1.payload = \"{\\\"hostname\\\":\\\"Vehicle1234\\\", \\\"params\\\":[\";\n        outPut1.payload += pos1;\n        outPut1.payload +=\",1,1,1]}\";\n        // return [outPut1, null, null, null];\n    }\n    if(V9876 === true)\n    {\n        var outPut2 = {payload: \"\"};\n        var pos2 = flow.get('positionVehicle9876');\n        outPut2.payload = \"{\\\"hostname\\\":\\\"Vehicle9876\\\", \\\"params\\\":[\";\n        outPut2.payload += pos2;\n        outPut2.payload +=\",1,1,1]}\";\n        // return [null, outPut2, null, null];\n    }\n    if(V1010 === true)\n    {\n        var outPut3 = {payload: \"\"};\n        var pos3 = flow.get('positionVehicle1010');\n        outPut3.payload = \"{\\\"hostname\\\":\\\"Vehicle1010\\\", \\\"params\\\":[\";\n        outPut3.payload += pos3;\n        outPut3.payload +=\",1,1,1]}\";\n        // return [null, null, outPut3, null];\n    }\n    if(V4567 === true)\n    {\n        var outPut4 = {payload: \"\"};\n        var pos4 = flow.get('positionVehicle4567');\n        outPut4.payload = \"{\\\"hostname\\\":\\\"Vehicle4567\\\", \\\"params\\\":[\";\n        outPut4.payload += pos4;\n        outPut4.payload +=\",1,1,1]}\";\n        // return [null, null, null, outPut4];\n    }\n    return [outPut1, outPut2, outPut3, outPut4];\n}",
+        "outputs": 4,
+        "noerr": 0,
+        "x": 448.5,
+        "y": 172.79995727539062,
+        "wires": [
+            [
+                "7ac5eced.297874",
+                "9ac2446d.b8a0e"
+            ],
+            [
+                "7ac5eced.297874",
+                "18ba6af3.e30285"
+            ],
+            [
+                "7ac5eced.297874",
+                "8df48ab7.7a02d8"
+            ],
+            [
+                "7ac5eced.297874",
+                "f92ddcb7.72e5d8"
+            ]
+        ]
+    },
+    {
+        "id": "7ac5eced.297874",
+        "type": "debug",
+        "z": "e97ed8e8.1a8608",
+        "name": "sendParamsLog",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 799.5,
+        "y": 85,
+        "wires": []
+    },
+    {
+        "id": "bd2e171d.85c2a",
+        "type": "ui_slider",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle1234",
+        "group": "12007057.1ce73",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "min": "1",
+        "max": "100",
+        "step": 1,
+        "x": 753.5001220703125,
+        "y": 1687.89990234375,
+        "wires": [
+            [
+                "3c64a5c7.aa2712"
+            ]
+        ]
+    },
+    {
+        "id": "a433eede.d080c8",
+        "type": "ui_slider",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle9876",
+        "group": "12007057.1ce73",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "min": "1",
+        "max": "100",
+        "step": 1,
+        "x": 754.2000427246094,
+        "y": 1784.1995849609375,
+        "wires": [
+            [
+                "2a2e3fa.9f3cbc"
+            ]
+        ]
+    },
+    {
+        "id": "68754e98.3dc1a",
+        "type": "ui_slider",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle1010",
+        "group": "12007057.1ce73",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "min": "1",
+        "max": "100",
+        "step": 1,
+        "x": 759.2000732421875,
+        "y": 1878.1995849609375,
+        "wires": [
+            [
+                "d166f6f2.f8da28"
+            ]
+        ]
+    },
+    {
+        "id": "e3ad2d18.eca7b8",
+        "type": "ui_slider",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle4567",
+        "group": "12007057.1ce73",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "min": "1",
+        "max": "100",
+        "step": 1,
+        "x": 756.2000732421875,
+        "y": 1955.1995849609375,
+        "wires": [
+            [
+                "bce5164b.4049e"
+            ]
+        ]
+    },
+    {
+        "id": "57e21be3.6230ec",
+        "type": "mqtt in",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "SmartBox/+/decision",
+        "qos": "2",
+        "broker": "51280c75.863c24",
+        "x": 163.11668395996094,
+        "y": 642.6167297363281,
+        "wires": [
+            [
+                "8acd1d22.b78848"
+            ]
+        ]
+    },
+    {
+        "id": "cc27572b.a7e16",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle1234/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 869.11669921875,
+        "y": 596.0167236328125,
+        "wires": []
+    },
+    {
+        "id": "8acd1d22.b78848",
+        "type": "json",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": true,
+        "x": 346.7166748046875,
+        "y": 643.2167358398438,
+        "wires": [
+            [
+                "35574aaa.da1786"
+            ]
+        ]
+    },
+    {
+        "id": "35574aaa.da1786",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "publish ack coming",
+        "func": "var V1234 = flow.get(\"V1234_answer\");\nvar V9876 = flow.get(\"V9876_answer\");\nvar V1010 = flow.get(\"V1010_answer\");\nvar V4567 = flow.get(\"V4567_answer\");\n\nflow.set(\"transport\", false);\nflow.set(\"transported\", false);\n\nif((msg.payload.hostname === \"Vehicle1234\") && (V1234 === true))\n{\n    flow.set(\"hostname\", msg.payload.hostname); // sets Variable hostname\n    msg.payload = \"{\\\"hostname\\\":\\\"SmartBox4c7f\\\"}\";\n    return [msg, null, null, null];\n}\nelse if((msg.payload.hostname === \"Vehicle9876\")  && (V9876 === true))\n{\n    flow.set(\"hostname\", msg.payload.hostname); // sets Variable hostname\n    msg.payload = \"{\\\"hostname\\\":\\\"SmartBox4c7f\\\"}\";\n    return [null, msg, null, null];\n}\nelse if((msg.payload.hostname === \"Vehicle1010\")  && (V1010 === true))\n{\n    flow.set(\"hostname\", msg.payload.hostname); // sets Variable hostname\n    msg.payload = \"{\\\"hostname\\\":\\\"SmartBox4c7f\\\"}\";\n    return [null, null, msg, null];\n}\nelse if((msg.payload.hostname === \"Vehicle4567\")  && (V4567 === true))\n{\n    flow.set(\"hostname\", msg.payload.hostname); // sets Variable hostname\n    msg.payload = \"{\\\"hostname\\\":\\\"SmartBox4c7f\\\"}\";\n    return [null, null, null, msg];\n}",
+        "outputs": 4,
+        "noerr": 0,
+        "x": 549.7166748046875,
+        "y": 643.61669921875,
+        "wires": [
+            [
+                "cc27572b.a7e16",
+                "3e38f738.3fa18",
+                "bbb3da98.93d8a"
+            ],
+            [
+                "3e38f738.3fa18",
+                "9c0f8e3f.44666",
+                "bbb3da98.93d8a"
+            ],
+            [
+                "3e38f738.3fa18",
+                "afd5bfde.488d38",
+                "bbb3da98.93d8a"
+            ],
+            [
+                "3e38f738.3fa18",
+                "3576869d.884daa",
+                "bbb3da98.93d8a"
+            ]
+        ]
+    },
+    {
+        "id": "3e38f738.3fa18",
+        "type": "debug",
+        "z": "e97ed8e8.1a8608",
+        "name": "sendAck1Log",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 845.7166748046875,
+        "y": 519.2167358398438,
+        "wires": []
+    },
+    {
+        "id": "52980560.f3ff14",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle1234/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 836.11669921875,
+        "y": 973.916748046875,
+        "wires": []
+    },
+    {
+        "id": "f0cfc5d3.cdd02",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "publish ack transporting",
+        "func": "var V1234 = flow.get(\"V1234_answer\");\nvar V9876 = flow.get(\"V9876_answer\");\nvar V1010 = flow.get(\"V1010_answer\");\nvar V4567 = flow.get(\"V4567_answer\");\n\nif(msg.payload === true)\n{\n    var host = flow.get('hostname');\n    msg.payload = \"{\\\"hostname\\\":\\\"SmartBox4c7f\\\"}\";\n    if ((host === \"Vehicle1234\") && (V1234 === true))\n    {\n        return [msg, null, null, null];\n    }\n    else if ((host === \"Vehilce9876\") && (V9876 === true))\n    {\n        return [null, msg, null, null];\n    }\n    else if ((host === \"Vehicle1010\") && (V1010 === true))\n    {\n        return [null, null, msg, null];\n    }\n    else if ((host === \"Vehicle4567\") && (V4567 === true))\n    {\n        return [null, null, null, msg];\n    }\n}",
+        "outputs": 4,
+        "noerr": 0,
+        "x": 477.7166748046875,
+        "y": 995.5167236328125,
+        "wires": [
+            [
+                "52980560.f3ff14",
+                "7584d164.2c8a8",
+                "7aee7b08.54f9ec"
+            ],
+            [
+                "7584d164.2c8a8",
+                "708113f6.8d715c",
+                "7aee7b08.54f9ec"
+            ],
+            [
+                "7584d164.2c8a8",
+                "5b8aef0a.873758",
+                "7aee7b08.54f9ec"
+            ],
+            [
+                "7584d164.2c8a8",
+                "e5c4857c.d1b49",
+                "7aee7b08.54f9ec"
+            ]
+        ]
+    },
+    {
+        "id": "7584d164.2c8a8",
+        "type": "debug",
+        "z": "e97ed8e8.1a8608",
+        "name": "sendAck2Log",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 798.7166748046875,
+        "y": 917.11669921875,
+        "wires": []
+    },
+    {
+        "id": "bf13e460.ab7598",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "publish ack transported",
+        "func": "var V1234 = flow.get(\"V1234_answer\");\nvar V9876 = flow.get(\"V9876_answer\");\nvar V1010 = flow.get(\"V1010_answer\");\nvar V4567 = flow.get(\"V4567_answer\");\n\nvar host = flow.get('hostname');\n\nflow.set(\"transported\", true);\nflow.set(\"transport\", false);\nflow.set(\"hostname\", \"\");\n\nif(msg.payload === true)\n{\n    msg.payload = \"{\\\"request\\\":\\\"SmartBox4c7f\\\"}\";\n    if ((host === \"Vehicle1234\") && (V1234 === true))\n    {\n        return [msg, null, null, null];\n    }\n    else if ((host === \"Vehilce9876\") && (V9876 === true))\n    {\n        return [null, msg, null, null];\n    }\n    else if ((host === \"Vehicle1010\") && (V1010 === true))\n    {\n        return [null, null, msg, null];\n    }\n    else if ((host === \"Vehicle4567\") && (V4567 === true))\n    {\n        return [null, null, null, msg];\n    }\n}\n",
+        "outputs": 4,
+        "noerr": 0,
+        "x": 503.2666931152344,
+        "y": 1211.716796875,
+        "wires": [
+            [
+                "128d484d.1de0c8",
+                "52980560.f3ff14",
+                "369a8598.ed7a5a"
+            ],
+            [
+                "708113f6.8d715c",
+                "128d484d.1de0c8",
+                "369a8598.ed7a5a"
+            ],
+            [
+                "5b8aef0a.873758",
+                "128d484d.1de0c8",
+                "369a8598.ed7a5a"
+            ],
+            [
+                "e5c4857c.d1b49",
+                "128d484d.1de0c8",
+                "369a8598.ed7a5a"
+            ]
+        ]
+    },
+    {
+        "id": "128d484d.1de0c8",
+        "type": "debug",
+        "z": "e97ed8e8.1a8608",
+        "name": "sendAck3Log",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 809.2667236328125,
+        "y": 1297.3165893554688,
+        "wires": []
+    },
+    {
+        "id": "f16cfa30.b657a",
+        "type": "ui_button",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "group": "3943e3e7.0487dc",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "1. transporting now",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "",
+        "x": 125,
+        "y": 984.316650390625,
+        "wires": [
+            [
+                "db32ec5.1b6349"
+            ]
+        ]
+    },
+    {
+        "id": "d79f25cb.cdf1b8",
+        "type": "ui_button",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "group": "3943e3e7.0487dc",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "2. transported and returned to factory",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "topic": "",
+        "x": 197.11668395996094,
+        "y": 1211.41650390625,
+        "wires": [
+            [
+                "bf13e460.ab7598"
+            ]
+        ]
+    },
+    {
+        "id": "3c64a5c7.aa2712",
+        "type": "change",
+        "z": "e97ed8e8.1a8608",
+        "name": "setVariable",
+        "rules": [
+            {
+                "t": "set",
+                "p": "positionVehicle1234",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 922.7333984375,
+        "y": 1687.4498291015625,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2a2e3fa.9f3cbc",
+        "type": "change",
+        "z": "e97ed8e8.1a8608",
+        "name": "setVariable",
+        "rules": [
+            {
+                "t": "set",
+                "p": "positionVehicle9876",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 925.11669921875,
+        "y": 1783.0164794921875,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d166f6f2.f8da28",
+        "type": "change",
+        "z": "e97ed8e8.1a8608",
+        "name": "setVariable",
+        "rules": [
+            {
+                "t": "set",
+                "p": "positionVehicle1010",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 935.11669921875,
+        "y": 1879.0164794921875,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bce5164b.4049e",
+        "type": "change",
+        "z": "e97ed8e8.1a8608",
+        "name": "setVariable",
+        "rules": [
+            {
+                "t": "set",
+                "p": "positionVehicle4567",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 929.11669921875,
+        "y": 1955.0164794921875,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fd92ac41.edac1",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle9876/params",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 1004.11669921875,
+        "y": 199.51669311523438,
+        "wires": []
+    },
+    {
+        "id": "cee6ad3c.167e28",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle1010/params",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 1005.11669921875,
+        "y": 254.51669311523438,
+        "wires": []
+    },
+    {
+        "id": "2644dc00.fab3cc",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle4567/params",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 1008.11669921875,
+        "y": 309.5167236328125,
+        "wires": []
+    },
+    {
+        "id": "9c0f8e3f.44666",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle9876/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 869.11669921875,
+        "y": 644.7167053222656,
+        "wires": []
+    },
+    {
+        "id": "afd5bfde.488d38",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle1010/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 870.11669921875,
+        "y": 692.7167053222656,
+        "wires": []
+    },
+    {
+        "id": "3576869d.884daa",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle4567/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 872.11669921875,
+        "y": 745.7167053222656,
+        "wires": []
+    },
+    {
+        "id": "93e007d7.b8454",
+        "type": "ui_text",
+        "z": "e97ed8e8.1a8608",
+        "group": "3943e3e7.0487dc",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "asked Vehicle: ",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 471.4500427246094,
+        "y": 1597.6500244140625,
+        "wires": []
+    },
+    {
+        "id": "708113f6.8d715c",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle9876/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 835.11669921875,
+        "y": 1028.9168090820312,
+        "wires": []
+    },
+    {
+        "id": "5b8aef0a.873758",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle1010/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 832.11669921875,
+        "y": 1074.9168090820312,
+        "wires": []
+    },
+    {
+        "id": "e5c4857c.d1b49",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "Vehicle/Vehicle4567/ack",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 831.11669921875,
+        "y": 1120.9168090820312,
+        "wires": []
+    },
+    {
+        "id": "7aee7b08.54f9ec",
+        "type": "ui_toast",
+        "z": "e97ed8e8.1a8608",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "Published Message",
+        "name": "pubNotify",
+        "x": 789.4500732421875,
+        "y": 1194.9668579101562,
+        "wires": []
+    },
+    {
+        "id": "bbb3da98.93d8a",
+        "type": "ui_toast",
+        "z": "e97ed8e8.1a8608",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "Published Message",
+        "name": "pubNotify",
+        "x": 844.11669921875,
+        "y": 809.7166748046875,
+        "wires": []
+    },
+    {
+        "id": "6a920869.106378",
+        "type": "delay",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "pauseType": "random",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "0",
+        "randomLast": "2",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 309.4499816894531,
+        "y": 1685.36669921875,
+        "wires": [
+            [
+                "ee64a6e1.2f6188"
+            ]
+        ]
+    },
+    {
+        "id": "eb8f0a8b.2186",
+        "type": "inject",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "repeat": "2",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 117.73333740234375,
+        "y": 1821.7833251953125,
+        "wires": [
+            [
+                "6a920869.106378",
+                "481a17af.e2ba3",
+                "cb456cde.487518",
+                "c20735cd.f4c6e8",
+                "9f80aa94.7092a",
+                "9e3e3496.432008"
+            ]
+        ]
+    },
+    {
+        "id": "ee64a6e1.2f6188",
+        "type": "random",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "low": "1",
+        "high": "100",
+        "inte": "true",
+        "property": "payload",
+        "x": 446.73333740234375,
+        "y": 1684.449951171875,
+        "wires": [
+            [
+                "1aa05b67.9eeafd"
+            ]
+        ]
+    },
+    {
+        "id": "481a17af.e2ba3",
+        "type": "delay",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "pauseType": "random",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "0",
+        "randomLast": "2",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 316.11663818359375,
+        "y": 1779.816650390625,
+        "wires": [
+            [
+                "cb4bf1f2.d2fbc8"
+            ]
+        ]
+    },
+    {
+        "id": "cb4bf1f2.d2fbc8",
+        "type": "random",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "low": "1",
+        "high": "100",
+        "inte": "true",
+        "property": "payload",
+        "x": 453.3999938964844,
+        "y": 1778.89990234375,
+        "wires": [
+            [
+                "7f00ab44.bdcadc"
+            ]
+        ]
+    },
+    {
+        "id": "cb456cde.487518",
+        "type": "delay",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "pauseType": "random",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "0",
+        "randomLast": "2",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 323.11663818359375,
+        "y": 1875.816650390625,
+        "wires": [
+            [
+                "bf023938.9f0d7"
+            ]
+        ]
+    },
+    {
+        "id": "bf023938.9f0d7",
+        "type": "random",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "low": "1",
+        "high": "100",
+        "inte": "true",
+        "property": "payload",
+        "x": 460.3999938964844,
+        "y": 1874.89990234375,
+        "wires": [
+            [
+                "f5976a6c.b16338"
+            ]
+        ]
+    },
+    {
+        "id": "c20735cd.f4c6e8",
+        "type": "delay",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "pauseType": "random",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "0",
+        "randomLast": "2",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 308.11663818359375,
+        "y": 1957.0166015625,
+        "wires": [
+            [
+                "7668c9ba.2b8428"
+            ]
+        ]
+    },
+    {
+        "id": "7668c9ba.2b8428",
+        "type": "random",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "low": "1",
+        "high": "100",
+        "inte": "true",
+        "property": "payload",
+        "x": 445.3999938964844,
+        "y": 1956.099853515625,
+        "wires": [
+            [
+                "49d11ab9.3adc84"
+            ]
+        ]
+    },
+    {
+        "id": "369a8598.ed7a5a",
+        "type": "ui_toast",
+        "z": "e97ed8e8.1a8608",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "Published Message",
+        "name": "pubNotify",
+        "x": 792.11669921875,
+        "y": 1353.816650390625,
+        "wires": []
+    },
+    {
+        "id": "c64df782.d865d",
+        "type": "ui_switch",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicles movement",
+        "group": "3943e3e7.0487dc",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 170.44998168945312,
+        "y": 2112.749725341797,
+        "wires": [
+            [
+                "cb5689d8.02ff5"
+            ]
+        ]
+    },
+    {
+        "id": "cb5689d8.02ff5",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "if (msg.payload === true)\n    flow.set(\"vehicleMovement\", true);\nelse\n    flow.set(\"vehicleMovement\", false);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360.7333679199219,
+        "y": 2113.3497314453125,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1aa05b67.9eeafd",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "var veh = flow.get(\"hostname\");\nvar pos = flow.get(\"positionVehicle1234\");    // current position\nvar tra = flow.get(\"transport\");\nvar tra2 = flow.get(\"transported\");\nif((flow.get(\"vehicleMovement\") === true) && (veh !== \"Vehicle1234\"))\n{\n    var rand = Math.round(Math.random()*99+1);  // desired new value\n    var pm = Math.round(Math.random()*10);  // for plus or minus\n    var spe = flow.get(\"vehspeed\");\n    if(Math.abs(rand - pos) > spe)\n    {\n        if(pm <= 5)\n            rand = pos + spe;\n        else\n            rand = pos - spe;\n    }\n    if(rand > 100)\n        rand = 100;\n    else if (rand < 0)\n        rand = 0;\n    msg.payload = rand;\n    var pos = flow.set(\"positionVehicle1234\", rand);    // current position\n    return msg;\n}\nelse if((veh === \"Vehicle1234\") && (tra === false) && (tra2 === false))  // if Box should be transported\n{\n    if(pos < 2)\n    {\n        flow.set(\"transport\",true);\n        flow.set(\"transportingPub\", true);\n    }\n    else\n    {\n        msg.payload = pos - 5;\n        return msg;\n    }\n}\nelse if ((tra === true) && (veh === \"Vehicle1234\"))\n{\n    if(pos < 99)\n    {\n        msg.payload = pos + 10;\n        return msg;\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 590.7333984375,
+        "y": 1686.449951171875,
+        "wires": [
+            [
+                "bd2e171d.85c2a"
+            ]
+        ]
+    },
+    {
+        "id": "7f00ab44.bdcadc",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "var veh = flow.get(\"hostname\");\nvar pos = flow.get(\"positionVehicle9876\");    // current position \nvar tra = flow.get(\"transport\");\nvar tra2 = flow.get(\"transported\");\nif((flow.get(\"vehicleMovement\") === true) && (veh !== \"Vehicle9876\"))\n{\n    var rand = Math.round(Math.random()*99+1);  // desired new value\n    var pm = Math.round(Math.random()*10);  // for plus or minus\n    var spe = flow.get(\"vehspeed\");\n    if(Math.abs(rand - pos) > spe)\n    {\n        if(pm <= 5)\n            rand = pos + spe;\n        else\n            rand = pos - spe;\n    }\n    if(rand > 100)\n        rand = 100;\n    else if (rand < 0)\n        rand = 0;\n    msg.payload = rand;\n    var pos = flow.set(\"positionVehicle9876\", rand);    // current position\n    return msg;\n}\nelse if((veh === \"Vehicle9876\") && (tra === false) && (tra2 === false))  // if Box should be transported\n{\n    if(pos < 2)\n    {\n        flow.set(\"transport\",true);\n        flow.set(\"transportingPub\", true);\n    }\n    else\n    {\n        msg.payload = pos - 5;\n        return msg;\n    }\n}\nelse if ((tra === true) && (veh === \"Vehicle9876\"))\n{\n    if(pos < 99)\n    {\n        msg.payload = pos + 10;\n        return msg;\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 604.11669921875,
+        "y": 1780.816650390625,
+        "wires": [
+            [
+                "a433eede.d080c8"
+            ]
+        ]
+    },
+    {
+        "id": "f5976a6c.b16338",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "var veh = flow.get(\"hostname\");\nvar pos = flow.get(\"positionVehicle1010\");    // current position\nvar tra = flow.get(\"transport\");\nvar tra2 = flow.get(\"transported\");\nif((flow.get(\"vehicleMovement\") === true) && (veh !== \"Vehicle1010\"))\n{\n    var rand = Math.round(Math.random()*99+1);  // desired new value\n    var pm = Math.round(Math.random()*10);  // for plus or minus\n    var spe = flow.get(\"vehspeed\");\n    if(Math.abs(rand - pos) > spe)\n    {\n        if(pm <= 5)\n            rand = pos + spe;\n        else\n            rand = pos - spe;\n    }\n    if(rand > 100)\n        rand = 100;\n    else if (rand < 0)\n        rand = 0;\n    msg.payload = rand;\n    var pos = flow.set(\"positionVehicle1010\", rand);    // current position\n    return msg;\n}\nelse if((veh === \"Vehicle1010\") && (tra === false) && (tra2 === false))  // if Box should be transported\n{\n    if(pos < 2)\n    {\n        flow.set(\"transport\",true);\n        flow.set(\"transportingPub\", true);\n    }\n    else\n    {\n        msg.payload = pos - 5;\n        return msg;\n    }\n}\nelse if ((tra === true) && (veh === \"Vehicle1010\"))\n{\n    if(pos < 99)\n    {\n        msg.payload = pos + 10;\n        return msg;\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 604.11669921875,
+        "y": 1875.8165283203125,
+        "wires": [
+            [
+                "68754e98.3dc1a"
+            ]
+        ]
+    },
+    {
+        "id": "49d11ab9.3adc84",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "var veh = flow.get(\"hostname\");\nvar pos = flow.get(\"positionVehicle4567\");    // current position\nvar tra = flow.get(\"transport\");\nvar tra2 = flow.get(\"transported\");\nif((flow.get(\"vehicleMovement\") === true) && (veh != \"Vehicle4567\"))\n{\n    var rand = Math.round(Math.random()*99+1);  // desired new value\n    var pm = Math.round(Math.random()*10);  // for plus or minus\n    var spe = flow.get(\"vehspeed\");\n    if(Math.abs(rand - pos) > spe)\n    {\n        if(pm <= 5)\n            rand = pos + spe;\n        else\n            rand = pos - spe;\n    }\n    if(rand > 100)\n        rand = 100;\n    else if (rand < 0)\n        rand = 0;\n    msg.payload = rand;\n    var pos = flow.set(\"positionVehicle4567\", rand);    // current position\n    return msg;\n}\nelse if((veh === \"Vehicle4567\") && (tra === false) && (tra2 === false))  // if Box should be transported\n{\n    if(pos < 2)\n    {\n        flow.set(\"transport\",true);\n        flow.set(\"transportingPub\", true);\n    }\n    else\n    {\n        msg.payload = pos - 5;\n        return msg;\n    }\n}\nelse if ((tra === true) && (veh === \"Vehicle4567\"))\n{\n    if(pos < 99)\n    {\n        msg.payload = pos + 10;\n        return msg;\n    }\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 596.11669921875,
+        "y": 1955.816650390625,
+        "wires": [
+            [
+                "e3ad2d18.eca7b8"
+            ]
+        ]
+    },
+    {
+        "id": "ac66edee.93957",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "flow.set(\"vehspeed\", msg.payload);",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 356.1166687011719,
+        "y": 2185.0165405273438,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5e0208ba.19b6a",
+        "type": "ui_slider",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle Speed",
+        "group": "3943e3e7.0487dc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "",
+        "min": "1",
+        "max": "80",
+        "step": 1,
+        "x": 173.44998168945312,
+        "y": 2182.9163818359375,
+        "wires": [
+            [
+                "ac66edee.93957"
+            ]
+        ]
+    },
+    {
+        "id": "9f80aa94.7092a",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "msg.payload = flow.get(\"hostname\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 308.73333740234375,
+        "y": 1599.449951171875,
+        "wires": [
+            [
+                "93e007d7.b8454"
+            ]
+        ]
+    },
+    {
+        "id": "e67e80e5.2abda8",
+        "type": "ui_text",
+        "z": "e97ed8e8.1a8608",
+        "group": "3943e3e7.0487dc",
+        "order": 4,
+        "width": "0",
+        "height": "0",
+        "name": "",
+        "label": "action:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 442.1166687011719,
+        "y": 1543.7166748046875,
+        "wires": []
+    },
+    {
+        "id": "9e3e3496.432008",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "var a1 = flow.get(\"transport\");\nvar a2 = flow.get(\"transported\");\nvar hos = flow.get(\"hostname\");\nvar act = \"nothing\";\nif ((a1 === false) && (hos !== \"\"))\n    act = \"reaching Box\";\nelse if ((a1 === true) && (a2 === false))\n    act = \"transporting Box\";\nmsg.payload = act;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 309.39996337890625,
+        "y": 1545.5166015625,
+        "wires": [
+            [
+                "e67e80e5.2abda8"
+            ]
+        ]
+    },
+    {
+        "id": "4ae44713.da44e",
+        "type": "ui_switch",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle1234 agreement",
+        "group": "aa368ff3.f3eca",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "V1234a",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "V1234n",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 618.7333984375,
+        "y": 2114.1168212890625,
+        "wires": [
+            [
+                "a739d9e.4541a28"
+            ]
+        ]
+    },
+    {
+        "id": "a739d9e.4541a28",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "var mess = msg.payload;\nif (mess === \"V1234a\")\n    flow.set(\"V1234_answer\", true);\nelse if (mess === \"V1234n\")\n    flow.set(\"V1234_answer\", false);\n    \nelse if (mess === \"V9876a\")\n    flow.set(\"V9876_answer\", true);\nelse if (mess === \"V9876n\")\n    flow.set(\"V9876_answer\", false);\n    \nelse if (mess === \"V1010a\")\n    flow.set(\"V1010_answer\", true);\nelse if (mess === \"V1010n\")\n    flow.set(\"V1010_answer\", false);\n    \nelse if (mess === \"V4567a\")\n    flow.set(\"V4567_answer\", true);\nelse if (mess === \"V4567n\")\n    flow.set(\"V4567_answer\", false);",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 849.11669921875,
+        "y": 2199.2169189453125,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e057c3d9.a98b",
+        "type": "ui_switch",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle9876 agreement",
+        "group": "aa368ff3.f3eca",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "V9876a",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "V9876n",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 617.11669921875,
+        "y": 2183.216796875,
+        "wires": [
+            [
+                "a739d9e.4541a28"
+            ]
+        ]
+    },
+    {
+        "id": "951b6c94.d44d58",
+        "type": "ui_switch",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle1010 agreement",
+        "group": "aa368ff3.f3eca",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "V1010a",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "V1010n",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 618.11669921875,
+        "y": 2242.216796875,
+        "wires": [
+            [
+                "a739d9e.4541a28"
+            ]
+        ]
+    },
+    {
+        "id": "138cc1c.82d0abe",
+        "type": "ui_switch",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "label": "Vehicle4567 agreement",
+        "group": "aa368ff3.f3eca",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "V4567a",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "V4567n",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 614.11669921875,
+        "y": 2302.216796875,
+        "wires": [
+            [
+                "a739d9e.4541a28"
+            ]
+        ]
+    },
+    {
+        "id": "3e8ea581.f4252a",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "msg.payload = false;\nif(flow.get(\"transportingPub\") === true)\n{\n    msg.payload = true;\n    flow.set(\"transportingPub\", false);\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 275.73333740234375,
+        "y": 1047.4498901367188,
+        "wires": [
+            [
+                "f0cfc5d3.cdd02"
+            ]
+        ]
+    },
+    {
+        "id": "b13de384.8ebfa",
+        "type": "inject",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "num",
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 138.44998168945312,
+        "y": 1048.7832641601562,
+        "wires": [
+            [
+                "3e8ea581.f4252a"
+            ]
+        ]
+    },
+    {
+        "id": "db32ec5.1b6349",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "flow.set(\"transport\", true);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 286.73333740234375,
+        "y": 985.4500122070312,
+        "wires": [
+            [
+                "f0cfc5d3.cdd02"
+            ]
+        ]
+    },
+    {
+        "id": "b64d0420.11f988",
+        "type": "ui_button",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "group": "3943e3e7.0487dc",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Reset",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "x": 146.45004272460938,
+        "y": 2041.0164794921875,
+        "wires": [
+            [
+                "e0935b06.b6a19"
+            ]
+        ]
+    },
+    {
+        "id": "8f2e6b63.4c2ef",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "SmartBox/SmartBoxControlPanel/decision",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 535.7333679199219,
+        "y": 2395.88330078125,
+        "wires": []
+    },
+    {
+        "id": "735408c9.9972f",
+        "type": "ui_toast",
+        "z": "e97ed8e8.1a8608",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "Published Message",
+        "name": "pubNotify",
+        "x": 451.1166687011719,
+        "y": 2468.216796875,
+        "wires": []
+    },
+    {
+        "id": "acb63632.f57b48",
+        "type": "ui_button",
+        "z": "e97ed8e8.1a8608",
+        "name": "sendlev",
+        "group": "439f5cb1.0bd1ec",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "send level",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"hostname\":\"SnartBoxControlPanel\", \"level\":0}",
+        "payloadType": "str",
+        "topic": "",
+        "x": 222.44998168945312,
+        "y": 2517.5166015625,
+        "wires": [
+            [
+                "d2602acd.907ae",
+                "735408c9.9972f"
+            ]
+        ]
+    },
+    {
+        "id": "d2602acd.907ae",
+        "type": "mqtt out",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "topic": "SmartBox/SmartBoxControlPanel/level",
+        "qos": "",
+        "retain": "",
+        "broker": "51280c75.863c24",
+        "x": 542.11669921875,
+        "y": 2573.5166015625,
+        "wires": []
+    },
+    {
+        "id": "bd1c6111.5f6b08",
+        "type": "ui_dropdown",
+        "z": "e97ed8e8.1a8608",
+        "name": "senddec",
+        "label": "Send decision",
+        "place": "Send decision",
+        "group": "439f5cb1.0bd1ec",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "options": [
+            {
+                "label": "Vehicle 1234",
+                "value": "{\"hostname\":\"Vehicle1234\"}",
+                "type": "str"
+            },
+            {
+                "label": "Vehicle 9876",
+                "value": "{\"hostname\":\"Vehicle9876\"}",
+                "type": "str"
+            },
+            {
+                "label": "Vehicle 1010",
+                "value": "{\"hostname\":\"Vehicle1010\"}",
+                "type": "str"
+            },
+            {
+                "label": "Vehicle 4567",
+                "value": "{\"hostname\":\"Vehicle4567\"}",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "Send decision (from Smart Box)",
+        "x": 225.44998168945312,
+        "y": 2410.9832763671875,
+        "wires": [
+            [
+                "8f2e6b63.4c2ef",
+                "735408c9.9972f"
+            ]
+        ]
+    },
+    {
+        "id": "e0935b06.b6a19",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "",
+        "func": "flow.set(\"transported\", true);\nflow.set(\"hostname\", \"\");\nreturn [{payload:50}, {payload:50}, {payload:50}, {payload:50}, {payload:25}]",
+        "outputs": 5,
+        "noerr": 0,
+        "x": 300.7333679199219,
+        "y": 2042.550048828125,
+        "wires": [
+            [
+                "bd2e171d.85c2a"
+            ],
+            [
+                "a433eede.d080c8"
+            ],
+            [
+                "68754e98.3dc1a"
+            ],
+            [
+                "e3ad2d18.eca7b8"
+            ],
+            [
+                "5e0208ba.19b6a"
+            ]
+        ]
+    },
+    {
+        "id": "9ac2446d.b8a0e",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "blockFalse",
+        "func": "if (msg.payload === false)\n    ;\nelse\n    return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 764.5,
+        "y": 143.1999969482422,
+        "wires": [
+            [
+                "1456857a.1b234b",
+                "5b8c1484.ab9bbc"
+            ]
+        ]
+    },
+    {
+        "id": "18ba6af3.e30285",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "blockFalse",
+        "func": "if (msg.payload === false)\n    ;\nelse\n    return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 755.2000122070312,
+        "y": 186.1999969482422,
+        "wires": [
+            [
+                "fd92ac41.edac1",
+                "5b8c1484.ab9bbc"
+            ]
+        ]
+    },
+    {
+        "id": "8df48ab7.7a02d8",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "blockFalse",
+        "func": "if (msg.payload === false)\n    ;\nelse\n    return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 750.2000122070312,
+        "y": 226.1999969482422,
+        "wires": [
+            [
+                "cee6ad3c.167e28",
+                "5b8c1484.ab9bbc"
+            ]
+        ]
+    },
+    {
+        "id": "f92ddcb7.72e5d8",
+        "type": "function",
+        "z": "e97ed8e8.1a8608",
+        "name": "blockFalse",
+        "func": "if (msg.payload === false)\n    ;\nelse\n    return msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 754.2000122070312,
+        "y": 273.20001220703125,
+        "wires": [
+            [
+                "2644dc00.fab3cc",
+                "5b8c1484.ab9bbc"
+            ]
+        ]
+    },
+    {
+        "id": "5b8c1484.ab9bbc",
+        "type": "ui_toast",
+        "z": "e97ed8e8.1a8608",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "Published Message",
+        "name": "pubNotify",
+        "x": 963.2000122070312,
+        "y": 385.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "51280c75.863c24",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "Rasp MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "12007057.1ce73",
+        "type": "ui_group",
+        "z": "",
+        "name": "Vehicle Positions",
+        "tab": "6a5fb370.b1336c",
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "3943e3e7.0487dc",
+        "type": "ui_group",
+        "z": "",
+        "name": "Control Panel",
+        "tab": "6a5fb370.b1336c",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "aa368ff3.f3eca",
+        "type": "ui_group",
+        "z": "",
+        "name": "Vehicle Answer Options",
+        "tab": "6a5fb370.b1336c",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "439f5cb1.0bd1ec",
+        "type": "ui_group",
+        "z": "",
+        "name": "Smart Box Things",
+        "tab": "6a5fb370.b1336c",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "6a5fb370.b1336c",
+        "type": "ui_tab",
+        "z": "",
+        "name": "SmartBox Show-Case GUI",
+        "icon": "dashboard"
+    }
+]
