@@ -21,7 +21,7 @@
 
 #define DEFAULT_WIFI_SSID "DigitalLab"        ///< SSID to connect to
 #define DEFAULT_WIFI_PASSWORD "digital42HSR"  ///< Password to corresponding SSID
-#define DEFAULT_HOSTNAME_SARTBOX "SmartBox"   ///< for SmartBoxes, used for MQTT and WiFi, must be unique in Network
+#define DEFAULT_HOSTNAME_SMARTBOX "SmartBox"  ///< for SmartBoxes, used for MQTT and WiFi, must be unique in Network
 #define DEFAULT_HOSTNAME_VEHICLE "Vehicle"    ///< for Vehicles, used for MQTT and WiFi, must be unique in Network
 #define DEFAULT_WIFI_CS 8                     ///< Pins for Adafruit ATWINC1500 Feather
 #define DEFAULT_WIFI_IRQ 7                    ///<

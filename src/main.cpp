@@ -126,7 +126,9 @@ void setup() {
     }
     LOG1("-.-.-.- SETUP -.-.-.-");
     LOG3("entering setup - initializing components");
+    LOG3("new NetworkManager()");
     mNetwP = new NetworkManager();
+    LOG3("new SensorArray()");
     mSarrP = new SensorArray();
     TaskMain = mNetwP->NetManTask_classPointer;
     pinMode(PIN_FOR_FULL, OUTPUT);

@@ -30,10 +30,11 @@ void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String 
     if (is_vehicle) {
         hostname = DEFAULT_HOSTNAME_VEHICLE + String(random(0xffff), HEX);  // Create a random client ID for vehicles
     } else {
-        hostname = DEFAULT_HOSTNAME_SARTBOX + String(random(0xffff), HEX);  // Create a random client ID for vehicles
+        hostname = DEFAULT_HOSTNAME_SMARTBOX + String(random(0xffff), HEX);  // Create a random client ID for vehicles
     }
 
     WiFi.setPins(pins[0], pins[1], pins[2], pins[3]);
+    LOG3("==Connect to Network==");
     connectToWiFi();  //connect to WiFi
 
     ip = WiFi.localIP();
@@ -43,6 +44,7 @@ void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String 
     rssi = WiFi.RSSI();
     encryption = WiFi.encryptionType();
 
+    LOG3("==Connect to MQTT==");
     this->brokerIP = broker;
     this->mQTT_port = mmQTTport;
 
