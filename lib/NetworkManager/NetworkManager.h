@@ -25,25 +25,34 @@
 #include <NetworkManagerStructs.h>
 
 /**
- * @brief 
+ * @brief default_pins array contains contains on whiche Pins the Wifi-Shield connections are.
  * 
  */
 static const int default_pins[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN};
-const bool is_vehicle = false;  // true if is vehicle, used for MQTT
-static MQTTTasks NetManTask;    // saves all messages, saves all incoming messages as JSON Objects, FIFO order, num of items: MAX_JSON_MESSAGES_SAVED
+const bool is_vehicle = false;  ///< true if is vehicle, used for MQTT
+static MQTTTasks NetManTask;    ///< saves all messages, saves all incoming messages as JSON Objects, FIFO order, num of items: \link MAX_JSON_MESSAGES_SAVED \endlink
 
 /**
- * @brief 
+ * @brief callback2
+ * 
+ * needs to be outside class!
  * 
  * @param topic 
  * @param payload 
  * @param length 
+ * 
+ * /todo why outside class?
  */
-void callback2(char *topic, byte *payload, unsigned int length);  // needs to be outside class!
+void callback2(char *topic, byte *payload, unsigned int length);
 
 /**
- * @brief 
+ * @brief The Class connects the board wict WLAN
  * 
+ * The Network-Manager Class saves SSID, WLAN-Password, Hostname, IP-Address, IP-Adress of the router, the owen mac-Adress
+ * reception quality (RSSI), wlan-encryption, IP-adress of the MQTT Broker, a pointer on a PubSubClient and the MQTT-Port. \n
+ * The Class contains two constructor, a default and one where you can handover the parameters on your own. \n
+ * The MQTT functions are in publishMessage, subscrube, unsibscribe, and loop.
+ * The functions getInfo, getHostname and getIP are needed for debbugung.
  */
 class NetworkManager {
    public:
@@ -67,17 +76,17 @@ class NetworkManager {
     //NetworkManager(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]); // COSTUM C'tor 2
 
     /**
-     * @brief 
+     * @brief handles outgoing MQTT messages to Server
      * 
      * @param topic 
      * @param msg 
      * @return true 
      * @return false 
      */
-    bool publishMessage(const String topic, const String msg);  // handles outgoing MQTT messages to Server
+    bool publishMessage(const String topic, const String msg);
 
     /**
-     * @brief 
+     * @brief unsubsribes to MQTT topic on Server
      * 
      * @param topic 
      * @return true 
@@ -86,61 +95,61 @@ class NetworkManager {
     bool unsubscribe(const String topic);
 
     /**
-     * @brief 
+     * @brief subsribes to MQTT topic on Server
      * 
      * @param topic 
      * @return true 
      * @return false 
      */
-    bool subscribe(const String topic);  // subsribes to MQTT topic on Server
+    bool subscribe(const String topic);
 
     /**
-     * @brief Get the Info object
+     * @brief prints out some information about that object
      * 
      */
-    void getInfo();  // prints out some information about that object
+    void getInfo();
 
     /**
-     * @brief 
+     * @brief make client ready for receiving messages
      * 
      */
-    void loop();  // make client ready for receiving messages
+    void loop();
 
     /**
-     * @brief Get the Host Name object
+     * @brief get hostname of this object
      * 
      * @return String 
      */
-    String getHostName();  // returns hostname of this object
+    String getHostName();
 
     /**
-     * @brief 
+     * @brief Get current IP Adress
      * 
      * @return IPAddress 
      */
-    IPAddress getIP();  // return current IP Address
+    IPAddress getIP();
 
     /**
-     * @brief 
+     * @brief used to see saved Messages from outside this class
      * 
      */
-    MQTTTasks *NetManTask_classPointer;  // used to see saved Messages from outside this file
+    MQTTTasks *NetManTask_classPointer;
 
    private:
     /**
-    * @brief 
+    * @brief connects to WiFi based on below stored attributes
     * 
     */
-    void connectToWiFi();  // connects to WiFi based on below stored attributes
+    void connectToWiFi();
 
     /**
-     * @brief 
+     * @brief connects to MQTT Broker based on below stored attributes
      * 
      */
-    void connectToMQTT();  // connects to MQTT Broker based on below stored attributes
+    void connectToMQTT();
 
     /**
-     * @brief 
+     * @brief needed to call diffrent C'tors from each other
      * 
      * @param broker 
      * @param ssid2 
@@ -148,12 +157,12 @@ class NetworkManager {
      * @param mmQTTport 
      * @param pins 
      */
-    void initializeComponent(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]);  // needed to call diffrent C'tors from each other
+    void initializeComponent(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]);
 
     // WIFI stuff
-    String ssid;           ///<
+    String ssid;           ///< Contains SSID
     String pass;           ///<
-    String hostname;       ///<
+    String hostname;       ///< Contains Hostname
     IPAddress ip;          ///<
     byte macRouter[6];     ///<
     byte mac[6];           ///<

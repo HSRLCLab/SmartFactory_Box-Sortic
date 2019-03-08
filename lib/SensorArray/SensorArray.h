@@ -19,8 +19,9 @@
 #include <SensorConfiguration.h>
 
 /**
- * @brief class for Sharp Sensor
+ * @brief The Class SensorArray saves data from the sensors
  * 
+ * The Class has the ability to store and recall the sensor-values. The box is 
  */
 class SensorArray {
    public:
