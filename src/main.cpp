@@ -126,14 +126,21 @@ void setup() {
     }
     LOG1("-.-.-.- SETUP -.-.-.-");
     LOG3("entering setup - initializing components");
+#if !(SERVICE_MODE == 2)
     LOG3("new NetworkManager()");
     mNetwP = new NetworkManager();
     LOG3("new SensorArray()");
+#endif
     mSarrP = new SensorArray();
+#if !(SERVICE_MODE == 2)
     TaskMain = mNetwP->NetManTask_classPointer;
+#endif
     pinMode(PIN_FOR_FULL, OUTPUT);
     myFuncToCall = loopEmpty;
-
+#if SERVICE_MODE == 2
+    pinMode(13, OUTPUT);
+    LOG3("=== RUN SENSORTEST ===");
+#endif
     if (showCase) {
         pinMode(13, OUTPUT);  // debug LED
     }
@@ -148,6 +155,12 @@ void setup() {
  * Use it to actively control the board.
  */
 void loop() {
+#if SERVICE_MODE == 2
+    LOG3("=====");
+    mSarrP->SensorArray::getSensorData();
+    delay(1000);
+    return;
+#endif
     static int i;
     // TaskMain->printAllMessages(0); // to show all saved Tasks (hostnames)
 
@@ -164,13 +177,11 @@ void loop() {
                 } else {
                     ledState = LOW;
                 }
-                digitalWrite(13, ledState);
+                // digitalWrite(13, ledState);
                 mNetwP->loop();  // needed to be called regularly to keep connection alive
             }
             currentMillis = millis();
         }
-
-        LOG1();
         LOG1();
         LOG1();
         LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
