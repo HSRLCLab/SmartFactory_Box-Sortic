@@ -31,8 +31,16 @@ struct myJSONStr {
     String topic = "default";
     String hostname = "default";
     String request = "default";
-    int level = -5;           ///< describes Smart Box level states, -5 is default if not set!
-    double vehicleParams[5];  ///< see documentation for parameters @todo complete
+    int level = -5;  ///< describes Smart Box level states, -5 is default if not set!
+    /**
+     * @brief vehilce Params
+     * 
+     * [0]: velocity v \n
+     * [1]: movingdirection vd \n
+     * [2]: distance d \n
+     * [3]: open tasks t \n
+     */
+    double vehicleParams[5];
 };
 
 /**

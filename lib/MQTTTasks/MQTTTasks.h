@@ -32,6 +32,14 @@ class MQTTTasks {
     MQTTTasks();
 
     /**
+   * @brief copy constructor
+   * 
+   * @param other 
+   * @return MQTTTasks* 
+   */
+    MQTTTasks *operator=(MQTTTasks *other);
+
+    /**
    * @brief Get the most current/last message
    * 
    * @return myJSONStr 
@@ -51,6 +59,14 @@ class MQTTTasks {
    * @return myJSONStr 
    */
     myJSONStr doLastUrgentMessage();
+
+    /**
+   * @brief shows if urgent messages arrived
+   * 
+   * @return true 
+   * @return false 
+   */
+    bool hasUrgentMessage();
 
     /**
    * @brief returns the message,which is fromLast from current
@@ -129,14 +145,6 @@ class MQTTTasks {
     bool addMessage(myJSONStr mess);
 
     /**
-   * @brief copy constructor
-   * 
-   * @param other 
-   * @return MQTTTasks* 
-   */
-    MQTTTasks *operator=(MQTTTasks *other);
-
-    /**
    * @brief  returns messages between indexes, to use for iterations, from index to index, index = returnCurrentIterator, 0-th Element.level is array size
    * 
    * @param from 
@@ -159,14 +167,6 @@ class MQTTTasks {
    * @param choice 
    */
     void printAllMessages(byte choice);
-
-    /**
-   * @brief shows if urgent messages arrived
-   * 
-   * @return true 
-   * @return false 
-   */
-    bool hasUrgentMessage();
 
    private:
     myJSONStr messages[MAX_JSON_MESSAGES_SAVED];           ///< message save

@@ -68,38 +68,46 @@ int ledState = LOW;              ///< used for debugging LED
 double calcOptimum(myJSONStr &obj);
 
 /**
- * @brief Get the Smart Box Info if \link LOG2 \endlink is Defined
+ * @brief Get the Smart Box Info if \link LOG2 \endlink is defined
  * 
  */
 void getSmartBoxInfo();
 
 /**
- * @brief loop until Box full
+ * @brief FSM loop until Box full 
  * 
+ * if Box full switch state to \link publishLevel() \endlink
  */
 void loopEmpty();
 
 /**
- * @brief publishes SmartBox Level
+ * @brief FSM publishes SmartBox Level
  * 
+ * publish SB level and wait for \link SMARTBOX_WAITFOR_VEHICLES_SECONDS \endlink
+ * befor switching state to \link getOptimalVehiclefromResponses() \endlink
  */
 void publishLevel();
 
 /**
- * @brief Get the Optimal Vehicle from Responses object
+ * @brief FSM Get the Optimal Vehicle from Responses object
  * 
- * gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
+ * checks all responses and gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
+ * afterwards switch state to \link hasOptVehiclePublish() \endlink
  */
 void getOptimalVehiclefromResponses();
 
 /**
- * @brief publishes decision for vehicle to transport Smart Box
+ * @brief FSM publishes decision for which vehicle should get the Smart Box
  * 
+ *  if no answers ar recived switch state back to \link publishLevel() \endlink
+ * else switch state to \link checkIfAckReceivedfromResponses() \endlink
  */
 void hasOptVehiclePublish();
 
 /**
  * @brief runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
+ * 
+ *if the right vehicle answer
  * 
  */
 void checkIfAckReceivedfromResponses();
@@ -126,13 +134,13 @@ void setup() {
     }
     LOG1("-.-.-.- SETUP -.-.-.-");
     LOG3("entering setup - initializing components");
-#if !(SERVICE_MODE == 2)
+#if !(SERVICE_MODE > 0)
     LOG3("new NetworkManager()");
     mNetwP = new NetworkManager();
     LOG3("new SensorArray()");
 #endif
     mSarrP = new SensorArray();
-#if !(SERVICE_MODE == 2)
+#if !(SERVICE_MODE > 0)
     TaskMain = mNetwP->NetManTask_classPointer;
 #endif
     pinMode(PIN_FOR_FULL, OUTPUT);
@@ -194,7 +202,7 @@ void loop() {
         i++;
         LOG2("STATE: " + String(stat));
         LOG2("--------------------------");
-        myFuncToCall();
+        myFuncToCall();  // calls function for FSM
         mNetwP->loop();  // needed to be called regularly to keep connection alive
     }
 }

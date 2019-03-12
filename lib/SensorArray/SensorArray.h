@@ -21,7 +21,6 @@
 /**
  * @brief The Class SensorArray saves data from the sensors
  * 
- * The Class has the ability to store and recall the sensor-values. The box is 
  */
 class SensorArray {
    public:
@@ -34,8 +33,8 @@ class SensorArray {
     /**
        * @brief Read the Sensor Values
        *
-       * Checks for an Element within 0.5-5cm from Sensor.
-       * If an Elemenet is detectet the sensor be LOW.
+       * Checks for an Element within 0.5-5cm distance from Sensor.
+       * If an Elemenet is detectet the sensor will be LOW.
        *
        * @return true Sensor found an Element (full)
        * @return false Sensor found no Element (empty)

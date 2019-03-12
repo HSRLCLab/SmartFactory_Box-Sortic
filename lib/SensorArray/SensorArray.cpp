@@ -27,10 +27,7 @@ SensorArray::SensorArray()  // initialisation of Sensor
 }
 
 /**
- * @bug 0.0049 is wrong. The assumptation was 5V/1023.
- * It should be 3.3V/1023=0.0032 if you would like to convert it to V
- * 
- * @todo fix Bug and change calculation from V to mm
+ * @todo Check multiple times if a Object is present for relaiability
  */
 bool SensorArray::getSensorData()  // read sensor, true if full
 {
@@ -39,7 +36,7 @@ bool SensorArray::getSensorData()  // read sensor, true if full
     int sensor2 = !digitalRead(INPUT_PIN2);
     int sensor3 = !digitalRead(INPUT_PIN3);
 
-        LOG3("SensorValue1: " + String(sensor1));
+    LOG3("SensorValue1: " + String(sensor1));
     LOG3("SensorValue2: " + String(sensor2));
     LOG3("SensorValue3: " + String(sensor3));
     if (sensor1 || sensor2 || sensor3) {
@@ -93,13 +90,7 @@ bool SensorArray::getSensorData()  // read sensor, true if full
 // }
 //}
 
-// void SensorArray::pushToQueue(bool &val) {
-//     if (lastValuesSize == (MAX_SENSOR_VALUES - 2)) {
-//         lastValuesSize = -1;
-//     };
-//     lastValuesSize++;
-//     SensValStore[lastValuesSize] = val;
-// }
+//===================================PRIVATE======================================================================
 
 // bool SensorArray::getLastSensorData(int num) {
 //     if ((num < MAX_SENSOR_VALUES) && (num > 0)) {
@@ -110,4 +101,12 @@ bool SensorArray::getSensorData()  // read sensor, true if full
 //         LOG3("it must be between 0 and " + String(MAX_SENSOR_VALUES - 1));
 //         return false;
 //     }
+// }
+
+// void SensorArray::pushToQueue(bool &val) {
+//     if (lastValuesSize == (MAX_SENSOR_VALUES - 2)) {
+//         lastValuesSize = -1;
+//     };
+//     lastValuesSize++;
+//     SensValStore[lastValuesSize] = val;
 // }

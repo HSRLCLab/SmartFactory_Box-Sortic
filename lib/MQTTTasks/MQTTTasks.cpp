@@ -1,6 +1,18 @@
+/**
+ * @file MQTTTasks.cpp
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * @brief 
+ * @version 0.1
+ * @date 2019-03-12
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #include "MQTTTasks.h"
 
+//==============================PUBLIC=================================
 MQTTTasks::MQTTTasks() {
+    LOG4("MQTTTasks::MQTTTasks()");
     myJSONStr tmp;
     for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++) {
         messages[i] = tmp;
@@ -12,6 +24,11 @@ MQTTTasks::MQTTTasks() {
     startIteration = 0;
 }
 
+MQTTTasks *MQTTTasks::operator=(MQTTTasks *other)  // needed in main.cpp
+{
+    return this;
+}
+
 myJSONStr MQTTTasks::getLastMessage() {
     if (!isEmpty)
         return messages[mqtt_class_counter];
@@ -20,6 +37,7 @@ myJSONStr MQTTTasks::getLastMessage() {
         LOG2("there has been no messages saved");
     }
 }
+
 myJSONStr MQTTTasks::doLastMessage() {
     myJSONStr tmp = getLastMessage();
     deleteMessage(0);
@@ -76,6 +94,7 @@ myJSONStr MQTTTasks::getDesiredMessage(int certainCurrentIterator) {
     }
     return tmp;
 }
+
 myJSONStr MQTTTasks::getDoDesiredMessage(int certainCurrentIterator) {
     myJSONStr tmp;
     if (!isEmpty) {
@@ -170,47 +189,6 @@ bool MQTTTasks::addMessage(myJSONStr mess) {
     LOG3("message added successfully");
 }
 
-MQTTTasks *MQTTTasks::operator=(MQTTTasks *other)  // needed in main.cpp
-{
-    return this;
-}
-
-String *MQTTTasks::returnMQTTtopics(myJSONStr passingMessage) {
-    String tmp[MAX_MQTT_TOPIC_DEPTH];
-    int k1 = 0;  // lower cut-bound
-    int k2 = 0;  // upper cut-bound
-    int k3 = 0;  // num of strings (must be below above!)
-    for (int i = 0; i < passingMessage.topic.length() - 2; i++) {
-        if (passingMessage.topic[i] == '/') {
-            k2 = i;
-            if (k3 == MAX_MQTT_TOPIC_DEPTH)
-                break;
-            else {
-                tmp[k3] = passingMessage.topic.substring(k1, k2);
-                k1 = i + 1;
-                k3++;
-            }
-        }
-    }
-    k2 = passingMessage.topic.length();
-    tmp[k3] = passingMessage.topic.substring(k1, k2);
-    delete stringpassing;
-    if (k3 > 0) {
-        stringpassing = new String[k3 + 1];
-        for (int i = 0; i <= k3; i++) {
-            stringpassing[i] = tmp[i];
-        }
-        return stringpassing;
-    } else {
-        LOG3("k3 has no reasonable value: " + String(k3));
-        return nullptr;
-    }
-}
-
-int returnNumOfVehicles(String &topicToNumOf) {
-    //TODO
-}
-
 myJSONStr *MQTTTasks::getBetween(int from, int to)  // from index to index
 {
     int tmp_to = to % MAX_JSON_MESSAGES_SAVED;
@@ -261,6 +239,38 @@ myJSONStr *MQTTTasks::getBetween(int from, int to)  // from index to index
         //    LOG3("the " + String(i) + "-th Element to return is: " + returnBetween[i].hostname);
         return returnBetween;
         //delete[] returnBetween;
+    }
+}
+
+String *MQTTTasks::returnMQTTtopics(myJSONStr passingMessage) {
+    String tmp[MAX_MQTT_TOPIC_DEPTH];
+    int k1 = 0;  // lower cut-bound
+    int k2 = 0;  // upper cut-bound
+    int k3 = 0;  // num of strings (must be below above!)
+    for (int i = 0; i < passingMessage.topic.length() - 2; i++) {
+        if (passingMessage.topic[i] == '/') {
+            k2 = i;
+            if (k3 == MAX_MQTT_TOPIC_DEPTH)
+                break;
+            else {
+                tmp[k3] = passingMessage.topic.substring(k1, k2);
+                k1 = i + 1;
+                k3++;
+            }
+        }
+    }
+    k2 = passingMessage.topic.length();
+    tmp[k3] = passingMessage.topic.substring(k1, k2);
+    delete stringpassing;
+    if (k3 > 0) {
+        stringpassing = new String[k3 + 1];
+        for (int i = 0; i <= k3; i++) {
+            stringpassing[i] = tmp[i];
+        }
+        return stringpassing;
+    } else {
+        LOG3("k3 has no reasonable value: " + String(k3));
+        return nullptr;
     }
 }
 
@@ -318,3 +328,9 @@ void MQTTTasks::printAllMessages(byte choice)  // 0 for hostname, 1 level, 2 req
             break;
     }
 }
+
+// int returnNumOfVehicles(String &topicToNumOf) {
+//     ///@TODO returnNumOfVehicles
+// }
+
+//==============================PRIVATE=================================
