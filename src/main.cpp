@@ -76,14 +76,14 @@ void getSmartBoxInfo();
 /**
  * @brief FSM loop until Box full 
  * 
- * if Box full switch state to \link publishLevel() \endlink
+ * If Box full switch state to \link publishLevel() \endlink
  */
 void loopEmpty();
 
 /**
  * @brief FSM publishes SmartBox Level
  * 
- * publish SB level and wait for \link SMARTBOX_WAITFOR_VEHICLES_SECONDS \endlink
+ * Publish SB level and wait for \link SMARTBOX_WAITFOR_VEHICLES_SECONDS \endlink
  * befor switching state to \link getOptimalVehiclefromResponses() \endlink
  */
 void publishLevel();
@@ -91,7 +91,7 @@ void publishLevel();
 /**
  * @brief FSM Get the Optimal Vehicle from Responses object
  * 
- * checks all responses and gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
+ * Checks all responses and gets Vehicle with best Params due to calcOptimum(), calc Optimum Value & set hostname_max, hostname_max2
  * afterwards switch state to \link hasOptVehiclePublish() \endlink
  */
 void getOptimalVehiclefromResponses();
@@ -99,22 +99,25 @@ void getOptimalVehiclefromResponses();
 /**
  * @brief FSM publishes decision for which vehicle should get the Smart Box
  * 
- *  if no answers ar recived switch state back to \link publishLevel() \endlink
- * else switch state to \link checkIfAckReceivedfromResponses() \endlink
+ *  If no answers ar recived switch state back to \link publishLevel() \endlink
+ *  Else switch state to \link checkIfAckReceivedfromResponses() \endlink
  */
 void hasOptVehiclePublish();
 
 /**
- * @brief runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
+ * @brief FSM runs until acknoledgement of desired Vehicle arrived, check if right Vehicle answered to get SmartBox transported
  * 
- *if the right vehicle answer
+ * If the right vehicle answer change state to \link checkIfTransporedfromResponses() \endlink \n
+ * Else if desired vehicle doesn't respond ask the nexst one, change state back to \link hasOptVehiclePublish() \n
+ * Else no vehicle responded, chaneg state to \link publishLevel() \endlink
  * 
  */
 void checkIfAckReceivedfromResponses();
 
 /**
- * @brief runs until SmartBox is transpored, emtied and brought back to factory
+ * @brief runs until SmartBox is transported, emtied and brought back to factory
  * 
+ * If smartbox is empty and abck in factory change state to \link loopEmpty() \endlink
  */
 void checkIfTransporedfromResponses();
 
@@ -128,7 +131,7 @@ void checkIfTransporedfromResponses();
  */
 void setup() {
     if (LOGLEVELCONFIGURATION > 0) {
-        Serial.begin(12000);  //Initialize serial
+        Serial.begin(9600);  //Initialize serial
         while (!Serial)
             ;  // wait for serial port to connect
     }
@@ -235,8 +238,8 @@ void getSmartBoxInfo() {
 
 // ===================================== my Functions =====================================
 void loopEmpty() {
-    digitalWrite(PIN_FOR_FULL, LOW);  ///< if empty leave LED off or turn it off
-    if (toNextStatus)                 ///< only subscribe once but publish repeatedly
+    digitalWrite(PIN_FOR_FULL, LOW);  /// if empty leave LED off or turn it off
+    if (toNextStatus)                 /// only subscribe once but publish repeatedly
     {
         LOG1("-.-.-.- reading Sensor Values -.-.-.-");
         LOG3("entering new state: loopEmpty");
@@ -249,7 +252,7 @@ void loopEmpty() {
         stat = status_main::status_justFullPublish;
         myFuncToCall = publishLevel;
         toNextStatus = true;
-        digitalWrite(PIN_FOR_FULL, HIGH);  ///< if the Box is full turn the LED on
+        digitalWrite(PIN_FOR_FULL, HIGH);  /// if the Box is full turn the LED on
     }
     previousMillis = millis();
     while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase)) {
@@ -258,7 +261,7 @@ void loopEmpty() {
 }
 
 void publishLevel() {
-    if (toNextStatus)  // only subscribe once but publish repeatedly
+    if (toNextStatus)  /// only subscribe once but publish repeatedly
     {
         LOG1("-.-.-.- pubilsh SmartBox level -.-.-.-");
         LOG3("entering new state: pubishLevel");

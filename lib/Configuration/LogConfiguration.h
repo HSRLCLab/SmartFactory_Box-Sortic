@@ -9,12 +9,12 @@
  * 
  * @copyright Copyright (c) 2019
  * 
- * @rewrite LOGs with ERROR, WARNINGS println print etc.
+ * @todo rewrite LOGs with ERROR, WARNINGS println print etc.
  */
 #ifndef LOGCONFIGURATION_H
 #define LOGCONFIGURATION_H
 
-#define LOGLEVELCONFIGURATION 5  // can have values from 0-4, 0-without, 1 error, 2 info, 3 verbose debugging,4 disp functioncall
+#define LOGLEVELCONFIGURATION 4  // can have values from 0-4, 0-without, 1 error, 2 info, 3 verbose debugging,4 disp functioncall
 #if LOGLEVELCONFIGURATION == 4   ///< detailed logging (every function call)
 #define LOG1(logg1) Serial.println(logg1)
 #define LOG2(logg2) Serial.println(logg2)

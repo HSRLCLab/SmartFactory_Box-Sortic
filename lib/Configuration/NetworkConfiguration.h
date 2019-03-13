@@ -30,7 +30,7 @@
 #define DEFAULT_MQTT_BROKER_IP1 192           ///< broker IP distributed in 4 values
 #define DEFAULT_MQTT_BROKER_IP2 168           ///<
 #define DEFAULT_MQTT_BROKER_IP3 1             ///<
-#define DEFAULT_MQTT_BROKER_IP4 7             ///<
+#define DEFAULT_MQTT_BROKER_IP4 22            ///<
 #define DEFAULT_MQTT_PORT 1883                ///< MQTT connection port
 #define MAX_JSON_PARSE_SIZE 300               ///< max buffer size to parse JSON objects, size of the pool in bytes, can be calculated in https://arduinojson.org/v5/assistant/
 

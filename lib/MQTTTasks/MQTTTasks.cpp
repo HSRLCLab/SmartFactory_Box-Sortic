@@ -12,7 +12,7 @@
 
 //==============================PUBLIC=================================
 MQTTTasks::MQTTTasks() {
-    LOG4("MQTTTasks::MQTTTasks()");
+    // LOG4("MQTTTasks::MQTTTasks()");  //Kills everything!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     myJSONStr tmp;
     for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++) {
         messages[i] = tmp;
@@ -30,6 +30,7 @@ MQTTTasks *MQTTTasks::operator=(MQTTTasks *other)  // needed in main.cpp
 }
 
 myJSONStr MQTTTasks::getLastMessage() {
+    LOG4("MQTTTasks::getLastMessage()");
     if (!isEmpty)
         return messages[mqtt_class_counter];
     else {
