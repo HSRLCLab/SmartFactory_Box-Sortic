@@ -15,14 +15,12 @@
 
 #include "SensorArray.h"
 
-extern bool showCase;  // defined in main.cpp
-
 SensorArray::SensorArray() {  // initialisation of Sensor
     LOG4("SensorArray::SensorArray()");
     pinMode(STATUS_LED, OUTPUT);  /// initialize light LED, Output
-    pinMode(INPUT_PIN1, INPUT);   /// initialize sharp sensor 1, Input
-    pinMode(INPUT_PIN2, INPUT);   /// initialize sharp sensor 2, Input
-    pinMode(INPUT_PIN3, INPUT);   /// initialize sharp sensor 3, Input
+    pinMode(LB1, INPUT);          /// initialize sharp sensor 1, Input
+    pinMode(LB2, INPUT);          /// initialize sharp sensor 2, Input
+    pinMode(LB3, INPUT);          /// initialize sharp sensor 3, Input
     // lastValuesSize = 0;           /// initialize lastValuesSize, 0
 }
 
@@ -32,9 +30,9 @@ SensorArray::SensorArray() {  // initialisation of Sensor
 bool SensorArray::getSensorData() {  // read sensor, true if full
     LOG4("SensorArray::getSensorData()");
     LOG3("getting Sensor Data");
-    int sensor1 = !digitalRead(INPUT_PIN1);  // if Object detected INPUt_PIN = LOW
-    int sensor2 = !digitalRead(INPUT_PIN2);
-    int sensor3 = !digitalRead(INPUT_PIN3);
+    int sensor1 = !digitalRead(LB1);  // if Object detected INPUt_PIN = LOW
+    int sensor2 = !digitalRead(LB2);
+    int sensor3 = !digitalRead(LB3);
 
     LOG3("SensorValue1: " + String(sensor1));
     LOG3("SensorValue2: " + String(sensor2));
@@ -55,11 +53,11 @@ bool SensorArray::getSensorData() {  // read sensor, true if full
 // delay(10);  // needed for time delay of Sensor
 // //digitalWrite(OUTPUT_PIN, HIGH);
 // for (int i = 0; i < MAX_SENSOR_ITERATIONS; i++) {
-//     double volts = analogRead(INPUT_PIN1);  // * 0.0049;  //
+//     double volts = analogRead(LB1);  // * 0.0049;  //
 //     sum1 += volts;
-//     volts = analogRead(INPUT_PIN2);  // * 0.0049;
+//     volts = analogRead(LB2);  // * 0.0049;
 //     sum2 += volts;
-//     volts = analogRead(INPUT_PIN3);  // * 0.0049;
+//     volts = analogRead(LB3);  // * 0.0049;
 //     sum3 += volts;
 //     delay(5);  // needed for reading out PIN
 // }
