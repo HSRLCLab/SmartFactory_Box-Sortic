@@ -19,7 +19,11 @@
 #define LOG1(logg1) Serial.println(logg1)
 #define LOG2(logg2) Serial.println(logg2)
 #define LOG3(logg3) Serial.println(logg3)
-#define LOG4(logg4) Serial.println(logg4)
+#define LOG4(logg4)             \
+    if (Serial) {               \
+        Serial.print("Func: "); \
+        Serial.println(logg4);  \
+    }                             //< protects serial if called befor setup() eg in an constructor
 #elif LOGLEVELCONFIGURATION == 3  ///< detailed logging
 #define LOG1(logg1) Serial.println(logg1)
 #define LOG2(logg2) Serial.println(logg2)

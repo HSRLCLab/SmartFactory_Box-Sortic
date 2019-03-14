@@ -12,8 +12,8 @@
 
 #include "NetworkManager.h"
 
-void callback2(char *topic, byte *payload, unsigned int length)  // listens to incoming messages (published to Server)
-{
+void callback2(char *topic, byte *payload, unsigned int length) {  // listens to incoming messages (published to Server)
+    LOG4("callback2(char *topic, byte *payload, unsigned int length)");
     LOG2("a new message arrived (no: " + String(NetManTask.returnCurrentIterator()) + ")");
     String topic_str;
     for (int i = 0; topic[i] != '\0'; i++)  // iterate topic to topic_str
@@ -64,19 +64,20 @@ void callback2(char *topic, byte *payload, unsigned int length)  // listens to i
     }
 }
 
-NetworkManager::NetworkManager()  //Initialize DEFAULT serial & WiFi Module
-{
+NetworkManager::NetworkManager() {  //Initialize DEFAULT serial & WiFi Module
+    LOG4("NetworkManager::NetworkManager()");
     IPAddress defaultIPbroker(DEFAULT_MQTT_BROKER_IP1, DEFAULT_MQTT_BROKER_IP2, DEFAULT_MQTT_BROKER_IP3, DEFAULT_MQTT_BROKER_IP4);
     const int ppinss[4] = {DEFAULT_WIFI_CS, DEFAULT_WIFI_IRQ, DEFAULT_WIFI_RST, DEFAULT_WIFI_EN};
     initializeComponent(defaultIPbroker, DEFAULT_WIFI_SSID, DEFAULT_WIFI_PASSWORD, DEFAULT_MQTT_PORT, ppinss);
 }
 
-NetworkManager::NetworkManager(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4])  //Initialize COSTOM serial & WiFi Module
-{
+NetworkManager::NetworkManager(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]) {  //Initialize COSTOM serial & WiFi Module
+    LOG4("NetworkManager::NetworkManager(broker, ssid2, pass2, mmQTTport, pins[4])");
     initializeComponent(broker, ssid2, pass2, mmQTTport, pins);
 }
 
 void NetworkManager::loop() {
+    LOG4("NetworkManager::loop()");
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     if (!myMQTTclient->connected())
@@ -85,8 +86,8 @@ void NetworkManager::loop() {
         myMQTTclient->loop();
 }
 
-bool NetworkManager::publishMessage(const String topic, const String msg)  // publishes a message to the server
-{
+bool NetworkManager::publishMessage(const String topic, const String msg) {  // publishes a message to the server
+    LOG4("NetworkManager::publishMessage(const String topic, const String msg)");
     LOG3("try to publish to[" + topic + "] message: " + msg);
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
@@ -111,6 +112,7 @@ bool NetworkManager::publishMessage(const String topic, const String msg)  // pu
 }
 
 bool NetworkManager::unsubscribe(const String topic) {
+    LOG4("NetworkManager::unsubscribe(const String topic)");
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     if (myMQTTclient->connected()) {
@@ -131,8 +133,8 @@ bool NetworkManager::unsubscribe(const String topic) {
     }
 }
 
-bool NetworkManager::subscribe(const String topic)  // subscribes to a new MQTT topic
-{
+bool NetworkManager::subscribe(const String topic) {  // subscribes to a new MQTT topic
+    LOG4("NetworkManager::subscribe(const String topic) ");
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     //connectToMQTT();
@@ -155,8 +157,8 @@ bool NetworkManager::subscribe(const String topic)  // subscribes to a new MQTT 
     }
 }
 
-void NetworkManager::getInfo()  // prints Information to Network
-{
+void NetworkManager::getInfo() {  // prints Information to Network
+    LOG4("NetworkManager::getInfo()");
     myMQTTclient->loop();  // This should be called regularly to allow the client to process incoming messages and maintain its connection to the server.
     ip = WiFi.localIP();
     ssid = WiFi.SSID();
@@ -211,16 +213,19 @@ void NetworkManager::getInfo()  // prints Information to Network
 }
 
 String NetworkManager::getHostName() {
+    LOG4("NetworkManager::getHostName()");
     return this->hostname;
 }
 
 IPAddress NetworkManager::getIP() {
+    LOG4("NetworkManager::getIP()");
     if (WiFi.status() != WL_CONNECTED)
         connectToWiFi();
     return WiFi.localIP();
 }
 
 void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String pass2, const int mmQTTport, const int pins[4]) {
+    LOG4("NetworkManager::initializeComponent(broker, ssid2, pass2, mmQTTport, pins[4])");
     ssid = ssid2;
     pass = pass2;
     NetManTask_classPointer = &NetManTask;
@@ -240,7 +245,7 @@ void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String 
     WiFi.BSSID(macRouter);
     rssi = WiFi.RSSI();
     encryption = WiFi.encryptionType();
-
+    LOG3("Received Signal Strength [dBm]: " + String(rssi));
     LOG3("==Connect to MQTT==");
     this->brokerIP = broker;
     this->mQTT_port = mmQTTport;
@@ -259,6 +264,7 @@ void NetworkManager::initializeComponent(IPAddress broker, String ssid2, String 
  * 
  */
 void NetworkManager::connectToWiFi() {
+    LOG4("NetworkManager::connectToWiFi()");
     if (WiFi.status() == WL_NO_SHIELD)  // check if the shield is presence
     {
         LOG1("NO WiFi shield present");
@@ -286,6 +292,7 @@ void NetworkManager::connectToWiFi() {
 }
 
 String NetworkManager::decodeWiFistate(int errorcode) {
+    LOG4("NetworkManager::decodeWiFistate(int errorcode)");
     switch (errorcode) {
         case 255:
             return "WL_NO_SHIELD";
@@ -323,6 +330,7 @@ String NetworkManager::decodeWiFistate(int errorcode) {
  * 
  */
 void NetworkManager::connectToMQTT() {
+    LOG4("NetworkManager::connectToMQTT()");
     while (!myMQTTclient->connected()) {
         LOG1("Attempting MQTT connection...");
         LOG3("MQTT Client ID: " + hostname);
@@ -338,6 +346,7 @@ void NetworkManager::connectToMQTT() {
 }
 
 String NetworkManager::decodeMQTTstate(int errorcode) {
+    LOG4("NetworkManager::decodeMQTTstate(int errorcode)");
     switch (errorcode) {
         case -4:
             return "MQTT_CONNECTION_TIMEOUT";
@@ -365,6 +374,7 @@ String NetworkManager::decodeMQTTstate(int errorcode) {
 }
 
 void NetworkManager::MQTTConnectionFailed() {
+    LOG4("NetworkManager::MQTTConnectionFailed()");
     LOG1("MQTT connection failed, error: " + decodeMQTTstate(myMQTTclient->state()));
     LOG3("client status: " + decodeMQTTstate(myMQTTclient->state()) + ", WiFi Status: " + decodeWiFistate(WiFi.status()));
 }

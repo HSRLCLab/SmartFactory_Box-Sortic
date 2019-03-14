@@ -166,6 +166,7 @@ void setup() {
  * Use it to actively control the board.
  */
 void loop() {
+    LOG4("loop()");
 #if SERVICE_MODE == 2
     LOG3("=====");
     mSarrP->SensorArray::getSensorData();
@@ -174,7 +175,6 @@ void loop() {
 #endif
     static int i;
     // TaskMain->printAllMessages(0); // to show all saved Tasks (hostnames)
-
     if (showCase) {
         unsigned int timeIt = 0;
         int previousMilliss = millis();
@@ -212,6 +212,7 @@ void loop() {
 
 // ===================================== my Helper-Functions =====================================
 double calcOptimum(myJSONStr &obj) {
+    LOG4("calcOptimum(myJSONStr &obj)");
     if (obj.vehicleParams[0] != 0 && obj.vehicleParams[1] != 0 && obj.vehicleParams[2] != 0 && obj.vehicleParams[3] != 0) {
         double val = 100 * (0.2 / obj.vehicleParams[0] + 0.2 / obj.vehicleParams[1] + 0.4 / obj.vehicleParams[2] + 0.2 / obj.vehicleParams[3]);  // better for shorter way, 100 just for factoring
         // LOG3("Hostname: " + obj.hostname +"\tobj.vehicleParams[0]: " + String(obj.vehicleParams[0]) + ", obj.vehicleParams[1]: " + String(obj.vehicleParams[1]) + ", obj.vehicleParams[2]: " + String(obj.vehicleParams[2]) + ", obj.vehicleParams[3]: " + String(obj.vehicleParams[3]));
@@ -224,6 +225,7 @@ double calcOptimum(myJSONStr &obj) {
 };
 
 void getSmartBoxInfo() {
+    LOG4("getSmartBoxInfo()");
     LOG2("Smart Box state: " + String(stat));
     LOG2("Hostname with best value (" + String(value_max[0]) + "): " + hostname_max[0]);
     LOG2("max Num of Vehicles in Field: " + String(NUM_OF_VEHICLES_IN_FIELD));
@@ -238,6 +240,7 @@ void getSmartBoxInfo() {
 
 // ===================================== my Functions =====================================
 void loopEmpty() {
+    LOG4("loopEmpty()");
     digitalWrite(PIN_FOR_FULL, LOW);  /// if empty leave LED off or turn it off
     if (toNextStatus)                 /// only subscribe once but publish repeatedly
     {
@@ -261,6 +264,7 @@ void loopEmpty() {
 }
 
 void publishLevel() {
+    LOG4("publishLevel()");
     if (toNextStatus)  /// only subscribe once but publish repeatedly
     {
         LOG1("-.-.-.- pubilsh SmartBox level -.-.-.-");
@@ -301,6 +305,7 @@ void publishLevel() {
 }
 
 void getOptimalVehiclefromResponses() {
+    LOG4("getOptimalVehiclefromResponses()");
     if (toNextStatus)  // do once
     {
         LOG1("-.-.-.- calculation of Optimal Values through Iterations -.-.-.-");
@@ -346,6 +351,7 @@ void getOptimalVehiclefromResponses() {
 }
 
 void hasOptVehiclePublish() {
+    LOG4("hasOptVehiclePublish()");
     if (toNextStatus)  // only subscribe once but publish repeatedly
     {
         LOG1("-.-.-.- publish decision for Vehicle -.-.-.-");
@@ -395,6 +401,7 @@ void hasOptVehiclePublish() {
 }
 
 void checkIfAckReceivedfromResponses() {
+    LOG4("checkIfAckReceivedfromResponses()");
     mNetwP->loop();
     mcount2 = TaskMain->returnCurrentIterator();
     if (toNextStatus)  // only subscribe once but publish repeatedly
@@ -449,6 +456,7 @@ void checkIfAckReceivedfromResponses() {
 }
 
 void checkIfTransporedfromResponses() {
+    LOG4("checkIfTransporedfromResponses()");
     if (toNextStatus)  // only subscribe once but publish repeatedly
     {
         LOG1("-.-.-.- check if SmartBox is transported -.-.-.-");

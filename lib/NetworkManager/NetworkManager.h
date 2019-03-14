@@ -204,15 +204,27 @@ class NetworkManager {
     IPAddress ip;       ///< Contains own IP-Adress
     byte macRouter[6];  ///< Contains MAC Adress of the Router
     byte mac[6];        ///< Contains own MAC Adress
-    long rssi;          ///< reception quality - the current RSSI /Received Signal Strength in dBm
+    /**
+     * @brief The current RSSI /Received Signal Strength in dBm
+     * 
+     * -30 dBm	Maximum signal strength, you are probably standing right next to the access point.	\n
+     * -50 dBm	Anything down to this level can be considered excellent signal strength.	\n
+     * -60 dBm	Good, reliable signal strength.	\n
+     * -67 dBm	Reliable signal strength. The minimum for any service depending on a reliable connection and signal strength, such as voice over Wi-Fi and non-HD video streaming.\n
+     * -70 dBm	Not a strong signal. Light browsing and email.\n
+     * -80 dBm	Unreliable signal strength, will not suffice for most services.	Connecting to the network.\n
+     * -90 dBm	The chances of even connecting are very low at this level.\n
+     * Source https://eyesaas.com/wi-fi-signal-strength/
+     */
+    long rssi;
     /**
      * @brief value represents the type of encryption
      * 
-     * TKIP (WPA) = 2
-     * WEP = 5
-     * CCMP (WPA) = 4
-     * NONE = 7
-     * AUTO = 8
+     * 2 = TKIP (WPA) \n
+     * 5 = WEP  \n
+     * 4 = CCMP (WPA)\n
+     * 7 = NONE \n
+     * 8 = AUTO \n
      */
     byte encryption;
 

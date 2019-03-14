@@ -17,8 +17,8 @@
 
 extern bool showCase;  // defined in main.cpp
 
-SensorArray::SensorArray()  // initialisation of Sensor
-{
+SensorArray::SensorArray() {  // initialisation of Sensor
+    LOG4("SensorArray::SensorArray()");
     pinMode(STATUS_LED, OUTPUT);  /// initialize light LED, Output
     pinMode(INPUT_PIN1, INPUT);   /// initialize sharp sensor 1, Input
     pinMode(INPUT_PIN2, INPUT);   /// initialize sharp sensor 2, Input
@@ -29,8 +29,8 @@ SensorArray::SensorArray()  // initialisation of Sensor
 /**
  * @todo Check multiple times if a Object is present for relaiability
  */
-bool SensorArray::getSensorData()  // read sensor, true if full
-{
+bool SensorArray::getSensorData() {  // read sensor, true if full
+    LOG4("SensorArray::getSensorData()");
     LOG3("getting Sensor Data");
     int sensor1 = !digitalRead(INPUT_PIN1);  // if Object detected INPUt_PIN = LOW
     int sensor2 = !digitalRead(INPUT_PIN2);

@@ -12,7 +12,7 @@
 
 //==============================PUBLIC=================================
 MQTTTasks::MQTTTasks() {
-    // LOG4("MQTTTasks::MQTTTasks()");  //Kills everything!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    LOG4("MQTTTasks::MQTTTasks()");
     myJSONStr tmp;
     for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++) {
         messages[i] = tmp;
@@ -24,8 +24,8 @@ MQTTTasks::MQTTTasks() {
     startIteration = 0;
 }
 
-MQTTTasks *MQTTTasks::operator=(MQTTTasks *other)  // needed in main.cpp
-{
+MQTTTasks *MQTTTasks::operator=(MQTTTasks *other) {  // needed in main.cpp
+    LOG4("MQTTTasks *MQTTTasks::operator=(MQTTTasks *other)")
     return this;
 }
 
@@ -40,12 +40,14 @@ myJSONStr MQTTTasks::getLastMessage() {
 }
 
 myJSONStr MQTTTasks::doLastMessage() {
+    LOG4("MQTTTasks::doLastMessage()");
     myJSONStr tmp = getLastMessage();
     deleteMessage(0);
     return tmp;
 }
 
 myJSONStr MQTTTasks::doLastUrgentMessage() {
+    LOG4("MQTTTasks::doLastUrgentMessage()");
     myJSONStr tmp;
     for (int i = 0; i < MAX_JSON_MESSAGES_SAVED; i++) {
         if (getDesiredLastMessage(i).urgent) {
@@ -59,6 +61,7 @@ myJSONStr MQTTTasks::doLastUrgentMessage() {
 }
 
 bool MQTTTasks::hasUrgentMessage() {
+    LOG4("MQTTTasks::hasUrgentMessage()");
     if (urgentMessage == 0)
         return false;
     else
@@ -66,6 +69,7 @@ bool MQTTTasks::hasUrgentMessage() {
 }
 
 myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast) {
+    LOG4("MQTTTasks::getDesiredLastMessage(int fromLast)");
     myJSONStr tmp;
     if (!isEmpty) {
         if ((fromLast <= MAX_JSON_MESSAGES_SAVED) && (fromLast >= 0)) {
@@ -83,6 +87,7 @@ myJSONStr MQTTTasks::getDesiredLastMessage(int fromLast) {
 }
 
 myJSONStr MQTTTasks::getDesiredMessage(int certainCurrentIterator) {
+    LOG4("MQTTTasks::getDesiredMessage(int certainCurrentIterator)");
     myJSONStr tmp;
     if (!isEmpty) {
         if (certainCurrentIterator >= 0) {
@@ -97,6 +102,7 @@ myJSONStr MQTTTasks::getDesiredMessage(int certainCurrentIterator) {
 }
 
 myJSONStr MQTTTasks::getDoDesiredMessage(int certainCurrentIterator) {
+    LOG4("MQTTTasks::getDoDesiredMessage(int certainCurrentIterator)");
     myJSONStr tmp;
     if (!isEmpty) {
         if (certainCurrentIterator >= 0) {
@@ -111,6 +117,7 @@ myJSONStr MQTTTasks::getDoDesiredMessage(int certainCurrentIterator) {
 }
 
 bool MQTTTasks::setStartforIterations(int fromCurrentIterator) {
+    LOG4("MQTTTasks::setStartforIterations(int fromCurrentIterator)");
     if (fromCurrentIterator <= fromCurrentIterator) {
         startIteration = fromCurrentIterator;
         return true;
@@ -124,11 +131,13 @@ bool MQTTTasks::setStartforIterations(int fromCurrentIterator) {
 }
 
 bool MQTTTasks::setCurrentIteratorforIterations() {
+    LOG4("MQTTTasks::setCurrentIteratorforIterations()");
     startIteration = mqtt_class_counter;
     return true;
 }
 
 myJSONStr MQTTTasks::iterateAndDoMessages() {
+    LOG4("MQTTTasks::iterateAndDoMessages()");
     myJSONStr tmp;
     if (startIteration == mqtt_class_counter) {
         ;  // if default values from myJSONStr are returned, it will be shown here
@@ -139,13 +148,13 @@ myJSONStr MQTTTasks::iterateAndDoMessages() {
     return tmp;
 }
 
-int MQTTTasks::returnCurrentIterator()  // returns absolute counter, if MAX_JSON_MESSAGES_SAVED reached and first message is overridden it can be detected from outside!
-{
+int MQTTTasks::returnCurrentIterator() {  // returns absolute counter, if MAX_JSON_MESSAGES_SAVED reached and first message is overridden it can be detected from outside!
+    LOG4("MQTTTasks::returnCurrentIterator()");
     return (mqtt_class_counter + mqtt_class_counter_full * MAX_JSON_MESSAGES_SAVED);
 }
 
-bool MQTTTasks::deleteMessage(int fromLast)  // sets this struct to default
-{
+bool MQTTTasks::deleteMessage(int fromLast) {  // sets this struct to default
+    LOG4("MQTTTasks::deleteMessage(int fromLast)");
     myJSONStr tmp;
     tmp.hostname = "del";  // to clearly see which one were deleted
     if (!isEmpty) {
@@ -173,6 +182,7 @@ bool MQTTTasks::deleteMessage(int fromLast)  // sets this struct to default
 }
 
 bool MQTTTasks::addMessage(myJSONStr mess) {
+    LOG4("MQTTTasks::addMessage(myJSONStr mess)");
     if (mqtt_class_counter == (MAX_JSON_MESSAGES_SAVED - 1)) {
         mqtt_class_counter = 0;
         mqtt_class_counter_full++;
@@ -190,8 +200,8 @@ bool MQTTTasks::addMessage(myJSONStr mess) {
     LOG3("message added successfully");
 }
 
-myJSONStr *MQTTTasks::getBetween(int from, int to)  // from index to index
-{
+myJSONStr *MQTTTasks::getBetween(int from, int to) {  // from index to index
+    LOG4("*MQTTTasks::getBetween(int from, int to)");
     int tmp_to = to % MAX_JSON_MESSAGES_SAVED;
     int tmp_from = from % MAX_JSON_MESSAGES_SAVED;
     int tmp_to_cycles = (int)to / MAX_JSON_MESSAGES_SAVED;      // how many times messages overridden
@@ -244,6 +254,7 @@ myJSONStr *MQTTTasks::getBetween(int from, int to)  // from index to index
 }
 
 String *MQTTTasks::returnMQTTtopics(myJSONStr passingMessage) {
+    LOG4("*MQTTTasks::returnMQTTtopics(myJSONStr passingMessage)");
     String tmp[MAX_MQTT_TOPIC_DEPTH];
     int k1 = 0;  // lower cut-bound
     int k2 = 0;  // upper cut-bound
@@ -275,8 +286,8 @@ String *MQTTTasks::returnMQTTtopics(myJSONStr passingMessage) {
     }
 }
 
-void MQTTTasks::printAllMessages(byte choice)  // 0 for hostname, 1 level, 2 request, 3 params
-{
+void MQTTTasks::printAllMessages(byte choice) {  // 0 for hostname, 1 level, 2 request, 3 params
+    LOG4("MQTTTasks::printAllMessages(byte choice)");
     String printable = "";
     int myModulo = 5;  // number of how many entries in one row
     switch (choice) {
