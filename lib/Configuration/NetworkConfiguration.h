@@ -1,12 +1,15 @@
 /**
  * @file NetworkConfiguration.h
- * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
  * @brief file that contains the default network configuration
  * 
  * DEFAULT_WIFI_* are WLAN Pins from Module on Adafruit Feather M0 (see Adafruit ATWINC1500 Feather)
  * DEFAULT_MQTT_* are MQTT defaults
  * 
- * @version 0.1
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * 
+ * @version 1.1 - Added Doxygen-Documentation  - Luca Mazzoleni (luca.mazzoleni@hsr.ch)  - 2019-03-20
+ * @version 1.0 - SA SmartFactroyBox HS 2018
+ * 
  * @date 2019-03-07
  * 
  * @copyright Copyright (c) 2019

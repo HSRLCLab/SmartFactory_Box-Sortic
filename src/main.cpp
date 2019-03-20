@@ -1,11 +1,13 @@
-// Smart Box main file
 /**
  * @file main.cpp
- * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
- * @brief main file
- * @version 0.1
- * @date 2019-03-06
+ * @brief Smart Box main file
  * 
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * 
+ * @version 1.1 - Added Doxygen-Documentation  - Luca Mazzoleni (luca.mazzoleni@hsr.ch)  - 2019-03-20
+ * @version 1.0 - SA SmartFactroyBox HS 2018
+ * 
+ * @date 2019-03-20
  * @copyright Copyright (c) 2019
  * 
  */
@@ -123,7 +125,7 @@ void checkIfTransporedfromResponses();
 
 // ===================================== Arduino Functions =====================================
 /**
- * @brief for initialisation of the Board
+ * @brief For initialisation of the Board
  * 
  * Use it to initialize variables, pin modes, start using libraries, etc.
  * The setup() function will only run once,

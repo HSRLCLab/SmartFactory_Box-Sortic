@@ -1,16 +1,19 @@
 /**
  * @file SensorArray.cpp
- * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
  * @brief The Sensor Array
  * 
  * This is the implementation of the Sensor Array.
  * 
- * @version 0.1
- * @date 2019-03-06
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * @author Luca Mazzoleni (luca.mazzoleni@hsr.ch)
  * 
+ * @version 1.2 - Refactoring and changed readingstyle from analog to digital  - Luca Mazzoleni (luca.mazzoleni@hsr.ch)  - 2019-03-20
+ * @version 1.1 - Added Doxygen-Documentation  - Luca Mazzoleni (luca.mazzoleni@hsr.ch)  - 2019-03-20
+ * @version 1.0 - SA SmartFactroyBox HS 2018
+ * 
+ * @date 2019-03-20
  * @copyright Copyright (c) 2019
  * 
- 
  */
 
 #include "SensorArray.h"

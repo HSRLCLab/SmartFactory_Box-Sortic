@@ -1,10 +1,13 @@
 /**
  * @file MQTTTasksConfiguration.h
- * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
- * @brief  file that contains the default MQTT message save configuration
- * @version 0.1
- * @date 2019-03-07
+ * @brief file that contains the default MQTT message save configuration
  * 
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
+ * 
+ * @version 1.1 - Added Doxygen-Documentation  - Luca Mazzoleni (luca.mazzoleni@hsr.ch)  - 2019-03-20
+ * @version 1.0 - SA SmartFactroyBox HS 2018
+ * 
+ * @date 2019-03-20
  * @copyright Copyright (c) 2019
  * 
  */

@@ -1,16 +1,19 @@
 /**
  * @file MainConfiguration.h
- * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
  * @brief contains the default configuration for the main function
  * 
  * SENSOR_* is concerning the sensor
- *       *ITERATION* is an iteration variable (e.g. for loops)
- *      *SECONDS* is stating, that the value is given in seconds and will be recalculated for milliseconds (for func delay())
+ * *ITERATION* is an iteration variable (e.g. for loops)
+ * *SECONDS* is stating, that the value is given in seconds and will be recalculated for milliseconds (for func delay())
  * 
- * @version 0.1
- * @date 2019-03-06
+ * @author Luciano Bettinaglio (luciano.bettinaglio@hsr.ch)
  * 
+ * @version 1.1 - Added Doxygen-Documentation  - Luca Mazzoleni (luca.mazzoleni@hsr.ch)  - 2019-03-20
+ * @version 1.0 - SA SmartFactroyBox HS 2018
+ * 
+ * @date 2019-03-20
  * @copyright Copyright (c) 2019
+ * 
  */
 
 #ifndef MAINCONFIGURATION_H
