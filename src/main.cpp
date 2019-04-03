@@ -23,8 +23,8 @@
 
 // ===================================== Global Variables =====================================
 MQTTTasks *TaskMain;                                   ///< filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
-NetworkManager *mNetwP;                                ///< used for usign NetworkManager access outside setup()
-SensorArray *mSarrP;                                   ///< used for using SensorArray access outside setup()
+NetworkManager *mNetwP;                                ///< used for NetworkManager access outside setup()
+SensorArray *mSarrP;                                   ///< used for SensorArray access outside setup()
 double value_max[NUM_OF_MAXVALUES_VEHICLES_STORE];     ///< best optimal value from vehicle, Element 0 ist best, Element 1 is second best, etc. (decending order)
 String hostname_max[NUM_OF_MAXVALUES_VEHICLES_STORE];  ///< name of Vehicle with best value, Element 0 ist best, Element 1 is second best, etc. (decending order)
 bool hasAnswered = false;                              ///< variable used to see if Vehicle have answered
@@ -60,7 +60,7 @@ unsigned int waitSeconds1 = 0;   ///< wait between loops, without blinking LED
 unsigned int waitSeconds2 = 10;  ///< wait between loops, blinking LED
 int ledState = LOW;              ///< used for debugging LED
 
-// ===================================== my Function-Prototyps =====================================
+// ===================================== Function-Prototyps =====================================
 /**
  * @brief Returns Optimum for given values, higher is better, -1 if not valuable entries
  * 
@@ -152,6 +152,7 @@ void setup() {
     myFuncToCall = loopEmpty;
 #if SERVICE_MODE == 2
     pinMode(13, OUTPUT);
+    pinMode(LOADINDICATOR_LED, OUTPUT);
     LOG3("=== RUN SENSORTEST ===");
 #endif
     if (showCase) {
@@ -174,7 +175,8 @@ void loop() {
     mSarrP->SensorArray::getSensorData();
     delay(1000);
     return;
-#endif
+#else
+
     static int i;
     // TaskMain->printAllMessages(0); // to show all saved Tasks (hostnames)
     if (showCase) {
@@ -190,7 +192,6 @@ void loop() {
                 } else {
                     ledState = LOW;
                 }
-                // digitalWrite(13, ledState);
                 mNetwP->loop();  // needed to be called regularly to keep connection alive
             }
             currentMillis = millis();
@@ -210,6 +211,7 @@ void loop() {
         myFuncToCall();  // calls function for FSM
         mNetwP->loop();  // needed to be called regularly to keep connection alive
     }
+#endif
 }
 
 // ===================================== my Helper-Functions =====================================
@@ -501,4 +503,7 @@ void checkIfTransporedfromResponses() {
     while (((currentMillis - previousMillis) / 1000 < waitSeconds1) && (showCase)) {
         currentMillis = millis();
     }
+}
+
+void testing() {
 }

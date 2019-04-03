@@ -25,6 +25,6 @@
 #define LB3 A3  ///< IR sensor
 // #define SENSOR_RANGE_MAX 0.20    ///< when object is detected, 0.18 volts measured if object in box
 // #define SENSOR_RANGE_MIN 0.01    ///< when object is detected, must be bigger than 0 to detect voltage cut
-#define STATUS_LED 13  ///< LED lamp, must be digital
+#define LOADINDICATOR_LED 12  ///< LED lamp, must be digital
 
 #endif

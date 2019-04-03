@@ -20,10 +20,10 @@
 
 SensorArray::SensorArray() {  // initialisation of Sensor
     LOG4("SensorArray::SensorArray()");
-    pinMode(STATUS_LED, OUTPUT);  /// initialize light LED, Output
-    pinMode(LB1, INPUT);          /// initialize sharp sensor 1, Input
-    pinMode(LB2, INPUT);          /// initialize sharp sensor 2, Input
-    pinMode(LB3, INPUT);          /// initialize sharp sensor 3, Input
+    pinMode(LOADINDICATOR_LED, OUTPUT);  /// initialize light LED, Output
+    pinMode(LB1, INPUT);                 /// initialize sharp sensor 1, Input
+    pinMode(LB2, INPUT);                 /// initialize sharp sensor 2, Input
+    pinMode(LB3, INPUT);                 /// initialize sharp sensor 3, Input
     // lastValuesSize = 0;           /// initialize lastValuesSize, 0
 }
 
@@ -33,7 +33,7 @@ SensorArray::SensorArray() {  // initialisation of Sensor
 bool SensorArray::getSensorData() {  // read sensor, true if full
     LOG4("SensorArray::getSensorData()");
     LOG3("getting Sensor Data");
-    int sensor1 = !digitalRead(LB1);  // if Object detected INPUt_PIN = LOW
+    int sensor1 = !digitalRead(LB1);  // if Object detected PIN = LOW
     int sensor2 = !digitalRead(LB2);
     int sensor3 = !digitalRead(LB3);
 
@@ -42,11 +42,11 @@ bool SensorArray::getSensorData() {  // read sensor, true if full
     LOG3("SensorValue3: " + String(sensor3));
     if (sensor1 || sensor2 || sensor3) {
         LOG3("Sensor found Element in Box");  // true if within 0.5-5cm from Sensor, otherwise false
-        digitalWrite(STATUS_LED, HIGH);
+        digitalWrite(LOADINDICATOR_LED, HIGH);
         return true;
     } else {
         LOG3("Sensor found no Element");
-        digitalWrite(STATUS_LED, LOW);
+        digitalWrite(LOADINDICATOR_LED, LOW);
         return false;
     }
 }
