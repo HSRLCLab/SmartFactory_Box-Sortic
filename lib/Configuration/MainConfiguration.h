@@ -25,5 +25,5 @@
 #define NUM_OF_VEHICLES_IN_FIELD 2                ///< maximum Number of vehicles in Field, @todo recognize automatic how many vehicles are one the field
 #define NUM_OF_MAXVALUES_VEHICLES_STORE 2         ///< how much best values can be stored, must be smaller or equal than NUM_OF_VEHICLES_IN_FIELD!
 #define PIN_FOR_FULL 12                           ///< if SmartBox is full, light up LED
-#define SERVICE_MODE 2                            ///< 0 = not activ, 1 = offlinemode, 2 = sensortest,offline
+#define SERVICE_MODE 0                            ///< 0 = not activ, 1 = offlinemode, 2 = sensortest,offline
 #endif

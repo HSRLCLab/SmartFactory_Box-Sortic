@@ -29,6 +29,7 @@ class SensorArray {
     /**
    * @brief Construct a new Sensor Array object
    * 
+   * @todo exchange parameter, don't load defines in ctor
    */
     SensorArray();
 

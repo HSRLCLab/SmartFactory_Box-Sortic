@@ -212,6 +212,9 @@ void loop() {
         mNetwP->loop();  // needed to be called regularly to keep connection alive
     }
 #endif
+    // if (mSarrP->getSensorData()) {
+    //     BoxFsm.process(BoxCtrl::evFull);
+    // }
 }
 
 // ===================================== my Helper-Functions =====================================
@@ -439,7 +442,7 @@ void checkIfAckReceivedfromResponses() {
             toNextStatus = true;
             stat = status_main::status_checkIfTranspored;
             myFuncToCall = checkIfTransporedfromResponses;
-        } else if (isLastRoundonError <= NUM_OF_VEHICLES_IN_FIELD) {
+        } else if (isLastRoundonError <= NUM_OF_VEHICLES_IN_FIELD) {  ///< @bug NUM_OF_VEHICLES_IN_FIELD shoule be something like NUM_OF_ASKED_VEHICLES_IN_FIELD
             LOG3("go next to status_hasOptVehiclePublish, reset hostname");
             toNextStatus = true;
             stat = status_main::status_hasOptVehiclePublish;
