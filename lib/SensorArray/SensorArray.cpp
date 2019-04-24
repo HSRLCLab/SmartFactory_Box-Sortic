@@ -42,11 +42,11 @@ bool SensorArray::getSensorData() {  // read sensor, true if full
     LOG3("SensorValue3: " + String(sensor3));
     if (sensor1 || sensor2 || sensor3) {
         LOG3("Sensor found Element in Box");  // true if within 0.5-5cm from Sensor, otherwise false
-        digitalWrite(LOADINDICATOR_LED, HIGH);
+        // digitalWrite(LOADINDICATOR_LED, HIGH);
         return true;
     } else {
         LOG3("Sensor found no Element");
-        digitalWrite(LOADINDICATOR_LED, LOW);
+        // digitalWrite(LOADINDICATOR_LED, LOW);
         return false;
     }
 }

@@ -18,6 +18,7 @@
 #ifndef LOGCONFIGURATION_H
 #define LOGCONFIGURATION_H
 
+#define DEBUGGER
 #define LOGLEVELCONFIGURATION 3  // can have values from 0-4, 0-without, 1 error, 2 info, 3 verbose debugging,4 disp functioncall
 #if LOGLEVELCONFIGURATION == 4   ///< detailed logging (every function call)
 #define LOG1(logg1) Serial.println(logg1)
@@ -53,6 +54,98 @@
 #define LOG2(logg2) LOG1(logg1)
 #define LOG3(logg3) LOG1(logg1)
 #define LOG4(logg4) LOG1(logg1)
+#endif
+
+
+
+#ifdef DEBUGGER
+#define DEBUG_STATUS   ///< Define DEBUG_STATUS global to print all occuring status-updates via serial
+#define DEBUG_ERROR    ///< Define DEBUG_ERROR global to print all  occuring errors via serial
+#define DEBUG_WARNING  ///< Define DEBUG_WARNING global to print all occuring warnings via serial
+#define DEBUG_FUNCCALL  ///< Define DEBUG_FUNCCALL global to print all occuring functioncalls via serial
+#define DEBUG_INFO1  ///< Define DEBUG_INFO1 global to print all occuring infos via serial
+#define DEBUG_INFO2  ///< Define DEBUG_INFO1 global to print all occuring infos via serial
+#define DEBUG_INFO3  ///< Define DEBUG_INFO1 global to print all occuring infos via serial
+#endif
+
+#ifdef DEBUG_STATUS
+#define DBSTATUS(x) Serial.print(x)
+#define DBSTATUSln(x) Serial.println(x)
+#else
+#define DBSTATUS(x)
+#define DBSTATUSln(x)
+#endif
+
+#ifdef DEBUG_ERROR
+#define DBERROR(x)           \
+    Serial.print("ERROR: "); \
+    Serial.println(x);
+#else
+#define DBERROR(x)
+#endif
+
+#ifdef DEBUG_WARNING
+#define DBWARNING(x) Serial.print(x)
+#define DBWARNINGln(x) Serial.println(x)
+#else
+#define DBWARNING(x)
+#define DBWARNINGln(x)
+#endif
+
+#ifdef DEBUG_FUNCCALL
+#define DBFUNCCALL(x)    \
+    if (Serial) {        \
+        Serial.print(x); \
+    }
+#define DBFUNCCALLln(x)    \
+    if (Serial) {          \
+        Serial.println(x); \
+    }
+#else
+#define DBFUNCCALL(x)
+#define DBFUNCCALLln(x)
+#endif
+
+#ifdef DEBUG_INFO1
+#define DBINFO1(x)       \
+    if (Serial) {        \
+        Serial.print(x); \
+    };
+#define DBINFO1ln(x)       \
+    if (Serial) {          \
+        Serial.println(x); \
+    };
+#else
+#define DBINFO1(x)
+#define DBINFO1ln(x)
+#endif
+
+#ifdef DEBUG_INFO2
+#define DBINFO2(x)       \
+    if (Serial) {        \
+        Serial.print(x); \
+    };
+#define DBINFO2ln(x)       \
+    if (Serial) {          \
+        Serial.println(x); \
+    };
+#else
+#define DBINFO2(x)
+#define DBINFO2ln(x)
+#endif
+
+#ifdef DEBUG_INFO3
+#define DBINFO3(x)       \
+    if (Serial) {        \
+        Serial.print(x); \
+    };
+#define DBINFO3ln(x)       \
+    if (Serial) {          \
+        Serial.println(x); \
+    };
+#else
+#define DBINFO3(x)
+#define DBINFO3ln(x)
 #endif
 
 #endif
