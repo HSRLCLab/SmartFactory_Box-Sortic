@@ -31,16 +31,17 @@ class BoxCtrl {
     * @brief Enum holds all possible events
     * 
     */
-    enum Event { evSBFull,             ///< SB is Full
-                 evSBReady,            ///< SB is Ready
-                 evCalcOptVal,         ///< Calculated Optimum Value
-                 evAnswerReceived,     ///< Answer received
-                 evNoAnswerReceived,   ///< No Answer received
-                 evInqVehicRespond,    ///< Inquired Vehicle responded
-                 evInqNoVehicRespond,  ///< Inquired Vehicle didnt responded
-                 evNoVehicRespond,     ///< None of the Inquired Vehicle did responded
-                 evError,              ///< Error occured
-                 evNoEvent             ///< No event generated
+    enum class Event { SBFull,             ///< SB is Full
+                       SBReady,            ///< SB is Ready
+                       CalcOptVal,         ///< Calculated Optimum Value
+                       AnswerReceived,     ///< Answer received
+                       NoAnswerReceived,   ///< No Answer received
+                       InqVehicRespond,    ///< Inquired Vehicle responded
+                       InqNoVehicRespond,  ///< Inquired Vehicle didnt responded
+                       NoVehicRespond,     ///< None of the Inquired Vehicle did responded
+                       Error,              ///< Error occured
+                       Resume,             ///< Resume after Error occured
+                       NoEvent             ///< No event generated
     };
 
     /**
@@ -67,17 +68,19 @@ class BoxCtrl {
     /**
     * @brief Enum holds all possible state's
     * 
+    * https://stackoverflow.com/questions/18335861/why-is-enum-class-preferred-over-plain-enum
     */
-    enum State { readSensorVal,
-                 publishLevel,
-                 calculateOptVehicle,
-                 publishOptVehicle,
-                 waitForAck,
-                 waitForTransport,
-                 errorState };
+    enum class State { readSensorVal,        //loopEmpty()
+                       publishLevel,         //publishLevel()
+                       calculateOptVehicle,  //getOptimalVehiclefromResponses()
+                       publishOptVehicle,    //hasOptVehiclePublish()
+                       waitForAck,           //checkIfAckReceivedfromResponses()
+                       waitForTransport,     //checkIfTransporedfromResponses()
+                       errorState };
 
-    State currentState;  ///< holds the current state of the FSM
-    Event currentEvent;  ///< holds the current event of the FSM
+    State lastStateBevorError;  ///< holds the last state of the FSM so it's possible to resume after error
+    State currentState;         ///< holds the current state of the FSM
+    Event currentEvent;         ///< holds the current event of the FSM
 
     /**
      * @brief Functionpointer to call the current states do-function

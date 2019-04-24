@@ -23,17 +23,20 @@ class BoxLevelCtrl {
     * @brief Enum holds all possible events
     * 
     */
-    enum Event { evPackageDetected,    ///< Package detected
-                 evNoPackageDetected,  ///< No package detected
-                 evNoEvent             ///< No event generated
+    enum class Event { PackageDetected,    ///< Package detected
+                       NoPackageDetected,  ///< No package detected
+                       Error,              ///< Error occured
+                       Resume,             ///< Resume after Error occured
+                       NoEvent             ///< No event generated
     };
 
     /**
     * @brief Enum holds all possible states
     * 
     */
-    enum State { emptyState,  ///< empty State
-                 fullState    ///< full State
+    enum class State { emptyState,  ///< empty State
+                       fullState,   ///< full State
+                       errorState
     };
     /**
      * @brief Construct a new Box Level Ctrl object
@@ -64,8 +67,9 @@ class BoxLevelCtrl {
 
     //=====PRIVATE====================================================================================
    private:
-    State currentState;  ///< holds the current state of the FSM
-    Event currentEvent;  ///< holds the current event of the FSM
+    State lastStateBevorError;  ///< holds the last state of the FSM so it's possible to resume after error
+    State currentState;         ///< holds the current state of the FSM
+    Event currentEvent;         ///< holds the current event of the FSM
 
     /**
      * @brief Functionpointer to call the current states do-function
@@ -123,5 +127,25 @@ class BoxLevelCtrl {
      * 
      */
     void exitAction_fullState();
+
+    //==errorState==========================================================
+    /**
+     * @brief entry action of the errorState
+     * 
+     */
+    void entryAction_errorState();
+
+    /**
+     * @brief main action of the errorState
+     * 
+     *  @return BoxLevelCtrl::Event - generated Event
+     */
+    BoxLevelCtrl::Event doAction_errorState();
+
+    /**
+     * @brief exit action of the errorState
+     * 
+     */
+    void exitAction_errorState();
 };
 #endif

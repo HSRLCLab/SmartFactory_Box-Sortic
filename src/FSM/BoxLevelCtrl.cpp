@@ -13,7 +13,7 @@
 
 #include "BoxLevelCtrl.h"
 //=====PUBLIC====================================================================================
-BoxLevelCtrl::BoxLevelCtrl() : currentState(emptyState) {
+BoxLevelCtrl::BoxLevelCtrl() : currentState(State::emptyState) {
 }
 
 void BoxLevelCtrl::loop() {
@@ -24,22 +24,36 @@ void BoxLevelCtrl::loop() {
 
 void BoxLevelCtrl::process(Event e) {
     switch (currentState) {
-        case emptyState:
+        case State::emptyState:
             doActionFPtr = &BoxLevelCtrl::doAction_emptyState;
-            if (evPackageDetected == e) {
+            if (Event::PackageDetected == e) {
                 exitAction_emptyState();  // Exit-action current state
                 entryAction_fullState();  // Entry-actions next state
             }
             break;
 
-        case fullState:
+        case State::fullState:
             doActionFPtr = &BoxLevelCtrl::doAction_fullState;
-            if (evNoPackageDetected == e) {
+            if (Event::NoPackageDetected == e) {
                 exitAction_fullState();    // Exit-action current state
                 entryAction_emptyState();  // Entry-actions next state
             }
             break;
-
+        case State::errorState:
+            doActionFPtr = &BoxLevelCtrl::doAction_errorState;
+            if (Event::Resume == e) {
+                exitAction_errorState();  // Exit-action current state
+                switch (lastStateBevorError) {
+                    case State::emptyState:
+                        entryAction_emptyState();  // Entry-actions next state
+                        break;
+                    case State::fullState:
+                        entryAction_fullState();  // Entry-actions next state
+                        break;
+                    default:
+                        break;
+                }
+            }
         default:
             break;
     }
@@ -52,7 +66,7 @@ const BoxLevelCtrl::State BoxLevelCtrl::getcurrentState() {
 //==emptyState==========================================================
 void BoxLevelCtrl::entryAction_emptyState() {
     DBINFO2ln("BL Entering State: emptyState");
-    currentState = emptyState;  // state transition
+    currentState = State::emptyState;  // state transition
     digitalWrite(LOADINDICATOR_LED, LOW);
 }
 
@@ -60,11 +74,11 @@ BoxLevelCtrl::Event BoxLevelCtrl::doAction_emptyState() {
     DBINFO2ln("BL State: emptyState");
     //Generate the Event
     if (pSensorArray.getSensorData()) {
-        return evPackageDetected;
+        return Event::PackageDetected;
     } else {
-        return evNoPackageDetected;
+        return Event::NoPackageDetected;
     };
-    return evNoEvent;
+    return Event::NoEvent;
 }
 
 void BoxLevelCtrl::exitAction_emptyState() {
@@ -74,20 +88,38 @@ void BoxLevelCtrl::exitAction_emptyState() {
 //==fullState==========================================================
 void BoxLevelCtrl::entryAction_fullState() {
     DBINFO2ln("BL Entering State: fullState");
-    currentState = fullState;  // state transition
+    currentState = State::fullState;  // state transition
     digitalWrite(LOADINDICATOR_LED, HIGH);
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_fullState() {
     DBINFO2ln("BL State: fullState");
     if (pSensorArray.getSensorData()) {
-        return evPackageDetected;
+        return Event::PackageDetected;
     } else {
-        return evNoPackageDetected;
+        return Event::NoPackageDetected;
     };
-    return evNoEvent;
+    return Event::NoEvent;
 }
 
 void BoxLevelCtrl::exitAction_fullState() {
     DBINFO2ln("BL Leaving State: fullState");
+}
+
+//==errorState========================================================
+void BoxLevelCtrl::entryAction_errorState() {
+    DBINFO2ln("BL Entering State: errorState");
+    lastStateBevorError = currentState;
+    currentState = State::errorState;  // state transition
+}
+
+BoxLevelCtrl::Event BoxLevelCtrl::doAction_errorState() {
+    DBINFO2ln("BL State: errorState");
+    //Generate the Event
+
+    return Event::NoEvent;
+}
+
+void BoxLevelCtrl::exitAction_errorState() {
+    DBINFO2ln("BL Leaving State: errorState");
 }
