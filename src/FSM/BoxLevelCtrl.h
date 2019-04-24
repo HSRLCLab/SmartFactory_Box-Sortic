@@ -25,9 +25,10 @@ class BoxLevelCtrl {
     */
     enum class Event { PackageDetected,    ///< Package detected
                        NoPackageDetected,  ///< No package detected
-                       Error,              ///< Error occured
-                       Resume,             ///< Resume after Error occured
-                       NoEvent             ///< No event generated
+                       CheckForPackage,
+                       Error,   ///< Error occured
+                       Resume,  ///< Resume after Error occured
+                       NoEvent  ///< No event generated
     };
 
     /**
@@ -36,6 +37,7 @@ class BoxLevelCtrl {
     */
     enum class State { emptyState,  ///< empty State
                        fullState,   ///< full State
+                       checking,
                        errorState
     };
     /**
@@ -52,11 +54,11 @@ class BoxLevelCtrl {
     void loop();
 
     /**
-     * @brief changes the state of the FSM based on the event
+     * @brief procceses the current Event and calls the do-function of the active state
      * 
-     * @param e - Event
+     * @param currentEvent - Event
      */
-    void process(Event e);
+    void loop(Event currentEvent);
 
     /**
      * @brief Get the current State
@@ -67,6 +69,13 @@ class BoxLevelCtrl {
 
     //=====PRIVATE====================================================================================
    private:
+    /**
+     * @brief changes the state of the FSM based on the event
+     * 
+     * @param e - Event
+     */
+    void process(Event e);
+
     State lastStateBevorError;  ///< holds the last state of the FSM so it's possible to resume after error
     State currentState;         ///< holds the current state of the FSM
     Event currentEvent;         ///< holds the current event of the FSM
@@ -93,9 +102,6 @@ class BoxLevelCtrl {
     /**
      * @brief executes the main action of the emptyState
      * 
-     * checks if the sensor has a package detected and generates the appropriate event
-     * 
-     * @return BoxLevelCtrl::Event - generated Event
      */
     BoxLevelCtrl::Event doAction_emptyState();
 
@@ -104,6 +110,28 @@ class BoxLevelCtrl {
      * 
      */
     void exitAction_emptyState();
+
+    //=====checking==========================================================
+    /**
+     * @brief executes the entry action of the checking 
+     * 
+     */
+    void entryAction_checking();
+
+    /**
+     * @brief executes the main action of the checking
+     * 
+     * checks if the sensor has a package detected and generates the appropriate event
+     * 
+     * @return BoxLevelCtrl::Event - generated Event
+     */
+    BoxLevelCtrl::Event doAction_checking();
+
+    /**
+     * @brief executes the exit action of the checking
+     * 
+     */
+    void exitAction_checking();
 
     //=====fullState==========================================================
     /**
@@ -147,5 +175,23 @@ class BoxLevelCtrl {
      * 
      */
     void exitAction_errorState();
+
+    //============================================================================
+    //==Aux-Function==============================================================
+    /**
+     * @brief Decodes the State-Enum and returns a description
+     * 
+     * @param state - enum State
+     * @return String - State as String
+     */
+    String decodeState(State state);
+
+    /**
+     * @brief Decodes the Event-Enum and returns a description
+     * 
+     * @param event - enum Event
+     * @return String - Event as String
+     */
+    String decodeEvent(Event event);
 };
 #endif

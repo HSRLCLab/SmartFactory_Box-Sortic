@@ -49,7 +49,6 @@ class BoxCtrl {
      * 
      */
     BoxCtrl();
-
     /**
      * @brief Calls the do-function of the active state and hence generates Events
      * 
@@ -57,14 +56,21 @@ class BoxCtrl {
     void loop();
 
     /**
+     * @brief procceses the current Event and calls the do-function of the active state
+     * 
+     * @param currentEvent - Event
+     */
+    void loop(Event currentEvent);
+
+    //=====PRIVATE====================================================================================
+   private:
+    /**
      * @brief changes the state of the FSM based on the event
      * 
      * @param e - Event
      */
     void process(Event e);
 
-    //=====PRIVATE====================================================================================
-   private:
     /**
     * @brief Enum holds all possible state's
     * 
@@ -233,5 +239,23 @@ class BoxCtrl {
      * 
      */
     void exitAction_errorState();
+
+    //============================================================================
+    //==Aux-Function==============================================================
+    /**
+     * @brief Decodes the State-Enum and returns a description
+     * 
+     * @param state - enum State
+     * @return String - State as String
+     */
+    String decodeState(State state);
+
+    /**
+     * @brief Decodes the Event-Enum and returns a description
+     * 
+     * @param event - enum Event
+     * @return String - Event as String
+     */
+    String decodeEvent(Event event);
 };
 #endif

@@ -18,36 +18,39 @@ BoxCtrl::BoxCtrl() : currentState(State::readSensorVal) {
 
 void BoxCtrl::loop() {
     DBFUNCCALLln("BoxCtrl::loop()");
-    //do actions
-    currentEvent = (this->*doActionFPtr)();
-    process(currentEvent);
+    process((this->*doActionFPtr)());  //do actions
 }
 
+void BoxCtrl::loop(Event currentEvent) {
+    DBFUNCCALLln("BoxCtrl::loop(Event)");
+    process(currentEvent);
+    process((this->*doActionFPtr)());  //do actions
+}
+
+//=====PRIVATE====================================================================================
 void BoxCtrl::process(Event e) {
+    DBFUNCCALL("BoxCtrl::process ")
+    DBFUNCCALLln(decodeEvent(e));
     switch (currentState) {
         case State::readSensorVal:
-            doActionFPtr = &BoxCtrl::doAction_readSensorVal;
             if (Event::SBFull == e) {
                 exitAction_readSensorVal();  // Exit-action current state
                 entryAction_publishLevel();  // Entry-actions next state
             }
             break;
         case State::publishLevel:
-            doActionFPtr = &BoxCtrl::doAction_publishLevel;
             if (Event::AnswerReceived == e) {
                 exitAction_publishLevel();          // Exit-action current state
                 entryAction_calculateOptVehicle();  // Entry-actions next state
             }
             break;
         case State::calculateOptVehicle:
-            doActionFPtr = &BoxCtrl::doAction_calculateOptVehicle;
             if (Event::CalcOptVal == e) {
                 exitAction_calculateOptVehicle();  // Exit-action current state
                 entryAction_publishOptVehicle();   // Entry-actions next state
             }
             break;
         case State::publishOptVehicle:
-            doActionFPtr = &BoxCtrl::doAction_publishOptVehicle;
             if (Event::AnswerReceived == e) {
                 exitAction_publishOptVehicle();  // Exit-action current state
                 entryAction_waitForAck();        // Entry-actions next state
@@ -57,7 +60,6 @@ void BoxCtrl::process(Event e) {
             }
             break;
         case State::waitForAck:
-            doActionFPtr = &BoxCtrl::doAction_waitForAck;
             if (Event::InqVehicRespond == e) {
                 exitAction_waitForAck();         // Exit-action current state
                 entryAction_waitForTransport();  // Entry-actions next state
@@ -70,14 +72,12 @@ void BoxCtrl::process(Event e) {
             }
             break;
         case State::waitForTransport:
-            doActionFPtr = &BoxCtrl::doAction_waitForTransport;
             if (Event::SBReady == e) {
                 exitAction_waitForTransport();  // Exit-action current state
                 entryAction_readSensorVal();    // Entry-actions next state
             }
             break;
         case State::errorState:
-            doActionFPtr = &BoxCtrl::doAction_errorState;
             if (Event::Resume == e) {
                 exitAction_errorState();  // Exit-action current state
                 switch (lastStateBevorError) {
@@ -103,27 +103,26 @@ void BoxCtrl::process(Event e) {
                         break;
                 }
             }
-
         default:
             break;
     }
 }
-
-//=====PRIVATE====================================================================================
 //==readSensorVal========================================================
 void BoxCtrl::entryAction_readSensorVal() {
     DBINFO2ln("Entering State: emptyState");
     currentState = State::readSensorVal;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_readSensorVal;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
     DBINFO2ln("State: emptyState");
     //Generate the Event
     pComm.loop();  //Check for new Messages
-    pBoxlevelctrl.loop();
+    pBoxlevelctrl.loop(BoxLevelCtrl::Event::CheckForPackage);
     if (BoxLevelCtrl::State::fullState == pBoxlevelctrl.getcurrentState()) {
         return Event::SBFull;
     }
+
     return Event::NoEvent;
 }
 
@@ -135,6 +134,7 @@ void BoxCtrl::exitAction_readSensorVal() {
 void BoxCtrl::entryAction_publishLevel() {
     DBINFO2ln("Entering State: publishLevel");
     currentState = State::publishLevel;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_publishLevel;
     //Subscribe to Topics
     // pComm.subscribe("Vehicle/+/params");
     // pComm.subscribe("Vehicle/+/ack");
@@ -158,6 +158,7 @@ void BoxCtrl::exitAction_publishLevel() {
 void BoxCtrl::entryAction_calculateOptVehicle() {
     DBINFO2ln("Entering State: calculateOptVehicle");
     currentState = State::calculateOptVehicle;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_calculateOptVehicle;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
@@ -176,6 +177,7 @@ void BoxCtrl::exitAction_calculateOptVehicle() {
 void BoxCtrl::entryAction_publishOptVehicle() {
     DBINFO2ln("Entering State: publishOptVehicle");
     currentState = State::publishOptVehicle;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_publishOptVehicle;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
@@ -195,6 +197,7 @@ void BoxCtrl::exitAction_publishOptVehicle() {
 void BoxCtrl::entryAction_waitForAck() {
     DBINFO2ln("Entering State: waitForAck");
     currentState = State::waitForAck;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_waitForAck;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
@@ -214,6 +217,7 @@ void BoxCtrl::exitAction_waitForAck() {
 void BoxCtrl::entryAction_waitForTransport() {
     DBINFO2ln("Entering State: waitForTransport");
     currentState = State::waitForTransport;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_waitForTransport;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_waitForTransport() {
@@ -234,6 +238,7 @@ void BoxCtrl::entryAction_errorState() {
     DBINFO2ln("Entering State: errorState");
     lastStateBevorError = currentState;
     currentState = State::errorState;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_errorState;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_errorState() {
@@ -245,4 +250,76 @@ BoxCtrl::Event BoxCtrl::doAction_errorState() {
 
 void BoxCtrl::exitAction_errorState() {
     DBINFO2ln("Leaving State: errorState");
+}
+
+//============================================================================
+//==Aux-Function==============================================================
+String BoxCtrl::decodeState(State state) {
+    switch (state) {
+        case State::readSensorVal:
+            return "State::readSensorVal";
+            break;
+        case State::publishLevel:
+            return "State::publishLevel";
+            break;
+        case State::calculateOptVehicle:
+            return "State::calculateOptVehicle";
+            break;
+        case State::publishOptVehicle:
+            return "State::publishOptVehicle";
+            break;
+        case State::waitForAck:
+            return "State::waitForAck";
+            break;
+        case State::waitForTransport:
+            return "State::waitForTransport";
+            break;
+        case State::errorState:
+            return "State::errorState";
+            break;
+        default:
+            return "ERROR: No matching state";
+            break;
+    }
+}
+
+String BoxCtrl::decodeEvent(Event event) {
+    switch (event) {
+        case Event::SBFull:
+            return "Event::SBFull";
+            break;
+        case Event::SBReady:
+            return "Event::SBReady";
+            break;
+        case Event::CalcOptVal:
+            return "Event::CalcOptVal";
+            break;
+        case Event::AnswerReceived:
+            return "Event::AnswerReceived";
+            break;
+        case Event::NoAnswerReceived:
+            return "Event::NoAnswerReceived";
+            break;
+        case Event::InqVehicRespond:
+            return "Event::InqVehicRespond";
+            break;
+        case Event::InqNoVehicRespond:
+            return "Event::InqNoVehicRespond";
+            break;
+        case Event::NoVehicRespond:
+            return "Event::NoVehicRespond";
+            break;
+        case Event::Error:
+            return "Event::Error";
+            break;
+        case Event::Resume:
+            return "Event::Resume";
+            break;
+        case Event::NoEvent:
+            return "Event::NoEvent";
+            break;
+        default:
+            return "ERROR: No matching event";
+            break;
+    }
 }
