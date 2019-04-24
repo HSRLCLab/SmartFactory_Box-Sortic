@@ -1,10 +1,10 @@
 /**
  * @file BoxLevelCtrl.cpp
- * @brief 
+ * @brief Implementation of the BoxLevel Controll-Class
  * 
  * @author Luca Mazzoleni (luca.mazzoleni@hsr.ch)
  * 
- * @version 1.0 - Description - {author} - {date}
+ * @version 1.0 -Implementation Box Level Controll FSM - Luca Mazzoleni (luca.mazzoleni@hsr.ch) - 2019-04-23
  * 
  * @date 2019-04-23
  * @copyright Copyright (c) 2019
@@ -39,6 +39,9 @@ void BoxLevelCtrl::process(Event e) {
             if (Event::CheckForPackage == e) {
                 exitAction_emptyState();  // Exit-action current state
                 entryAction_checking();   // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_emptyState();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::checking:
@@ -48,12 +51,18 @@ void BoxLevelCtrl::process(Event e) {
             } else if (Event::NoPackageDetected == e) {
                 exitAction_checking();     // Exit-action current state
                 entryAction_emptyState();  // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_checking();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::fullState:
             if (Event::CheckForPackage == e) {
                 exitAction_fullState();  // Exit-action current state
                 entryAction_checking();  // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_fullState();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::errorState:

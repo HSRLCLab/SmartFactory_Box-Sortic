@@ -1,11 +1,11 @@
 /**
  * @file BoxCtrl.h
- * @brief 
+ * @brief The Box Controll class contains the FSM for the BoxLevel
  * 
  * @author Luca Mazzoleni (luca.mazzoleni@hsr.ch)
  * 
- * @version 1.1 - Description - {author} - {date}
- * 
+ * @version 1.0 - Implementation Box Controll FSM - Luca Mazzoleni (luca.mazzoleni@hsr.ch) - 2019-04-23
+ *  
  * @date 2019-04-03
  * @copyright Copyright (c) 2019
  * 
@@ -24,6 +24,10 @@
 #include "NetworkManager.h"
 #include "NetworkManagerStructs.h"
 
+/**
+ * @brief he Box Controll class contains the FSM for the complet Box
+ * 
+ */
 class BoxCtrl {
     //=====PUBLIC====================================================================================
    public:

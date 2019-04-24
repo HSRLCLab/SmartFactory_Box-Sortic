@@ -1,17 +1,17 @@
 /**
  * @file BoxCtrl.cpp
- * @brief 
+ * @brief Implementation of the Box Controll-Class
  * 
  * @author Luca Mazzoleni (luca.mazzoleni@hsr.ch)
  * 
- * @version 1.1 - Description - {author} - {date}
+ * @version 1.0 - Implementation Box Controll FSM - Luca Mazzoleni (luca.mazzoleni@hsr.ch) - 2019-04-23
  * 
- * @date 2019-04-03
+ * @date 2019-04-23
  * @copyright Copyright (c) 2019
  * 
  */
 #include "BoxCtrl.h"
-
+//=====PUBLIC====================================================================================
 BoxCtrl::BoxCtrl() : currentState(State::readSensorVal) {
     DBFUNCCALLln("BoxCtrl::BoxCtrl()");
 }
@@ -36,18 +36,27 @@ void BoxCtrl::process(Event e) {
             if (Event::SBFull == e) {
                 exitAction_readSensorVal();  // Exit-action current state
                 entryAction_publishLevel();  // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_readSensorVal();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::publishLevel:
             if (Event::AnswerReceived == e) {
                 exitAction_publishLevel();          // Exit-action current state
                 entryAction_calculateOptVehicle();  // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_publishLevel();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::calculateOptVehicle:
             if (Event::CalcOptVal == e) {
                 exitAction_calculateOptVehicle();  // Exit-action current state
                 entryAction_publishOptVehicle();   // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_calculateOptVehicle();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::publishOptVehicle:
@@ -57,6 +66,9 @@ void BoxCtrl::process(Event e) {
             } else if (Event::AnswerReceived == e) {
                 exitAction_publishOptVehicle();  // Exit-action current state
                 entryAction_publishLevel();      // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_publishOptVehicle();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::waitForAck:
@@ -69,12 +81,18 @@ void BoxCtrl::process(Event e) {
             } else if (Event::NoVehicRespond == e) {
                 exitAction_waitForAck();     // Exit-action current state
                 entryAction_publishLevel();  // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_waitForAck();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::waitForTransport:
             if (Event::SBReady == e) {
                 exitAction_waitForTransport();  // Exit-action current state
                 entryAction_readSensorVal();    // Entry-actions next state
+            }else if (Event::Error == e) {
+                exitAction_waitForTransport();     // Exit-action current state
+                entryAction_errorState();  // Entry-actions next state
             }
             break;
         case State::errorState:

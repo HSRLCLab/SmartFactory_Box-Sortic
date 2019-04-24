@@ -1,10 +1,10 @@
 /**
  * @file BoxLevelCtrl.h
- * @brief 
+ * @brief The BoxLevel Controll class contains the FSM for the BoxLevel
  * 
  * @author Luca Mazzoleni (luca.mazzoleni@hsr.ch)
  * 
- * @version 1.0 - Description - {author} - {date}
+ * @version 1.0 - Implementation Box Level Controll FSM - Luca Mazzoleni (luca.mazzoleni@hsr.ch) - 2019-04-23
  * 
  * @date 2019-04-23
  * @copyright Copyright (c) 2019
@@ -16,6 +16,10 @@
 
 #include "SensorArray.h"
 
+/**
+ * @brief The BoxLevel Controll class contains the FSM for the BoxLevel
+ * 
+ */
 class BoxLevelCtrl {
     //=====PUBLIC====================================================================================
    public:
@@ -143,8 +147,6 @@ class BoxLevelCtrl {
 
     /**
      * @brief executes the main action of the fullState
-     * 
-     * checks if the sensor has a package detected and generates the appropriate event
      * 
      * @return BoxLevelCtrl::Event - generated Event
      */
