@@ -15,11 +15,13 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 // own files:
-#include <MQTTTasks.h>
-#include <MainConfiguration.h>
-#include <NetworkManager.h>
-#include <NetworkManagerStructs.h>
-#include <SensorArray.h>
+#include "MQTTTasks.h"
+#include "MainConfiguration.h"
+#include "NetworkManager.h"
+#include "NetworkManagerStructs.h"
+#include "SensorArray.h"
+
+#include "FSM/BoxCtrl.h"
 
 // ===================================== Global Variables =====================================
 MQTTTasks *TaskMain;                                   ///< filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
@@ -31,6 +33,7 @@ bool hasAnswered = false;                              ///< variable used to see
 byte isLastRoundonError = 1;                           ///< currently two max values are included, if both are not responding, this Variable will be set to true, must be min 1
 myJSONStr *tmp_mess;                                   ///< pointer to array of messages, used for iteration of messages
 
+BoxCtrl *boxctrl;
 // -.-.-.-.-.-.-.- used for Statuses -.-.-.-.-.-.-.-
 /**
  * \enum status_main
@@ -139,25 +142,26 @@ void setup() {
     }
     LOG1("-.-.-.- SETUP -.-.-.-");
     LOG3("entering setup - initializing components");
-#if !(SERVICE_MODE > 0)
-    LOG3("new NetworkManager()");
-    mNetwP = new NetworkManager();
-    LOG3("new SensorArray()");
-#endif
-    mSarrP = new SensorArray();
-#if !(SERVICE_MODE > 0)
-    TaskMain = mNetwP->NetManTask_classPointer;
-#endif
-    pinMode(PIN_FOR_FULL, OUTPUT);
-    myFuncToCall = loopEmpty;
-#if SERVICE_MODE == 2
-    pinMode(13, OUTPUT);
-    pinMode(LOADINDICATOR_LED, OUTPUT);
-    LOG3("=== RUN SENSORTEST ===");
-#endif
-    if (showCase) {
-        pinMode(13, OUTPUT);  // debug LED
-    }
+    // #if !(SERVICE_MODE > 0)
+    //     LOG3("new NetworkManager()");
+    //     mNetwP = new NetworkManager();
+    //     LOG3("new SensorArray()");
+    // #endif
+    //     mSarrP = new SensorArray();
+    // #if !(SERVICE_MODE > 0)
+    //     TaskMain = mNetwP->NetManTask_classPointer;
+    // #endif
+    //     pinMode(PIN_FOR_FULL, OUTPUT);
+    //     myFuncToCall = loopEmpty;
+    // #if SERVICE_MODE == 2
+    //     pinMode(13, OUTPUT);
+    //     pinMode(LOADINDICATOR_LED, OUTPUT);
+    //     LOG3("=== RUN SENSORTEST ===");
+    // #endif
+    //     if (showCase) {
+    //         pinMode(13, OUTPUT);  // debug LED
+    //     }
+    boxctrl = new BoxCtrl();
 }
 
 /**
@@ -169,49 +173,51 @@ void setup() {
  * Use it to actively control the board.
  */
 void loop() {
-    LOG4("loop()");
-#if SERVICE_MODE == 2
-    LOG3("=====");
-    mSarrP->SensorArray::getSensorData();
+    DBFUNCCALLln("loop()======================================================");
+    boxctrl->loop();
     delay(1000);
-    return;
-#else
+    // #if SERVICE_MODE == 2
+    //     LOG3("=====");
+    //     mSarrP->SensorArray::getSensorData();
+    //     delay(1000);
+    //     return;
+    // #else
 
-    static int i;
-    // TaskMain->printAllMessages(0); // to show all saved Tasks (hostnames)
-    if (showCase) {
-        unsigned int timeIt = 0;
-        int previousMilliss = millis();
-        while ((timeIt < waitSeconds2) && (showCase))  // wait before next loop
-        {
-            if (currentMillis - previousMilliss >= 500) {
-                timeIt++;
-                previousMilliss = currentMillis;
-                if (ledState == LOW) {
-                    ledState = HIGH;
-                } else {
-                    ledState = LOW;
-                }
-                mNetwP->loop();  // needed to be called regularly to keep connection alive
-            }
-            currentMillis = millis();
-        }
-        LOG1();
-        LOG1();
-        LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
-        i++;
-        LOG2("STATE: " + String(stat));
-        LOG2("--------------------------");
-        myFuncToCall();
-    } else {
-        LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
-        i++;
-        LOG2("STATE: " + String(stat));
-        LOG2("--------------------------");
-        myFuncToCall();  // calls function for FSM
-        mNetwP->loop();  // needed to be called regularly to keep connection alive
-    }
-#endif
+    //     static int i;
+    //     // TaskMain->printAllMessages(0); // to show all saved Tasks (hostnames)
+    //     if (showCase) {
+    //         unsigned int timeIt = 0;
+    //         int previousMilliss = millis();
+    //         while ((timeIt < waitSeconds2) && (showCase))  // wait before next loop
+    //         {
+    //             if (currentMillis - previousMilliss >= 500) {
+    //                 timeIt++;
+    //                 previousMilliss = currentMillis;
+    //                 if (ledState == LOW) {
+    //                     ledState = HIGH;
+    //                 } else {
+    //                     ledState = LOW;
+    //                 }
+    //                 mNetwP->loop();  // needed to be called regularly to keep connection alive
+    //             }
+    //             currentMillis = millis();
+    //         }
+    //         LOG1();
+    //         LOG1();
+    //         LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
+    //         i++;
+    //         LOG2("STATE: " + String(stat));
+    //         LOG2("--------------------------");
+    //         myFuncToCall();
+    //     } else {
+    //         LOG1("-------------------------- now going to loop again: " + String(i) + "-------------------------- ");
+    //         i++;
+    //         LOG2("STATE: " + String(stat));
+    //         LOG2("--------------------------");
+    //         myFuncToCall();  // calls function for FSM
+    //         mNetwP->loop();  // needed to be called regularly to keep connection alive
+    //     }
+    // #endif
     // if (mSarrP->getSensorData()) {
     //     BoxFsm.process(BoxCtrl::evFull);
     // }
