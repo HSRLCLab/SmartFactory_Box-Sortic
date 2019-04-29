@@ -33,7 +33,7 @@ const BoxLevelCtrl::State BoxLevelCtrl::getcurrentState() {
 //=====PRIVATE====================================================================================
 void BoxLevelCtrl::process(Event e) {
     DBFUNCCALL("BoxLevelCtrl::process ")
-    DBFUNCCALLln(decodeEvent(e));
+    DBEVENTln(String("DriveCtrl ") + String(decodeEvent(e)));
     switch (currentState) {
         case State::emptyState:
             if (Event::CheckForPackage == e) {
@@ -88,31 +88,31 @@ void BoxLevelCtrl::process(Event e) {
 }
 //==emptyState==========================================================
 void BoxLevelCtrl::entryAction_emptyState() {
-    DBINFO2ln("BL Entering State: emptyState");
+    DBSTATUSln("BL Entering State: emptyState");
     currentState = State::emptyState;  // state transition
     doActionFPtr = &BoxLevelCtrl::doAction_emptyState;
     digitalWrite(LOADINDICATOR_LED, LOW);
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_emptyState() {
-    DBINFO2ln("BL State: emptyState");
+    DBINFO1ln("BL State: emptyState");
     //Generate the Event
     return Event::NoEvent;
 }
 
 void BoxLevelCtrl::exitAction_emptyState() {
-    DBINFO2ln("BL Leaving State: emptyState");
+    DBSTATUSln("BL Leaving State: emptyState");
 }
 
 //==checking==========================================================
 void BoxLevelCtrl::entryAction_checking() {
-    DBINFO2ln("BL Entering State: checking");
+    DBSTATUSln("BL Entering State: checking");
     currentState = State::checking;  // state transition
     doActionFPtr = &BoxLevelCtrl::doAction_checking;
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_checking() {
-    DBINFO2ln("BL State: checking");
+    DBINFO1ln("BL State: checking");
     if (pSensorArray.getSensorData()) {
         return Event::PackageDetected;
     } else {
@@ -122,45 +122,45 @@ BoxLevelCtrl::Event BoxLevelCtrl::doAction_checking() {
 }
 
 void BoxLevelCtrl::exitAction_checking() {
-    DBINFO2ln("BL Leaving State: checking");
+    DBSTATUSln("BL Leaving State: checking");
 }
 
 //==fullState==========================================================
 void BoxLevelCtrl::entryAction_fullState() {
-    DBINFO2ln("BL Entering State: fullState");
+    DBSTATUSln("BL Entering State: fullState");
     currentState = State::fullState;  // state transition
     doActionFPtr = &BoxLevelCtrl::doAction_fullState;
     digitalWrite(LOADINDICATOR_LED, HIGH);
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_fullState() {
-    DBINFO2ln("BL State: fullState");
+    DBINFO1ln("BL State: fullState");
     //Generate the Event
 
     return Event::NoEvent;
 }
 
 void BoxLevelCtrl::exitAction_fullState() {
-    DBINFO2ln("BL Leaving State: fullState");
+    DBSTATUSln("BL Leaving State: fullState");
 }
 
 //==errorState========================================================
 void BoxLevelCtrl::entryAction_errorState() {
-    DBINFO2ln("BL Entering State: errorState");
+    DBERROR("BL Entering State: errorState");
     lastStateBevorError = currentState;
     currentState = State::errorState;  // state transition
     doActionFPtr = &BoxLevelCtrl::doAction_errorState;
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_errorState() {
-    DBINFO2ln("BL State: errorState");
+    DBINFO1ln("BL State: errorState");
     //Generate the Event
 
     return Event::NoEvent;
 }
 
 void BoxLevelCtrl::exitAction_errorState() {
-    DBINFO2ln("BL Leaving State: errorState");
+    DBSTATUSln("BL Leaving State: errorState");
 }
 
 //============================================================================

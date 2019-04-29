@@ -30,7 +30,7 @@ void BoxCtrl::loop(Event currentEvent) {
 //=====PRIVATE====================================================================================
 void BoxCtrl::process(Event e) {
     DBFUNCCALL("BoxCtrl::process ")
-    DBFUNCCALLln(decodeEvent(e));
+    DBEVENTln(String("BoxCtrl ")+decodeEvent(e));
     switch (currentState) {
         case State::readSensorVal:
             if (Event::SBFull == e) {
@@ -127,13 +127,13 @@ void BoxCtrl::process(Event e) {
 }
 //==readSensorVal========================================================
 void BoxCtrl::entryAction_readSensorVal() {
-    DBINFO2ln("Entering State: emptyState");
+    DBSTATUSln("Entering State: emptyState");
     currentState = State::readSensorVal;  // state transition
     doActionFPtr = &BoxCtrl::doAction_readSensorVal;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
-    DBINFO2ln("State: emptyState");
+    DBINFO1ln("State: emptyState");
     //Generate the Event
     pComm.loop();  //Check for new Messages
     pBoxlevelctrl.loop(BoxLevelCtrl::Event::CheckForPackage);
@@ -145,12 +145,12 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
 }
 
 void BoxCtrl::exitAction_readSensorVal() {
-    DBINFO2ln("Leaving State: emptyState");
+    DBSTATUSln("Leaving State: emptyState");
 }
 
 //==publishLevel========================================================
 void BoxCtrl::entryAction_publishLevel() {
-    DBINFO2ln("Entering State: publishLevel");
+    DBSTATUSln("Entering State: publishLevel");
     currentState = State::publishLevel;  // state transition
     doActionFPtr = &BoxCtrl::doAction_publishLevel;
     //Subscribe to Topics
@@ -159,7 +159,7 @@ void BoxCtrl::entryAction_publishLevel() {
 }
 
 BoxCtrl::Event BoxCtrl::doAction_publishLevel() {
-    DBINFO2ln("State: publishLevel");
+    DBINFO1ln("State: publishLevel");
     //Publish SB level
 
     //Wait for Response
@@ -169,18 +169,18 @@ BoxCtrl::Event BoxCtrl::doAction_publishLevel() {
 }
 
 void BoxCtrl::exitAction_publishLevel() {
-    DBINFO2ln("Leaving State: publishLevel");
+    DBSTATUSln("Leaving State: publishLevel");
 }
 
 //==calculateOptVehicle========================================================
 void BoxCtrl::entryAction_calculateOptVehicle() {
-    DBINFO2ln("Entering State: calculateOptVehicle");
+    DBSTATUSln("Entering State: calculateOptVehicle");
     currentState = State::calculateOptVehicle;  // state transition
     doActionFPtr = &BoxCtrl::doAction_calculateOptVehicle;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
-    DBINFO2ln("State: calculateOptVehicle");
+    DBINFO1ln("State: calculateOptVehicle");
     //Check all saved Messages and save the best Vehicles to an Array
     //Generate the Event
 
@@ -188,18 +188,18 @@ BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
 }
 
 void BoxCtrl::exitAction_calculateOptVehicle() {
-    DBINFO2ln("Leaving State: calculateOptVehicle");
+    DBSTATUSln("Leaving State: calculateOptVehicle");
 }
 
 //==publishOptVehicle========================================================
 void BoxCtrl::entryAction_publishOptVehicle() {
-    DBINFO2ln("Entering State: publishOptVehicle");
+    DBSTATUSln("Entering State: publishOptVehicle");
     currentState = State::publishOptVehicle;  // state transition
     doActionFPtr = &BoxCtrl::doAction_publishOptVehicle;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
-    DBINFO2ln("State: publishOptVehicle");
+    DBINFO1ln("State: publishOptVehicle");
     //Publish decision
     //Wait for response
     //Generate the Event
@@ -208,18 +208,18 @@ BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
 }
 
 void BoxCtrl::exitAction_publishOptVehicle() {
-    DBINFO2ln("Leaving State: publishOptVehicle");
+    DBSTATUSln("Leaving State: publishOptVehicle");
 }
 
 //==waitForAck========================================================
 void BoxCtrl::entryAction_waitForAck() {
-    DBINFO2ln("Entering State: waitForAck");
+    DBSTATUSln("Entering State: waitForAck");
     currentState = State::waitForAck;  // state transition
     doActionFPtr = &BoxCtrl::doAction_waitForAck;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
-    DBINFO2ln("State: waitForAck");
+    DBINFO1ln("State: waitForAck");
     //read responses
     //check for ack from vehicle
     //Generate the Event
@@ -228,18 +228,18 @@ BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
 }
 
 void BoxCtrl::exitAction_waitForAck() {
-    DBINFO2ln("Leaving State: waitForAck");
+    DBSTATUSln("Leaving State: waitForAck");
 }
 
 //==waitForTransport===================================================
 void BoxCtrl::entryAction_waitForTransport() {
-    DBINFO2ln("Entering State: waitForTransport");
+    DBSTATUSln("Entering State: waitForTransport");
     currentState = State::waitForTransport;  // state transition
     doActionFPtr = &BoxCtrl::doAction_waitForTransport;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_waitForTransport() {
-    DBINFO2ln("State: waitForTransport");
+    DBINFO1ln("State: waitForTransport");
     //Generate the Event
     //check message for transportconfirmation
 
@@ -247,27 +247,27 @@ BoxCtrl::Event BoxCtrl::doAction_waitForTransport() {
 }
 
 void BoxCtrl::exitAction_waitForTransport() {
-    DBINFO2ln("Leaving State: waitForTransport");
+    DBSTATUSln("Leaving State: waitForTransport");
     //unsubscribe
 }
 
 //==errorState========================================================
 void BoxCtrl::entryAction_errorState() {
-    DBINFO2ln("Entering State: errorState");
+    DBERROR("Entering State: errorState");
     lastStateBevorError = currentState;
     currentState = State::errorState;  // state transition
     doActionFPtr = &BoxCtrl::doAction_errorState;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_errorState() {
-    DBINFO2ln("State: errorState");
+    DBINFO1ln("State: errorState");
     //Generate the Event
 
     return Event::NoEvent;
 }
 
 void BoxCtrl::exitAction_errorState() {
-    DBINFO2ln("Leaving State: errorState");
+    DBSTATUSln("Leaving State: errorState");
 }
 
 //============================================================================

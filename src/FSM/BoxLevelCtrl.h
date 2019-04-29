@@ -14,6 +14,8 @@
 #ifndef BOXLEVELCTRL_H__
 #define BOXLEVELCTRL_H__
 
+#include "LogConfiguration.h"
+
 #include "SensorArray.h"
 
 /**
