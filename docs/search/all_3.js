@@ -15,7 +15,7 @@ var searchData=
   ['communication_2eh',['Communication.h',['../_communication_8h.html',1,'']]],
   ['connecttomqtt',['connectToMQTT',['../classmy_m_q_t_t.html#a6d495c08a06513954b95d961f0595959',1,'myMQTT::connectToMQTT()'],['../class_network_manager.html#a59da5d280fa6ed89a774d82f05fc0feb',1,'NetworkManager::connectToMQTT()']]],
   ['connecttowifi',['connectToWiFi',['../class_network.html#ad7fff536b31740411da0e7c8f281eda9',1,'Network::connectToWiFi()'],['../class_network_manager.html#aa456e9e3424e6104ec9c2ace4a8a8253',1,'NetworkManager::connectToWiFi()']]],
-  ['currentevent',['currentEvent',['../class_box_ctrl.html#aa217d191e4eacb2e38fa52fb2b35795f',1,'BoxCtrl::currentEvent()'],['../class_box_level_ctrl.html#a318f8df9bc1331d2538584e684a7d734',1,'BoxLevelCtrl::currentEvent()']]],
+  ['currentevent',['currentEvent',['../class_box_level_ctrl.html#a318f8df9bc1331d2538584e684a7d734',1,'BoxLevelCtrl::currentEvent()'],['../class_box_ctrl.html#aa217d191e4eacb2e38fa52fb2b35795f',1,'BoxCtrl::currentEvent()']]],
   ['currentmillis',['currentMillis',['../main_8cpp.html#ae0cbaf532dc7817c544d33554786336b',1,'main.cpp']]],
-  ['currentstate',['currentState',['../class_box_ctrl.html#a499b9c9fddc03d22c30b1fbee3fb10f3',1,'BoxCtrl::currentState()'],['../class_box_level_ctrl.html#abe7f2736393881d1b4f8e6f441353ee0',1,'BoxLevelCtrl::currentState()']]]
+  ['currentstate',['currentState',['../class_box_level_ctrl.html#abe7f2736393881d1b4f8e6f441353ee0',1,'BoxLevelCtrl::currentState()'],['../class_box_ctrl.html#a499b9c9fddc03d22c30b1fbee3fb10f3',1,'BoxCtrl::currentState()']]]
 ];

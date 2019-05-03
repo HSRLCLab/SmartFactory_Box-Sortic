@@ -20,7 +20,7 @@ var searchData=
   ['ssid',['ssid',['../class_network_manager.html#ac81ca9183e39987ef2af39c1e2e19d06',1,'NetworkManager']]],
   ['startiteration',['startIteration',['../class_m_q_t_t_tasks.html#a9010fda3391f9735284e3f0a33559a5a',1,'MQTTTasks']]],
   ['stat',['stat',['../main_8cpp.html#a2e713eee95245cea93f4822e1f068615',1,'main.cpp']]],
-  ['state',['State',['../class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107',1,'BoxCtrl::State()'],['../class_box_level_ctrl.html#a54ca5715e0a273761cf2d0ad0a7987b5',1,'BoxLevelCtrl::State()']]],
+  ['state',['State',['../class_box_level_ctrl.html#a54ca5715e0a273761cf2d0ad0a7987b5',1,'BoxLevelCtrl::State()'],['../class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107',1,'BoxCtrl::State()']]],
   ['status_5fcheckifackreceived',['status_checkIfAckReceived',['../main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712a05d1ec44d8af916daa7c8b325987aae7',1,'main.cpp']]],
   ['status_5fcheckiftranspored',['status_checkIfTranspored',['../main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712ae7fe69123f95f812ea99439c4e5acc93',1,'main.cpp']]],
   ['status_5fgetoptimalvehicle',['status_getOptimalVehicle',['../main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712a85a96fb0f941a6e57ef191297b7647c2',1,'main.cpp']]],
