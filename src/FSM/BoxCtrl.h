@@ -25,8 +25,9 @@
 #include "NetworkManagerStructs.h"
 
 /**
- * @brief he Box Controll class contains the FSM for the complet Box
+ * @brief The Box Controll class contains the FSM for the complete Box
  * 
+ * @image html BoxCtrl.png width=800
  */
 class BoxCtrl {
     //=====PUBLIC====================================================================================

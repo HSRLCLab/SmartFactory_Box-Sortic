@@ -21,6 +21,8 @@
 /**
  * @brief The BoxLevel Controll class contains the FSM for the BoxLevel
  * 
+ * @image html BoxLevelCtrl.png width=1000
+ * 
  */
 class BoxLevelCtrl {
     //=====PUBLIC====================================================================================
