@@ -15,14 +15,12 @@
 #define BOXCTRL_H__
 
 #include <Arduino.h>
-#include <ArduinoJson.h>
+
 // own files:
 #include "MainConfiguration.h"
 
 #include "BoxLevelCtrl.h"
-#include "MQTTTasks.h"
-#include "NetworkManager.h"
-#include "NetworkManagerStructs.h"
+#include "Communication.h"
 
 /**
  * @brief The Box Controll class contains the FSM for the complete Box
@@ -32,6 +30,33 @@
 class BoxCtrl {
     //=====PUBLIC====================================================================================
    public:
+    enum class Sector {
+        SorticHandover,                 ///< Sortic - Handover
+        SorticToHandover,               ///< Sortic - to Handover
+        SorticWaitForGateway,           ///< Sortic - Wait for Gateway
+        SorticGateway,                  ///< Sortic - Gateway
+        TransitWaitForGatewaySortic,    ///< Transit - Wait for Gateway Sortic
+        TransitToSortic,                ///< Transit - to Sortic
+        TransitToTransfer,              ///< Transit - to Transfer
+        Parking,                        ///< Parking (not used atm)
+        TransitWaitForGatewayTransfer,  ///< Transit - Wait for Gateway Transfer
+        TransferGateway,                ///< Transfer - Gateway
+        TransferWaitForGateway,         ///< Transfer - wait for Gateway
+        TransferToHandover,             ///< Transfer - to Handover
+        TransferHandover,               ///< Transfer - Handover
+        error
+    };
+
+    struct Box {
+        String id = DEFAULT_HOSTNAME;
+        Sector actualSector = Sector::SorticHandover;
+        int actualLine = 1;
+        String cargo = "empty";
+        String status = "empty";
+        String ack = "hostname";
+        String req = "hostname";
+    } box;
+
     /**
     * @brief Enum holds all possible events
     * 
@@ -101,8 +126,21 @@ class BoxCtrl {
     Event (BoxCtrl::*doActionFPtr)(void) = &BoxCtrl::doAction_readSensorVal;
 
     BoxLevelCtrl pBoxlevelctrl;
-    //  Communication pComm;
-    NetworkManager pComm;
+    Communication pComm;
+    // NetworkManager pComm;
+
+    // int pMaxLoopCountForMessages = 1;
+    // void checkMessages();
+    myJSONStr pTemp;
+
+    unsigned long currentMillis = 0;   ///< will store current time
+    unsigned long previousMillis = 0;  ///< will store last time
+    unsigned long WaitForResponsesInMillis = 5000;
+    // int NUM_OF_MAXVALUES_VEHICLES_STORE = 2;
+    int pVehicleRating[NUM_OF_MAXVALUES_VEHICLES_STORE];
+    int increment = 0;
+
+    int TimeBetweenPublish = 500;
 
     //=====StateFunctions===============================================================
     //==readSensorVal==========================================================
@@ -110,7 +148,8 @@ class BoxCtrl {
      * @brief entry action of the readSensorVal
      * 
      */
-    void entryAction_readSensorVal();
+    void
+    entryAction_readSensorVal();
 
     /**
      * @brief main action of the readSensorVal
@@ -262,5 +301,17 @@ class BoxCtrl {
      * @return String - Event as String
      */
     String decodeEvent(Event event);
+
+    String decodeSector(Sector sector);
+    BoxCtrl::Sector decodeSector(String sector);
+
+    void publishState(State state);
+    /**
+     * @brief 
+     * 
+     * @return true - 
+     * @return false - 
+     */
+    bool checkForError();
 };
 #endif
