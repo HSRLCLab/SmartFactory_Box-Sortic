@@ -1,42 +1,6 @@
 var main_8cpp =
 [
-    [ "status_main", "main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712", [
-      [ "status_isEmpty", "main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712acca76608dad3a2f83b1f8f53f8f22369", null ],
-      [ "status_justFullPublish", "main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712af2ba013ae6aec5050a553bceff578d44", null ],
-      [ "status_getOptimalVehicle", "main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712a85a96fb0f941a6e57ef191297b7647c2", null ],
-      [ "status_hasOptVehiclePublish", "main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712a5aff6ddc48a784903b1c7c2ff71661a5", null ],
-      [ "status_checkIfAckReceived", "main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712a05d1ec44d8af916daa7c8b325987aae7", null ],
-      [ "status_checkIfTranspored", "main_8cpp.html#ab2c5970ce38a04df0c3e901233fc5712ae7fe69123f95f812ea99439c4e5acc93", null ]
-    ] ],
-    [ "calcOptimum", "main_8cpp.html#a1c08506057b88b39b318439f34a379df", null ],
-    [ "checkIfAckReceivedfromResponses", "main_8cpp.html#aa56603a2e5e9161dae0ab42659d754ec", null ],
-    [ "checkIfTransporedfromResponses", "main_8cpp.html#ab45c458be4e1d7f5a6c8acc997ccf7eb", null ],
-    [ "getOptimalVehiclefromResponses", "main_8cpp.html#a8689d0fa6fecf1b452f63251bf7b34bf", null ],
-    [ "getSmartBoxInfo", "main_8cpp.html#acd07622a9515f63349614138266ca1c3", null ],
-    [ "hasOptVehiclePublish", "main_8cpp.html#a379e4d29dc5a3c927a45505e0964eb5c", null ],
     [ "loop", "main_8cpp.html#afe461d27b9c48d5921c00d521181f12f", null ],
-    [ "loopEmpty", "main_8cpp.html#afeeda8ebf7e8bf4184f35fcad8326eb4", null ],
-    [ "publishLevel", "main_8cpp.html#ad50e47191e47a5d9e1d80b434d3013be", null ],
     [ "setup", "main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d", null ],
-    [ "testing", "main_8cpp.html#a0fb23245f06f731e5a3ee2465feb2976", null ],
-    [ "boxctrl", "main_8cpp.html#a93e111c869d631267656734fd316d125", null ],
-    [ "currentMillis", "main_8cpp.html#ae0cbaf532dc7817c544d33554786336b", null ],
-    [ "hasAnswered", "main_8cpp.html#a36efcfca795ba0fbd879c11f5af2b77c", null ],
-    [ "hostname_max", "main_8cpp.html#a4580dce1558343e692a46756e8dbc0e2", null ],
-    [ "isLastRoundonError", "main_8cpp.html#a193b7e8476a9e746343bea835a65f6a5", null ],
-    [ "ledState", "main_8cpp.html#a6bca96572a37f9b51ccae0fa72f57aba", null ],
-    [ "mcount", "main_8cpp.html#a3bf8c54212b4cf8c0484d2943c81e10f", null ],
-    [ "mcount2", "main_8cpp.html#a9047fc6a2361d6c503c9a61e75e2c1ab", null ],
-    [ "mNetwP", "main_8cpp.html#a8c692d52815f0f0410b2c6c168588791", null ],
-    [ "mSarrP", "main_8cpp.html#af748ee228e37acc9e33e7fe57f742364", null ],
-    [ "myFuncToCall", "main_8cpp.html#a6b4ccd83bfa79e4eb5c131761448827a", null ],
-    [ "previousMillis", "main_8cpp.html#a86027ad9c9159f02624d136fb63364fe", null ],
-    [ "showCase", "main_8cpp.html#a7a5fa97b7a7df4c48c0515d33cb8c0d0", null ],
-    [ "stat", "main_8cpp.html#a2e713eee95245cea93f4822e1f068615", null ],
-    [ "TaskMain", "main_8cpp.html#a0791d558b2e28366a8ae2c9928647d46", null ],
-    [ "tmp_mess", "main_8cpp.html#ac1ff334985d20fadb96d00e2b3c7dca8", null ],
-    [ "toNextStatus", "main_8cpp.html#a09c306d39a914a066b89a029e897d6a9", null ],
-    [ "value_max", "main_8cpp.html#a1e5b235061e30d4032b378dff5f946fd", null ],
-    [ "waitSeconds1", "main_8cpp.html#abf366f02bf469407cab6b7f2e612d865", null ],
-    [ "waitSeconds2", "main_8cpp.html#a811fa5ac8d58e6f08c183a51430e8d22", null ]
+    [ "boxctrl", "main_8cpp.html#a93e111c869d631267656734fd316d125", null ]
 ];

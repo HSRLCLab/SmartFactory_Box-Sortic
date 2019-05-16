@@ -86,8 +86,10 @@ $(document).ready(function(){initNavTree('class_box_ctrl.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
@@ -97,25 +99,47 @@ $(document).ready(function(){initNavTree('class_box_ctrl.html','');});
 </div><!--header-->
 <div class="contents">
 
-<p>he Box Controll class contains the FSM for the complet Box  
+<p>The <a class="el" href="struct_box_ctrl_1_1_box.html">Box</a> Controll class contains the FSM for the complete <a class="el" href="struct_box_ctrl_1_1_box.html">Box</a>.  
  <a href="class_box_ctrl.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_box_ctrl_1_1_box.html">Box</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:ab3471c53666c0471358079cf95b4ae68"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68">Sector</a> { <br />
+&#160;&#160;<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a3a7d7d4f2845e5fd09296ec79e8b3c3c">Sector::SorticHandover</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68abcf0ebff461f9c19e95611262b9b4c89">Sector::SorticToHandover</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a9c90801aa6bc3af44167121de50341b4">Sector::SorticWaitForGateway</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a0acaa903c278d35a6709633585d9b76e">Sector::SorticGateway</a>, 
+<br />
+&#160;&#160;<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68af701b8b1faaa61e600a5f71680c059b0">Sector::TransitWaitForGatewaySortic</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68ae81bb4f2dd656ccbb81c3ccdb2ad9754">Sector::TransitToSortic</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a97244495f4e80aedfd4693e5cede3e3b">Sector::TransitToTransfer</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68abaaacd7280e91aface947a1cc19d0f79">Sector::Parking</a>, 
+<br />
+&#160;&#160;<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a2464c8f93d31723702b353b815e9eecd">Sector::TransitWaitForGatewayTransfer</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68ad331a438dc896d87d3f8ca6484db6aa2">Sector::TransferGateway</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a777d7d806fce61e555042aab33f76266">Sector::TransferWaitForGateway</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a3f1ca4297ce6c53789d502625dca13f0">Sector::TransferToHandover</a>, 
+<br />
+&#160;&#160;<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68aef7baa6f4bee86e08087cfbfa2be3300">Sector::TransferHandover</a>, 
+<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68acb5e100e5a9a3e7f6d1fd97512215282">Sector::error</a>
+<br />
+ }</td></tr>
+<tr class="separator:ab3471c53666c0471358079cf95b4ae68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea5ba65c3ab60146c3015cbf8f478af2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">Event</a> { <br />
-&#160;&#160;<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a15d473c9f92298c6a7766ddace108c00">Event::SBFull</a>, 
+&#160;&#160;<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a3dfe63e4ed37ce7abdca84874ebede51">Event::SBReadyForTransport</a>, 
 <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a97d4a635842e6b2a1e8ecdbc20552c6b">Event::SBReady</a>, 
 <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a67bc145d9162c4a59c439513236079ea">Event::CalcOptVal</a>, 
 <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ae3e095863e3b99e11e8c18efb3901da3">Event::AnswerReceived</a>, 
 <br />
 &#160;&#160;<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ae0fba39626d7d5e7a6843b2e78b71f01">Event::NoAnswerReceived</a>, 
-<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a0e6be48048ac7cb080cfd0ec3dd78a35">Event::InqVehicRespond</a>, 
-<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ac0568aaf8705fc5cc35adaf313a651bc">Event::InqNoVehicRespond</a>, 
-<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ace324bcec8d2d544ed3e0e747887aa44">Event::NoVehicRespond</a>, 
-<br />
-&#160;&#160;<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a902b0d55fddef6f8d651fe1035b7d4bd">Event::Error</a>, 
+<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a902b0d55fddef6f8d651fe1035b7d4bd">Event::Error</a>, 
 <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2af1cefec9e2196c672a622347f1fbc325">Event::Resume</a>, 
 <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a9b8e7e8d81a268a2240a96b7962a0183">Event::NoEvent</a>
 <br />
@@ -126,7 +150,7 @@ Public Types</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4bfdcebe709041d0c3195a62151c870b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a4bfdcebe709041d0c3195a62151c870b">BoxCtrl</a> ()</td></tr>
-<tr class="memdesc:a4bfdcebe709041d0c3195a62151c870b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Box Ctrl object.  <a href="#a4bfdcebe709041d0c3195a62151c870b">More...</a><br /></td></tr>
+<tr class="memdesc:a4bfdcebe709041d0c3195a62151c870b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="struct_box_ctrl_1_1_box.html">Box</a> Ctrl object.  <a href="#a4bfdcebe709041d0c3195a62151c870b">More...</a><br /></td></tr>
 <tr class="separator:a4bfdcebe709041d0c3195a62151c870b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa21cc4c5f7f251a1bef9260f7d99781d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#aa21cc4c5f7f251a1bef9260f7d99781d">loop</a> ()</td></tr>
 <tr class="memdesc:aa21cc4c5f7f251a1bef9260f7d99781d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the do-function of the active state and hence generates Events.  <a href="#aa21cc4c5f7f251a1bef9260f7d99781d">More...</a><br /></td></tr>
@@ -135,11 +159,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a414da0989aa3f5faab54640df461c3b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">procceses the current Event and calls the do-function of the active state  <a href="#a414da0989aa3f5faab54640df461c3b8">More...</a><br /></td></tr>
 <tr class="separator:a414da0989aa3f5faab54640df461c3b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a43e0f645293e3884aef53d2f74b6d619"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="struct_box_ctrl_1_1_box.html">BoxCtrl::Box</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a43e0f645293e3884aef53d2f74b6d619">box</a></td></tr>
+<tr class="separator:a43e0f645293e3884aef53d2f74b6d619"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
 Private Types</h2></td></tr>
 <tr class="memitem:ac1da7e00d2615d4548cd7a7f91b30107"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107">State</a> { <br />
 &#160;&#160;<a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107ad721de9215507fbc9587dc7323f12b64">State::readSensorVal</a>, 
-<a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107a8f215b6224783048fba472b4424b18fc">State::publishLevel</a>, 
+<a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107a343f98719f6933f5c4622f1f4385f97a">State::waitForVehicle</a>, 
 <a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107a676c15cce9e5405b4c57cc000fc5b1a6">State::calculateOptVehicle</a>, 
 <a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107a232bc244b962e8ec22e8338062b9fdfe">State::publishOptVehicle</a>, 
 <br />
@@ -165,15 +194,15 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:ad29f407851045cd21a88aa23f77b1ff1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ad29f407851045cd21a88aa23f77b1ff1">exitAction_readSensorVal</a> ()</td></tr>
 <tr class="memdesc:ad29f407851045cd21a88aa23f77b1ff1"><td class="mdescLeft">&#160;</td><td class="mdescRight">exit action of the readSensorVal  <a href="#ad29f407851045cd21a88aa23f77b1ff1">More...</a><br /></td></tr>
 <tr class="separator:ad29f407851045cd21a88aa23f77b1ff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53c077a84889c2673fcde116bccbcf1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a53c077a84889c2673fcde116bccbcf1a">entryAction_publishLevel</a> ()</td></tr>
-<tr class="memdesc:a53c077a84889c2673fcde116bccbcf1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">entry action of the publishLevel  <a href="#a53c077a84889c2673fcde116bccbcf1a">More...</a><br /></td></tr>
-<tr class="separator:a53c077a84889c2673fcde116bccbcf1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab17b4a83c721941243064bc644d259e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">BoxCtrl::Event</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ab17b4a83c721941243064bc644d259e4">doAction_publishLevel</a> ()</td></tr>
-<tr class="memdesc:ab17b4a83c721941243064bc644d259e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">main action of the publishLevel  <a href="#ab17b4a83c721941243064bc644d259e4">More...</a><br /></td></tr>
-<tr class="separator:ab17b4a83c721941243064bc644d259e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c7a4d020ee77534531b3a41b2a952e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a7c7a4d020ee77534531b3a41b2a952e0">exitAction_publishLevel</a> ()</td></tr>
-<tr class="memdesc:a7c7a4d020ee77534531b3a41b2a952e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">exit action of the publishLevel  <a href="#a7c7a4d020ee77534531b3a41b2a952e0">More...</a><br /></td></tr>
-<tr class="separator:a7c7a4d020ee77534531b3a41b2a952e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a676e58e9d8429d35e85bf5320b1ca83e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a676e58e9d8429d35e85bf5320b1ca83e">entryAction_waitForVehicle</a> ()</td></tr>
+<tr class="memdesc:a676e58e9d8429d35e85bf5320b1ca83e"><td class="mdescLeft">&#160;</td><td class="mdescRight">entry action of the waitForVehicle  <a href="#a676e58e9d8429d35e85bf5320b1ca83e">More...</a><br /></td></tr>
+<tr class="separator:a676e58e9d8429d35e85bf5320b1ca83e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe919b17d90d2c23066c8ff47fdcf94b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">BoxCtrl::Event</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#abe919b17d90d2c23066c8ff47fdcf94b">doAction_waitForVehicle</a> ()</td></tr>
+<tr class="memdesc:abe919b17d90d2c23066c8ff47fdcf94b"><td class="mdescLeft">&#160;</td><td class="mdescRight">main action of the waitForVehicle  <a href="#abe919b17d90d2c23066c8ff47fdcf94b">More...</a><br /></td></tr>
+<tr class="separator:abe919b17d90d2c23066c8ff47fdcf94b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af54907b51bfd007235af8c35c50a252e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#af54907b51bfd007235af8c35c50a252e">exitAction_waitForVehicle</a> ()</td></tr>
+<tr class="memdesc:af54907b51bfd007235af8c35c50a252e"><td class="mdescLeft">&#160;</td><td class="mdescRight">exit action of the waitForVehicle  <a href="#af54907b51bfd007235af8c35c50a252e">More...</a><br /></td></tr>
+<tr class="separator:af54907b51bfd007235af8c35c50a252e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a111b6a699db8e0e7aaedc1cb2cfc0aa9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a111b6a699db8e0e7aaedc1cb2cfc0aa9">entryAction_calculateOptVehicle</a> ()</td></tr>
 <tr class="memdesc:a111b6a699db8e0e7aaedc1cb2cfc0aa9"><td class="mdescLeft">&#160;</td><td class="mdescRight">entry action of the calculateOptVehicle  <a href="#a111b6a699db8e0e7aaedc1cb2cfc0aa9">More...</a><br /></td></tr>
 <tr class="separator:a111b6a699db8e0e7aaedc1cb2cfc0aa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,7 +222,7 @@ Private Member Functions</h2></td></tr>
 <tr class="memdesc:a544c3fa508777f8baf39338c6b1687c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">exit action of the publishOptVehicle  <a href="#a544c3fa508777f8baf39338c6b1687c6">More...</a><br /></td></tr>
 <tr class="separator:a544c3fa508777f8baf39338c6b1687c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa9b83b21c3668bf7ccd5d3d23f5ab1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#aaa9b83b21c3668bf7ccd5d3d23f5ab1d">entryAction_waitForAck</a> ()</td></tr>
-<tr class="memdesc:aaa9b83b21c3668bf7ccd5d3d23f5ab1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">entry action of the waitForAck  <a href="#aaa9b83b21c3668bf7ccd5d3d23f5ab1d">More...</a><br /></td></tr>
+<tr class="memdesc:aaa9b83b21c3668bf7ccd5d3d23f5ab1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">entry action of the waitForAck publish state to "Box/box.id/status"  <a href="#aaa9b83b21c3668bf7ccd5d3d23f5ab1d">More...</a><br /></td></tr>
 <tr class="separator:aaa9b83b21c3668bf7ccd5d3d23f5ab1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad34a2d7d37178aafc32fdda1c7b2b413"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">BoxCtrl::Event</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ad34a2d7d37178aafc32fdda1c7b2b413">doAction_waitForAck</a> ()</td></tr>
 <tr class="memdesc:ad34a2d7d37178aafc32fdda1c7b2b413"><td class="mdescLeft">&#160;</td><td class="mdescRight">main action of the waitForAck  <a href="#ad34a2d7d37178aafc32fdda1c7b2b413">More...</a><br /></td></tr>
@@ -202,7 +231,10 @@ Private Member Functions</h2></td></tr>
 <tr class="memdesc:a42e20b3a9cd6745a09728549a669eb10"><td class="mdescLeft">&#160;</td><td class="mdescRight">exit action of the waitForAck  <a href="#a42e20b3a9cd6745a09728549a669eb10">More...</a><br /></td></tr>
 <tr class="separator:a42e20b3a9cd6745a09728549a669eb10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a910af18d21e8684bb8748c7bed123444"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a910af18d21e8684bb8748c7bed123444">entryAction_waitForTransport</a> ()</td></tr>
-<tr class="memdesc:a910af18d21e8684bb8748c7bed123444"><td class="mdescLeft">&#160;</td><td class="mdescRight">entry action of the waitForTransport  <a href="#a910af18d21e8684bb8748c7bed123444">More...</a><br /></td></tr>
+<tr class="memdesc:a910af18d21e8684bb8748c7bed123444"><td class="mdescLeft">&#160;</td><td class="mdescRight">entry action of the waitForTransport <br />
+publish state to "Box/box.id/status". <br />
+subscribe to "Box/box.id/position". <br />
+ <a href="#a910af18d21e8684bb8748c7bed123444">More...</a><br /></td></tr>
 <tr class="separator:a910af18d21e8684bb8748c7bed123444"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabe58533aed7ecd1393e94de24204b8d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">BoxCtrl::Event</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#aabe58533aed7ecd1393e94de24204b8d">doAction_waitForTransport</a> ()</td></tr>
 <tr class="memdesc:aabe58533aed7ecd1393e94de24204b8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">main action of the waitForTransport  <a href="#aabe58533aed7ecd1393e94de24204b8d">More...</a><br /></td></tr>
@@ -225,6 +257,14 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:a5908593ed97b3136c50c494ce7fe2cbd"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a5908593ed97b3136c50c494ce7fe2cbd">decodeEvent</a> (<a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">Event</a> event)</td></tr>
 <tr class="memdesc:a5908593ed97b3136c50c494ce7fe2cbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes the Event-Enum and returns a description.  <a href="#a5908593ed97b3136c50c494ce7fe2cbd">More...</a><br /></td></tr>
 <tr class="separator:a5908593ed97b3136c50c494ce7fe2cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09462f88f1fd6b2ed26cc41516c0c42d"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a09462f88f1fd6b2ed26cc41516c0c42d">decodeSector</a> (<a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68">Sector</a> sector)</td></tr>
+<tr class="separator:a09462f88f1fd6b2ed26cc41516c0c42d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c649125925f79fddd0ed741db0f2fd8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68">BoxCtrl::Sector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a4c649125925f79fddd0ed741db0f2fd8">decodeSector</a> (String sector)</td></tr>
+<tr class="separator:a4c649125925f79fddd0ed741db0f2fd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ac832ab3801264fd033895217a85da0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a5ac832ab3801264fd033895217a85da0">publishState</a> (<a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107">State</a> state)</td></tr>
+<tr class="separator:a5ac832ab3801264fd033895217a85da0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a769cf592cbf9f89403f9d89a3feb8f30"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a769cf592cbf9f89403f9d89a3feb8f30">checkForError</a> ()</td></tr>
+<tr class="separator:a769cf592cbf9f89403f9d89a3feb8f30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -242,16 +282,30 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a2c519c77b1b6514e2cc125ddf949d1df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab840a5272489ccdbe8f6be28a4d85c42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_box_level_ctrl.html">BoxLevelCtrl</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ab840a5272489ccdbe8f6be28a4d85c42">pBoxlevelctrl</a></td></tr>
 <tr class="separator:ab840a5272489ccdbe8f6be28a4d85c42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31426118cfe685eaeabb0041b2bfe51c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_network_manager.html">NetworkManager</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a31426118cfe685eaeabb0041b2bfe51c">pComm</a></td></tr>
-<tr class="separator:a31426118cfe685eaeabb0041b2bfe51c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1a4fdce35217d388d8cdac247012e42"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_communication.html">Communication</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ae1a4fdce35217d388d8cdac247012e42">pComm</a></td></tr>
+<tr class="separator:ae1a4fdce35217d388d8cdac247012e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa77dc13980e5da27ec3adef9f76c9453"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmy_j_s_o_n_str.html">myJSONStr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#aa77dc13980e5da27ec3adef9f76c9453">pTemp</a></td></tr>
+<tr class="separator:aa77dc13980e5da27ec3adef9f76c9453"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a714a6cb9b36310e4d9bbfd86e34c9bc6"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a714a6cb9b36310e4d9bbfd86e34c9bc6">currentMillis</a> = 0</td></tr>
+<tr class="memdesc:a714a6cb9b36310e4d9bbfd86e34c9bc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">will store current time  <a href="#a714a6cb9b36310e4d9bbfd86e34c9bc6">More...</a><br /></td></tr>
+<tr class="separator:a714a6cb9b36310e4d9bbfd86e34c9bc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7265e35db0a8cb078088e416ad426d9"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#ad7265e35db0a8cb078088e416ad426d9">previousMillis</a> = 0</td></tr>
+<tr class="memdesc:ad7265e35db0a8cb078088e416ad426d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">will store last time  <a href="#ad7265e35db0a8cb078088e416ad426d9">More...</a><br /></td></tr>
+<tr class="separator:ad7265e35db0a8cb078088e416ad426d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3201375145d0485217f766d9d352faf"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#aa3201375145d0485217f766d9d352faf">WaitForResponsesInMillis</a> = 5000</td></tr>
+<tr class="separator:aa3201375145d0485217f766d9d352faf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a868e84e30d638c24bd62b0cf323e570c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a868e84e30d638c24bd62b0cf323e570c">pVehicleRating</a> [<a class="el" href="_main_configuration_8h.html#a0f6eaff38fcccf4fa90ef587a3cefaf9">NUM_OF_MAXVALUES_VEHICLES_STORE</a>]</td></tr>
+<tr class="separator:a868e84e30d638c24bd62b0cf323e570c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b938242dfbcb077ebaa65e46c31c5ca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_box_ctrl.html#a7b938242dfbcb077ebaa65e46c31c5ca">increment</a> = 0</td></tr>
+<tr class="separator:a7b938242dfbcb077ebaa65e46c31c5ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>he Box Controll class contains the FSM for the complet Box </p>
+<div class="textblock"><p>The <a class="el" href="struct_box_ctrl_1_1_box.html">Box</a> Controll class contains the FSM for the complete <a class="el" href="struct_box_ctrl_1_1_box.html">Box</a>. </p>
 <div class="image">
 <img src="BoxCtrl.png" alt="BoxCtrl.png" width="800"/>
 </div>
  
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00032">32</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00030">30</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="aea5ba65c3ab60146c3015cbf8f478af2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aea5ba65c3ab60146c3015cbf8f478af2">&#9670;&nbsp;</a></span>Event</h2>
@@ -275,7 +329,7 @@ Private Attributes</h2></td></tr>
 
 <p>Enum holds all possible events. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2a15d473c9f92298c6a7766ddace108c00"></a>SBFull&#160;</td><td class="fielddoc"><p>SB is Full. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2a3dfe63e4ed37ce7abdca84874ebede51"></a>SBReadyForTransport&#160;</td><td class="fielddoc"><p>SB is ready for transport. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2a97d4a635842e6b2a1e8ecdbc20552c6b"></a>SBReady&#160;</td><td class="fielddoc"><p>SB is Ready. </p>
 </td></tr>
@@ -285,12 +339,6 @@ Private Attributes</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2ae0fba39626d7d5e7a6843b2e78b71f01"></a>NoAnswerReceived&#160;</td><td class="fielddoc"><p>No Answer received. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2a0e6be48048ac7cb080cfd0ec3dd78a35"></a>InqVehicRespond&#160;</td><td class="fielddoc"><p>Inquired Vehicle responded. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2ac0568aaf8705fc5cc35adaf313a651bc"></a>InqNoVehicRespond&#160;</td><td class="fielddoc"><p>Inquired Vehicle didnt responded. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2ace324bcec8d2d544ed3e0e747887aa44"></a>NoVehicRespond&#160;</td><td class="fielddoc"><p>None of the Inquired Vehicle did responded. </p>
-</td></tr>
 <tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2a902b0d55fddef6f8d651fe1035b7d4bd"></a>Error&#160;</td><td class="fielddoc"><p>Error occured. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="aea5ba65c3ab60146c3015cbf8f478af2af1cefec9e2196c672a622347f1fbc325"></a>Resume&#160;</td><td class="fielddoc"><p>Resume after Error occured. </p>
@@ -299,7 +347,60 @@ Private Attributes</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00039">39</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00064">64</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+
+</div>
+</div>
+<a id="ab3471c53666c0471358079cf95b4ae68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3471c53666c0471358079cf95b4ae68">&#9670;&nbsp;</a></span>Sector</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68">BoxCtrl::Sector</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68a3a7d7d4f2845e5fd09296ec79e8b3c3c"></a>SorticHandover&#160;</td><td class="fielddoc"><p>Sortic - Handover. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68abcf0ebff461f9c19e95611262b9b4c89"></a>SorticToHandover&#160;</td><td class="fielddoc"><p>Sortic - to Handover. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68a9c90801aa6bc3af44167121de50341b4"></a>SorticWaitForGateway&#160;</td><td class="fielddoc"><p>Sortic - Wait for Gateway. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68a0acaa903c278d35a6709633585d9b76e"></a>SorticGateway&#160;</td><td class="fielddoc"><p>Sortic - Gateway. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68af701b8b1faaa61e600a5f71680c059b0"></a>TransitWaitForGatewaySortic&#160;</td><td class="fielddoc"><p>Transit - Wait for Gateway Sortic. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68ae81bb4f2dd656ccbb81c3ccdb2ad9754"></a>TransitToSortic&#160;</td><td class="fielddoc"><p>Transit - to Sortic. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68a97244495f4e80aedfd4693e5cede3e3b"></a>TransitToTransfer&#160;</td><td class="fielddoc"><p>Transit - to Transfer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68abaaacd7280e91aface947a1cc19d0f79"></a>Parking&#160;</td><td class="fielddoc"><p>Parking (not used atm) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68a2464c8f93d31723702b353b815e9eecd"></a>TransitWaitForGatewayTransfer&#160;</td><td class="fielddoc"><p>Transit - Wait for Gateway Transfer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68ad331a438dc896d87d3f8ca6484db6aa2"></a>TransferGateway&#160;</td><td class="fielddoc"><p>Transfer - Gateway. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68a777d7d806fce61e555042aab33f76266"></a>TransferWaitForGateway&#160;</td><td class="fielddoc"><p>Transfer - wait for Gateway. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68a3f1ca4297ce6c53789d502625dca13f0"></a>TransferToHandover&#160;</td><td class="fielddoc"><p>Transfer - to Handover. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68aef7baa6f4bee86e08087cfbfa2be3300"></a>TransferHandover&#160;</td><td class="fielddoc"><p>Transfer - Handover. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab3471c53666c0471358079cf95b4ae68acb5e100e5a9a3e7f6d1fd97512215282"></a>error&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00033">33</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>
@@ -327,7 +428,7 @@ Private Attributes</h2></td></tr>
 <p><a href="https://stackoverflow.com/questions/18335861/why-is-enum-class-preferred-over-plain-enum">https://stackoverflow.com/questions/18335861/why-is-enum-class-preferred-over-plain-enum</a> </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac1da7e00d2615d4548cd7a7f91b30107ad721de9215507fbc9587dc7323f12b64"></a>readSensorVal&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ac1da7e00d2615d4548cd7a7f91b30107a8f215b6224783048fba472b4424b18fc"></a>publishLevel&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ac1da7e00d2615d4548cd7a7f91b30107a343f98719f6933f5c4622f1f4385f97a"></a>waitForVehicle&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ac1da7e00d2615d4548cd7a7f91b30107a676c15cce9e5405b4c57cc000fc5b1a6"></a>calculateOptVehicle&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ac1da7e00d2615d4548cd7a7f91b30107a232bc244b962e8ec22e8338062b9fdfe"></a>publishOptVehicle&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ac1da7e00d2615d4548cd7a7f91b30107a41e0e0f2ecdefb0eb595c89fef3a8296"></a>waitForAck&#160;</td><td class="fielddoc"></td></tr>
@@ -335,7 +436,7 @@ Private Attributes</h2></td></tr>
 <tr><td class="fieldname"><a id="ac1da7e00d2615d4548cd7a7f91b30107adda7002e7ba1602d5293c2af63089825"></a>errorState&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00084">84</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00109">109</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>
@@ -355,13 +456,43 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Construct a new Box Ctrl object. </p>
+<p>Construct a new <a class="el" href="struct_box_ctrl_1_1_box.html">Box</a> Ctrl object. </p>
 
 <p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00015">15</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a769cf592cbf9f89403f9d89a3feb8f30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a769cf592cbf9f89403f9d89a3feb8f30">&#9670;&nbsp;</a></span>checkForError()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BoxCtrl::checkForError </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>true - </dd>
+<dd>
+false - </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00566">566</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a5908593ed97b3136c50c494ce7fe2cbd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5908593ed97b3136c50c494ce7fe2cbd">&#9670;&nbsp;</a></span>decodeEvent()</h2>
 
@@ -395,7 +526,63 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String - Event as String </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00304">304</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00447">447</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a09462f88f1fd6b2ed26cc41516c0c42d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09462f88f1fd6b2ed26cc41516c0c42d">&#9670;&nbsp;</a></span>decodeSector() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String BoxCtrl::decodeSector </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68">Sector</a>&#160;</td>
+          <td class="paramname"><em>sector</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00488">488</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4c649125925f79fddd0ed741db0f2fd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c649125925f79fddd0ed741db0f2fd8">&#9670;&nbsp;</a></span>decodeSector() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68">BoxCtrl::Sector</a> BoxCtrl::decodeSector </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>sector</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00536">536</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -432,7 +619,7 @@ Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String - State as String </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00275">275</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00418">418</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -460,9 +647,14 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>main action of the calculateOptVehicle </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
+<p>check all saved messages. <br />
+select all vehicle in same sector and choose the nearest one. <br />
+if the nearest one is valid update box.req with id of the nearest vehicle <br />
+and return <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a67bc145d9162c4a59c439513236079ea" title="Calculated Optimum Value.">Event::CalcOptVal</a>. <br />
+if not valid return <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ae0fba39626d7d5e7a6843b2e78b71f01" title="No Answer received.">Event::NoAnswerReceived</a>. <br />
+ </p><dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00182">182</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00210">210</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -492,37 +684,7 @@ Private Attributes</h2></td></tr>
 <p>main action of the errorState </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00262">262</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
-
-</div>
-</div>
-<a id="ab17b4a83c721941243064bc644d259e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab17b4a83c721941243064bc644d259e4">&#9670;&nbsp;</a></span>doAction_publishLevel()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">BoxCtrl::Event</a> BoxCtrl::doAction_publishLevel </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>main action of the publishLevel </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00161">161</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00396">396</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -550,9 +712,13 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>main action of the publishOptVehicle </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
+<p>call Comm.loop and check for incoming Error-Message. <br />
+publish box.id and id of req vehicle to "Box/box.id/handshake" all TIME_BETWEEN_PUBLISH seconds. <br />
+if requested vehicle also req box in time return <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ae3e095863e3b99e11e8c18efb3901da3" title="Answer received.">Event::AnswerReceived</a>. <br />
+ </p><dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event <br />
+</dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00201">201</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00265">265</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -580,9 +746,12 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>main action of the readSensorVal </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
+<p>call Comm.loop and check for incoming Error-Message <br />
+call <a class="el" href="class_box_level_ctrl.html" title="The BoxLevel Controll class contains the FSM for the BoxLevel.">BoxLevelCtrl</a> with Event::CheckForPackage <br />
+if BoxLvl is in FullState return Event SBReadyForTransport <br />
+ </p><dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2" title="Enum holds all possible events.">BoxCtrl::Event</a> - generated Event </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00135">135</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00142">142</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -610,9 +779,13 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>main action of the waitForAck </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
+<p>call Comm.loop and check for incoming Error-Message. <br />
+publish box.id and id of ack vehicle to "Box/box.id/handshake". <br />
+wait SMARTBOX_ITERATION_VACKS_SECONDS for response. <br />
+if acknoledge vehicle also ack box in time return <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ae3e095863e3b99e11e8c18efb3901da3" title="Answer received.">Event::AnswerReceived</a>. <br />
+ </p><dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00221">221</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00311">311</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -640,9 +813,46 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>main action of the waitForTransport </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event </dd></dl>
+<p>call Comm.loop and check for incoming Error-Message. <br />
+check incoming message if ack. vehicle updated box-position <br />
+ </p><dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172" title="Enum holds all possible events.">BoxLevelCtrl::Event</a> - generated Event <br />
+</dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00241">241</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00358">358</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+
+</div>
+</div>
+<a id="abe919b17d90d2c23066c8ff47fdcf94b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe919b17d90d2c23066c8ff47fdcf94b">&#9670;&nbsp;</a></span>doAction_waitForVehicle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2">BoxCtrl::Event</a> BoxCtrl::doAction_waitForVehicle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>main action of the waitForVehicle </p>
+<p>call Comm.loop and check for incoming Error-Message. <br />
+wait for SMARTBOX_WAITFOR_VEHICLES_SECONDS seconds and <br />
+if a message is received or more than NUM_OF_MAXVALUES_VEHICLES_STORE messages <br />
+are recived return <a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2ae3e095863e3b99e11e8c18efb3901da3" title="Answer received.">Event::AnswerReceived</a>. <br />
+ </p><dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2" title="Enum holds all possible events.">BoxCtrl::Event</a> - generated Event </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00181">181</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -670,8 +880,9 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>entry action of the calculateOptVehicle </p>
+<p>publish state to "Box/box.id/status" </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00176">176</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00203">203</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -700,36 +911,7 @@ Private Attributes</h2></td></tr>
 
 <p>entry action of the errorState </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00255">255</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a53c077a84889c2673fcde116bccbcf1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53c077a84889c2673fcde116bccbcf1a">&#9670;&nbsp;</a></span>entryAction_publishLevel()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BoxCtrl::entryAction_publishLevel </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>entry action of the publishLevel </p>
-
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00152">152</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00387">387</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -757,8 +939,11 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>entry action of the publishOptVehicle </p>
+<p>publish state to "Box/box.id/status" <br />
+subscribe to "Vehicle/box.req/handshake" <br />
+</p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00195">195</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00254">254</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -786,8 +971,9 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>entry action of the readSensorVal </p>
+<p>publish actual state to "Box/box.id/status" </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00129">129</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00135">135</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -814,9 +1000,9 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>entry action of the waitForAck </p>
+<p>entry action of the waitForAck publish state to "Box/box.id/status" </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00215">215</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00302">302</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -843,9 +1029,46 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>entry action of the waitForTransport </p>
+<p>entry action of the waitForTransport <br />
+publish state to "Box/box.id/status". <br />
+subscribe to "Box/box.id/position". <br />
+</p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00235">235</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00350">350</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a676e58e9d8429d35e85bf5320b1ca83e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a676e58e9d8429d35e85bf5320b1ca83e">&#9670;&nbsp;</a></span>entryAction_waitForVehicle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BoxCtrl::entryAction_waitForVehicle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>entry action of the waitForVehicle </p>
+<p>publish state to "Box/box.id/status". <br />
+subscribe to "Vehicle/+/available". <br />
+unsubscribe from "Vehicle/box.req/handshake". <br />
+reset box.ack and box.req. <br />
+</p>
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00163">163</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -874,7 +1097,7 @@ Private Attributes</h2></td></tr>
 
 <p>exit action of the calculateOptVehicle </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00190">190</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00248">248</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -903,36 +1126,7 @@ Private Attributes</h2></td></tr>
 
 <p>exit action of the errorState </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00269">269</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a7c7a4d020ee77534531b3a41b2a952e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c7a4d020ee77534531b3a41b2a952e0">&#9670;&nbsp;</a></span>exitAction_publishLevel()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void BoxCtrl::exitAction_publishLevel </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>exit action of the publishLevel </p>
-
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00171">171</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00411">411</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -961,7 +1155,7 @@ Private Attributes</h2></td></tr>
 
 <p>exit action of the publishOptVehicle </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00210">210</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00297">297</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -990,7 +1184,7 @@ Private Attributes</h2></td></tr>
 
 <p>exit action of the readSensorVal </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00147">147</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00158">158</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -1018,8 +1212,9 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>exit action of the waitForAck </p>
+<p>unsubscribe from "Vehicle/box.req/handshake" </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00230">230</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00343">343</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -1047,8 +1242,39 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>exit action of the waitForTransport </p>
+<p>unsubscribe from "Box/box.id/position" </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00249">249</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00380">380</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+
+</div>
+</div>
+<a id="af54907b51bfd007235af8c35c50a252e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af54907b51bfd007235af8c35c50a252e">&#9670;&nbsp;</a></span>exitAction_waitForVehicle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BoxCtrl::exitAction_waitForVehicle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>exit action of the waitForVehicle </p>
+<p>unsubscribe from "Vehicle/+/available" </p>
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00197">197</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -1069,7 +1295,7 @@ Private Attributes</h2></td></tr>
 
 <p>Calls the do-function of the active state and hence generates Events. </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00019">19</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00025">25</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -1097,7 +1323,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00024">24</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00030">30</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
@@ -1133,11 +1359,53 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00031">31</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00037">37</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a5ac832ab3801264fd033895217a85da0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ac832ab3801264fd033895217a85da0">&#9670;&nbsp;</a></span>publishState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BoxCtrl::publishState </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107">State</a>&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8cpp_source.html#l00579">579</a> of file <a class="el" href="_box_ctrl_8cpp_source.html">BoxCtrl.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a43e0f645293e3884aef53d2f74b6d619"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43e0f645293e3884aef53d2f74b6d619">&#9670;&nbsp;</a></span>box</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="struct_box_ctrl_1_1_box.html">BoxCtrl::Box</a>  BoxCtrl::box</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa217d191e4eacb2e38fa52fb2b35795f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa217d191e4eacb2e38fa52fb2b35795f">&#9670;&nbsp;</a></span>currentEvent</h2>
 
@@ -1160,7 +1428,33 @@ Private Attributes</h2></td></tr>
 
 <p>holds the current event of the FSM </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00094">94</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00119">119</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+
+</div>
+</div>
+<a id="a714a6cb9b36310e4d9bbfd86e34c9bc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a714a6cb9b36310e4d9bbfd86e34c9bc6">&#9670;&nbsp;</a></span>currentMillis</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long BoxCtrl::currentMillis = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>will store current time </p>
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00136">136</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>
@@ -1186,7 +1480,7 @@ Private Attributes</h2></td></tr>
 
 <p>holds the current state of the FSM </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00093">93</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00118">118</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>
@@ -1213,7 +1507,31 @@ Private Attributes</h2></td></tr>
 <p>Functionpointer to call the current states do-function. </p>
 <p><a href="https://stackoverflow.com/questions/1485983/calling-c-class-methods-via-a-function-pointer">https://stackoverflow.com/questions/1485983/calling-c-class-methods-via-a-function-pointer</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00101">101</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00126">126</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+
+</div>
+</div>
+<a id="a7b938242dfbcb077ebaa65e46c31c5ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b938242dfbcb077ebaa65e46c31c5ca">&#9670;&nbsp;</a></span>increment</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int BoxCtrl::increment = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00141">141</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>
@@ -1239,7 +1557,7 @@ Private Attributes</h2></td></tr>
 
 <p>holds the last state of the FSM so it's possible to resume after error </p>
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00092">92</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00117">117</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>
@@ -1263,12 +1581,12 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00103">103</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00128">128</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>
-<a id="a31426118cfe685eaeabb0041b2bfe51c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31426118cfe685eaeabb0041b2bfe51c">&#9670;&nbsp;</a></span>pComm</h2>
+<a id="ae1a4fdce35217d388d8cdac247012e42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1a4fdce35217d388d8cdac247012e42">&#9670;&nbsp;</a></span>pComm</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1277,7 +1595,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_network_manager.html">NetworkManager</a> BoxCtrl::pComm</td>
+          <td class="memname"><a class="el" href="class_communication.html">Communication</a> BoxCtrl::pComm</td>
         </tr>
       </table>
   </td>
@@ -1287,7 +1605,105 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00105">105</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00129">129</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+
+</div>
+</div>
+<a id="ad7265e35db0a8cb078088e416ad426d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7265e35db0a8cb078088e416ad426d9">&#9670;&nbsp;</a></span>previousMillis</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long BoxCtrl::previousMillis = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>will store last time </p>
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00137">137</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+
+</div>
+</div>
+<a id="aa77dc13980e5da27ec3adef9f76c9453"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa77dc13980e5da27ec3adef9f76c9453">&#9670;&nbsp;</a></span>pTemp</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structmy_j_s_o_n_str.html">myJSONStr</a> BoxCtrl::pTemp</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00134">134</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+
+</div>
+</div>
+<a id="a868e84e30d638c24bd62b0cf323e570c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a868e84e30d638c24bd62b0cf323e570c">&#9670;&nbsp;</a></span>pVehicleRating</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int BoxCtrl::pVehicleRating[<a class="el" href="_main_configuration_8h.html#a0f6eaff38fcccf4fa90ef587a3cefaf9">NUM_OF_MAXVALUES_VEHICLES_STORE</a>]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00140">140</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
+
+</div>
+</div>
+<a id="aa3201375145d0485217f766d9d352faf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3201375145d0485217f766d9d352faf">&#9670;&nbsp;</a></span>WaitForResponsesInMillis</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned long BoxCtrl::WaitForResponsesInMillis = 5000</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_box_ctrl_8h_source.html#l00138">138</a> of file <a class="el" href="_box_ctrl_8h_source.html">BoxCtrl.h</a>.</p>
 
 </div>
 </div>

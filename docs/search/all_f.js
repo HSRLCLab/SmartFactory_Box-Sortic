@@ -2,6 +2,7 @@ var searchData=
 [
   ['readme_2emd',['README.md',['../_r_e_a_d_m_e_8md.html',1,'']]],
   ['readsensorval',['readSensorVal',['../class_box_ctrl.html#ac1da7e00d2615d4548cd7a7f91b30107ad721de9215507fbc9587dc7323f12b64',1,'BoxCtrl']]],
+  ['req',['req',['../structmy_j_s_o_n_str.html#a130d0b0169922d5e7860e7dbebdcff08',1,'myJSONStr::req()'],['../struct_box_ctrl_1_1_box.html#a7a865cccd78431c0d85383acfb0d38d3',1,'BoxCtrl::Box::req()']]],
   ['request',['request',['../structmy_j_s_o_n_str.html#ad6ca34b6fd792f6053ed24371e1e8704',1,'myJSONStr']]],
   ['resume',['Resume',['../class_box_level_ctrl.html#a529fd594623a8708a02a7e96340db172af1cefec9e2196c672a622347f1fbc325',1,'BoxLevelCtrl::Resume()'],['../class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2af1cefec9e2196c672a622347f1fbc325',1,'BoxCtrl::Resume()']]],
   ['returnbetween',['returnBetween',['../class_m_q_t_t_tasks.html#a78d081af3a420f318f036568fc4e7df6',1,'MQTTTasks']]],

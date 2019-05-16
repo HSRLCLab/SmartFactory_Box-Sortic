@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['waitseconds1',['waitSeconds1',['../main_8cpp.html#abf366f02bf469407cab6b7f2e612d865',1,'main.cpp']]],
-  ['waitseconds2',['waitSeconds2',['../main_8cpp.html#a811fa5ac8d58e6f08c183a51430e8d22',1,'main.cpp']]]
+  ['vehicleparams',['vehicleParams',['../structmy_j_s_o_n_str.html#a70775a17c57818299a2a2e9101766cdd',1,'myJSONStr']]]
 ];

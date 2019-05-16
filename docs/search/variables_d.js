@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['showcase',['showCase',['../main_8cpp.html#a7a5fa97b7a7df4c48c0515d33cb8c0d0',1,'main.cpp']]],
-  ['ssid',['ssid',['../class_network_manager.html#ac81ca9183e39987ef2af39c1e2e19d06',1,'NetworkManager']]],
-  ['startiteration',['startIteration',['../class_m_q_t_t_tasks.html#a9010fda3391f9735284e3f0a33559a5a',1,'MQTTTasks']]],
-  ['stat',['stat',['../main_8cpp.html#a2e713eee95245cea93f4822e1f068615',1,'main.cpp']]],
-  ['stringpassing',['stringpassing',['../class_m_q_t_t_tasks.html#a7dd346e63ae49a5011f30e23b608d80f',1,'MQTTTasks']]]
+  ['req',['req',['../structmy_j_s_o_n_str.html#a130d0b0169922d5e7860e7dbebdcff08',1,'myJSONStr::req()'],['../struct_box_ctrl_1_1_box.html#a7a865cccd78431c0d85383acfb0d38d3',1,'BoxCtrl::Box::req()']]],
+  ['request',['request',['../structmy_j_s_o_n_str.html#ad6ca34b6fd792f6053ed24371e1e8704',1,'myJSONStr']]],
+  ['returnbetween',['returnBetween',['../class_m_q_t_t_tasks.html#a78d081af3a420f318f036568fc4e7df6',1,'MQTTTasks']]],
+  ['rssi',['rssi',['../class_network_manager.html#a27f169df7b09c6f6d6486b7731fd46ca',1,'NetworkManager']]]
 ];

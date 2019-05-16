@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['encryption',['encryption',['../class_network_manager.html#a056a4dbc9da682d4dc8dc10e0daa2e14',1,'NetworkManager']]]
+  ['doactionfptr',['doActionFPtr',['../class_box_level_ctrl.html#a6864f1ee3b54ec72a3671df949371a85',1,'BoxLevelCtrl::doActionFPtr()'],['../class_box_ctrl.html#a2c519c77b1b6514e2cc125ddf949d1df',1,'BoxCtrl::doActionFPtr()']]]
 ];
