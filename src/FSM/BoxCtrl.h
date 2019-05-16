@@ -51,27 +51,27 @@ class BoxCtrl {
         String id = DEFAULT_HOSTNAME;
         Sector actualSector = Sector::SorticHandover;
         int actualLine = 1;
-        String cargo = "empty";
-        String status = "empty";
-        String ack = "hostname";
-        String req = "hostname";
+        String cargo = "null";
+        String status = "null";
+        String ack = "null";
+        String req = "null";
     } box;
 
     /**
     * @brief Enum holds all possible events
     * 
     */
-    enum class Event { SBFull,             ///< SB is Full
-                       SBReady,            ///< SB is Ready
-                       CalcOptVal,         ///< Calculated Optimum Value
-                       AnswerReceived,     ///< Answer received
-                       NoAnswerReceived,   ///< No Answer received
-                       InqVehicRespond,    ///< Inquired Vehicle responded
-                       InqNoVehicRespond,  ///< Inquired Vehicle didnt responded
-                       NoVehicRespond,     ///< None of the Inquired Vehicle did responded
-                       Error,              ///< Error occured
-                       Resume,             ///< Resume after Error occured
-                       NoEvent             ///< No event generated
+    enum class Event { SBReadyForTransport,  ///< SB is ready for transport
+                       SBReady,              ///< SB is Ready
+                       CalcOptVal,           ///< Calculated Optimum Value
+                       AnswerReceived,       ///< Answer received
+                       NoAnswerReceived,     ///< No Answer received
+                                             //    InqVehicRespond,    ///< Inquired Vehicle responded
+                                             //    InqNoVehicRespond,  ///< Inquired Vehicle didnt responded
+                                             //    NoVehicRespond,     ///< None of the Inquired Vehicle did responded
+                       Error,                ///< Error occured
+                       Resume,               ///< Resume after Error occured
+                       NoEvent               ///< No event generated
     };
 
     /**
@@ -107,7 +107,7 @@ class BoxCtrl {
     * https://stackoverflow.com/questions/18335861/why-is-enum-class-preferred-over-plain-enum
     */
     enum class State { readSensorVal,        //loopEmpty()
-                       publishLevel,         //publishLevel()
+                       waitForVehicle,       //waitForVehicle()
                        calculateOptVehicle,  //getOptimalVehiclefromResponses()
                        publishOptVehicle,    //hasOptVehiclePublish()
                        waitForAck,           //checkIfAckReceivedfromResponses()
@@ -140,13 +140,14 @@ class BoxCtrl {
     int pVehicleRating[NUM_OF_MAXVALUES_VEHICLES_STORE];
     int increment = 0;
 
-    int TimeBetweenPublish = 500;
+    // int TimeBetweenPublish = 500;
 
     //=====StateFunctions===============================================================
     //==readSensorVal==========================================================
     /**
      * @brief entry action of the readSensorVal
      * 
+     * publish actual state to "Box/box.id/status"
      */
     void
     entryAction_readSensorVal();
@@ -154,7 +155,11 @@ class BoxCtrl {
     /**
      * @brief main action of the readSensorVal
      * 
-     *  @return BoxLevelCtrl::Event - generated Event
+     * call Comm.loop and check for incoming Error-Message \n
+     * call BoxLevelCtrl with Event::CheckForPackage \n
+     * if BoxLvl is in FullState return Event SBReadyForTransport \n
+     * 
+     * @return BoxCtrl::Event - generated Event
      */
     BoxCtrl::Event doAction_readSensorVal();
 
@@ -164,35 +169,52 @@ class BoxCtrl {
      */
     void exitAction_readSensorVal();
 
-    //==publishLevel==========================================================
+    //==waitForVehicle==========================================================
     /**
-     * @brief entry action of the publishLevel
+     * @brief entry action of the waitForVehicle
      * 
+     * publish state to "Box/box.id/status". \n
+	 * subscribe to "Vehicle/+/available". \n
+	 * unsubscribe from "Vehicle/box.req/handshake". \n
+	 * reset box.ack and box.req. \n
      */
-    void entryAction_publishLevel();
+    void entryAction_waitForVehicle();
 
     /**
-     * @brief main action of the publishLevel
+     * @brief main action of the waitForVehicle
      * 
-     *  @return BoxLevelCtrl::Event - generated Event
+     * call Comm.loop and check for incoming Error-Message. \n
+     * wait for SMARTBOX_WAITFOR_VEHICLES_SECONDS seconds and  \n
+     * if a message is received or more than NUM_OF_MAXVALUES_VEHICLES_STORE messages \n
+     * are recived return Event::AnswerReceived. \n
+     * 
+     *  @return BoxCtrl::Event - generated Event
      */
-    BoxCtrl::Event doAction_publishLevel();
+    BoxCtrl::Event doAction_waitForVehicle();
 
     /**
-     * @brief exit action of the publishLevel
+     * @brief exit action of the waitForVehicle
      * 
+     * unsubscribe from "Vehicle/+/available"
      */
-    void exitAction_publishLevel();
+    void exitAction_waitForVehicle();
 
     //==calculateOptVehicle==========================================================
     /**
      * @brief entry action of the calculateOptVehicle
      * 
+     * publish state to "Box/box.id/status"
      */
     void entryAction_calculateOptVehicle();
 
     /**
      * @brief main action of the calculateOptVehicle
+     * 
+     * check all saved messages. \n
+     * select all vehicle in same sector and choose the nearest one. \n
+     * if the nearest one is valid update box.req with id of the nearest vehicle \n
+     * and return Event::CalcOptVal. \n
+     * if not valid return Event::NoAnswerReceived. \n
      * 
      *  @return BoxLevelCtrl::Event - generated Event
      */
@@ -208,13 +230,18 @@ class BoxCtrl {
     /**
      * @brief entry action of the publishOptVehicle
      * 
+     * publish state to "Box/box.id/status" \n
+     * subscribe to "Vehicle/box.req/handshake" \n
      */
     void entryAction_publishOptVehicle();
 
     /**
      * @brief main action of the publishOptVehicle
      * 
-     *  @return BoxLevelCtrl::Event - generated Event
+     * call Comm.loop and check for incoming Error-Message. \n
+     * publish box.id and id of req vehicle to "Box/box.id/handshake" all TIME_BETWEEN_PUBLISH seconds. \n
+     * if requested vehicle also req box in time return Event::AnswerReceived. \n
+     *  @return BoxLevelCtrl::Event - generated Event \n
      */
     BoxCtrl::Event doAction_publishOptVehicle();
 
@@ -227,13 +254,18 @@ class BoxCtrl {
     //==waitForAck==========================================================
     /**
      * @brief entry action of the waitForAck
-     * 
+     * publish state to "Box/box.id/status"
      */
     void entryAction_waitForAck();
 
     /**
      * @brief main action of the waitForAck
      * 
+     * call Comm.loop and check for incoming Error-Message. \n
+     * publish box.id and id of ack vehicle to "Box/box.id/handshake". \n
+     * wait  SMARTBOX_ITERATION_VACKS_SECONDS for response. \n
+     * if acknoledge vehicle also ack box in time return Event::AnswerReceived. \n
+     *  
      *  @return BoxLevelCtrl::Event - generated Event
      */
     BoxCtrl::Event doAction_waitForAck();
@@ -241,26 +273,32 @@ class BoxCtrl {
     /**
      * @brief exit action of the waitForAck
      * 
+     * unsubscribe from "Vehicle/box.req/handshake"
+     * 
      */
     void exitAction_waitForAck();
 
     //==waitForTransport==========================================================
     /**
-     * @brief entry action of the waitForTransport
-     * 
+     * @brief entry action of the waitForTransport \n
+     * publish state to "Box/box.id/status". \n
+     * subscribe to "Box/box.id/position". \n
      */
     void entryAction_waitForTransport();
 
     /**
      * @brief main action of the waitForTransport
      * 
-     *  @return BoxLevelCtrl::Event - generated Event
+     * call Comm.loop and check for incoming Error-Message. \n
+     * check incoming message if ack. vehicle updated box-position \n
+     *  @return BoxLevelCtrl::Event - generated Event \n
      */
     BoxCtrl::Event doAction_waitForTransport();
 
     /**
      * @brief exit action of the waitForTransport
      * 
+     * unsubscribe from "Box/box.id/position"
      */
     void exitAction_waitForTransport();
 

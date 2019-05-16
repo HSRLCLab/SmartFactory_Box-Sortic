@@ -39,21 +39,21 @@ void BoxCtrl::process(Event e) {
     DBEVENTln(String("BoxCtrl ") + decodeEvent(e));
     switch (currentState) {
         case State::readSensorVal:
-            if (Event::SBFull == e) {
-                exitAction_readSensorVal();  // Exit-action current state
-                entryAction_publishLevel();  // Entry-actions next state
+            if (Event::SBReadyForTransport == e) {
+                exitAction_readSensorVal();    // Exit-action current state
+                entryAction_waitForVehicle();  // Entry-actions next state
             } else if (Event::Error == e) {
                 exitAction_readSensorVal();  // Exit-action current state
                 entryAction_errorState();    // Entry-actions next state
             }
             break;
-        case State::publishLevel:
+        case State::waitForVehicle:
             if (Event::AnswerReceived == e) {
-                exitAction_publishLevel();          // Exit-action current state
+                exitAction_waitForVehicle();        // Exit-action current state
                 entryAction_calculateOptVehicle();  // Entry-actions next state
             } else if (Event::Error == e) {
-                exitAction_publishLevel();  // Exit-action current state
-                entryAction_errorState();   // Entry-actions next state
+                exitAction_waitForVehicle();  // Exit-action current state
+                entryAction_errorState();     // Entry-actions next state
             }
             break;
         case State::calculateOptVehicle:
@@ -62,7 +62,7 @@ void BoxCtrl::process(Event e) {
                 entryAction_publishOptVehicle();   // Entry-actions next state
             } else if (Event::NoAnswerReceived == e) {
                 exitAction_calculateOptVehicle();  // Exit-action current state
-                entryAction_publishLevel();        // Entry-actions next state
+                entryAction_waitForVehicle();      // Entry-actions next state
             } else if (Event::Error == e) {
                 exitAction_calculateOptVehicle();  // Exit-action current state
                 entryAction_errorState();          // Entry-actions next state
@@ -74,7 +74,7 @@ void BoxCtrl::process(Event e) {
                 entryAction_waitForAck();        // Entry-actions next state
             } else if (Event::NoAnswerReceived == e) {
                 exitAction_publishOptVehicle();  // Exit-action current state
-                entryAction_publishLevel();      // Entry-actions next state
+                entryAction_waitForVehicle();    // Entry-actions next state
             } else if (Event::Error == e) {
                 exitAction_publishOptVehicle();  // Exit-action current state
                 entryAction_errorState();        // Entry-actions next state
@@ -85,8 +85,8 @@ void BoxCtrl::process(Event e) {
                 exitAction_waitForAck();         // Exit-action current state
                 entryAction_waitForTransport();  // Entry-actions next state
             } else if (Event::NoAnswerReceived == e) {
-                exitAction_waitForAck();     // Exit-action current state
-                entryAction_publishLevel();  // Entry-actions next state
+                exitAction_waitForAck();       // Exit-action current state
+                entryAction_waitForVehicle();  // Entry-actions next state
             } else if (Event::Error == e) {
                 exitAction_waitForAck();   // Exit-action current state
                 entryAction_errorState();  // Entry-actions next state
@@ -108,8 +108,8 @@ void BoxCtrl::process(Event e) {
                     case State::readSensorVal:
                         entryAction_readSensorVal();  // Entry-actions next state
                         break;
-                    case State::publishLevel:
-                        entryAction_publishLevel();  // Entry-actions next state
+                    case State::waitForVehicle:
+                        entryAction_waitForVehicle();  // Entry-actions next state
                         break;
                     case State::calculateOptVehicle:
                         entryAction_calculateOptVehicle();  // Entry-actions next state
@@ -149,7 +149,7 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
 
     pBoxlevelctrl.loop(BoxLevelCtrl::Event::CheckForPackage);
     if (BoxLevelCtrl::State::fullState == pBoxlevelctrl.getcurrentState()) {
-        return Event::SBFull;
+        return Event::SBReadyForTransport;
     }
 
     return Event::NoEvent;
@@ -159,11 +159,11 @@ void BoxCtrl::exitAction_readSensorVal() {
     DBSTATUSln("Leaving State: emptyState");
 }
 
-//==publishLevel========================================================
-void BoxCtrl::entryAction_publishLevel() {
-    DBSTATUSln("Entering State: publishLevel");
-    currentState = State::publishLevel;  // state transition
-    doActionFPtr = &BoxCtrl::doAction_publishLevel;
+//==waitForVehicle========================================================
+void BoxCtrl::entryAction_waitForVehicle() {
+    DBSTATUSln("Entering State: waitForVehicle");
+    currentState = State::waitForVehicle;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_waitForVehicle;
     publishState(currentState);  //Update Current State and Publish
 
     previousMillis = millis();
@@ -178,8 +178,8 @@ void BoxCtrl::entryAction_publishLevel() {
     box.req = "null";
 }
 
-BoxCtrl::Event BoxCtrl::doAction_publishLevel() {
-    DBINFO1ln("State: publishLevel");
+BoxCtrl::Event BoxCtrl::doAction_waitForVehicle() {
+    DBINFO1ln("State: waitForVehicle");
     pComm.loop();  //Check for new Messages
     if (checkForError()) {
         return Event::Error;
@@ -188,14 +188,14 @@ BoxCtrl::Event BoxCtrl::doAction_publishLevel() {
     //wait time or max response
     currentMillis = millis();
     if ((NUM_OF_MAXVALUES_VEHICLES_STORE + 1 < pComm.size()) ||
-        (((currentMillis - previousMillis) > WaitForResponsesInMillis) && 0 < pComm.size())) {
+        (((currentMillis - previousMillis) > SMARTBOX_WAITFOR_VEHICLES_SECONDS * 1000) && 0 < pComm.size())) {
         return Event::AnswerReceived;
     }
     return Event::NoEvent;
 }
 
-void BoxCtrl::exitAction_publishLevel() {
-    DBSTATUSln("Leaving State: publishLevel");
+void BoxCtrl::exitAction_waitForVehicle() {
+    DBSTATUSln("Leaving State: waitForVehicle");
     pComm.unsubscribe("Vehicle/+/available");
 }
 
@@ -211,10 +211,10 @@ BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
     DBINFO1ln("State: calculateOptVehicle");
     //Check all saved Messages and save the best Vehicles to an Array
     //Generate the Event
-    pComm.loop();  //Check for new Messages
-    if (checkForError()) {
-        return Event::Error;
-    }
+    // pComm.loop();  //Check for new Messages
+    // if (checkForError()) {
+    //     return Event::Error;
+    // }
 
     DBINFO3ln(String("BuffSize: ") + String(pComm.size()));
     int size = pComm.size();
@@ -226,9 +226,12 @@ BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
         // temp = pComm.getElement(i);
         temp = pComm.pop();
         DBINFO3ln(decodeSector(box.actualSector) + String("==") + temp.sector);
-        if (decodeSector(box.actualSector) == temp.sector) {  //If actual sector same as sector from vehicle
+        //Check if actual sector same as sector from vehicle
+        if (decodeSector(box.actualSector) == temp.sector) {  
             DBINFO3ln(String(abs(temp.line - box.actualLine)) + String(" < ") + String(abs(nearestVehicleStr.line - box.actualLine)));
-            if (abs(temp.line - box.actualLine) < abs(nearestVehicleStr.line - box.actualLine)) {
+            //Check if this vehicle is nearer than the actual near vehicle
+            if (abs(temp.line - box.actualLine) < abs(nearestVehicleStr.line - box.actualLine)) { 
+                //load nearestVehcile with actual vehicle if necessary
                 nearestVehicleStr = temp;
             }
         }
@@ -269,14 +272,15 @@ BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
     }
 
     //Publish decision
-    if ((currentMillis - previousMillis) > TimeBetweenPublish) {  //only publish all xx seconds
+    if ((currentMillis - previousMillis) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
         pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"req\":\"" + String(box.req) + "\"}");
     }
 
     //Wait for response
-    if ((currentMillis - previousMillis) < SMARTBOX_WAITFOR_VEHICLES_SECONDS * 1000) {
+    if ((currentMillis - previousMillis) < SMARTBOX_ITERATION_VACKS_SECONDS * 1000) {
         if (!pComm.isEmpty()) {
             myJSONStr temp = pComm.pop();
+            //Check if message is from req vehicle and if vehicle does req the correct box
             if (temp.req == box.id && temp.id == box.req) {
                 box.ack = temp.id;
                 return Event::AnswerReceived;
@@ -315,7 +319,7 @@ BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
         return Event::Error;
     }
 
-    if ((currentMillis - previousMillis) > TimeBetweenPublish) {  //only publish all xx seconds
+    if ((currentMillis - previousMillis) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
         pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\"}");
     }
 
@@ -416,8 +420,8 @@ String BoxCtrl::decodeState(State state) {
         case State::readSensorVal:
             return "readSensorVal";
             break;
-        case State::publishLevel:
-            return "publishLevel";
+        case State::waitForVehicle:
+            return "waitForVehicle";
             break;
         case State::calculateOptVehicle:
             return "calculateOptVehicle";
@@ -442,8 +446,8 @@ String BoxCtrl::decodeState(State state) {
 
 String BoxCtrl::decodeEvent(Event event) {
     switch (event) {
-        case Event::SBFull:
-            return "Event::SBFull";
+        case Event::SBReadyForTransport:
+            return "Event::SBReadyForTransport";
             break;
         case Event::SBReady:
             return "Event::SBReady";
@@ -457,15 +461,15 @@ String BoxCtrl::decodeEvent(Event event) {
         case Event::NoAnswerReceived:
             return "Event::NoAnswerReceived";
             break;
-        case Event::InqVehicRespond:
-            return "Event::InqVehicRespond";
-            break;
-        case Event::InqNoVehicRespond:
-            return "Event::InqNoVehicRespond";
-            break;
-        case Event::NoVehicRespond:
-            return "Event::NoVehicRespond";
-            break;
+        // case Event::InqVehicRespond:
+        //     return "Event::InqVehicRespond";
+        //     break;
+        // case Event::InqNoVehicRespond:
+        //     return "Event::InqNoVehicRespond";
+        //     break;
+        // case Event::NoVehicRespond:
+        //     return "Event::NoVehicRespond";
+        //     break;
         case Event::Error:
             return "Event::Error";
             break;

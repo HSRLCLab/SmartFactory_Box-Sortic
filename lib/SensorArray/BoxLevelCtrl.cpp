@@ -39,8 +39,8 @@ void BoxLevelCtrl::process(Event e) {
             if (Event::CheckForPackage == e) {
                 exitAction_emptyState();  // Exit-action current state
                 entryAction_checking();   // Entry-actions next state
-            }else if (Event::Error == e) {
-                exitAction_emptyState();     // Exit-action current state
+            } else if (Event::Error == e) {
+                exitAction_emptyState();   // Exit-action current state
                 entryAction_errorState();  // Entry-actions next state
             }
             break;
@@ -51,7 +51,7 @@ void BoxLevelCtrl::process(Event e) {
             } else if (Event::NoPackageDetected == e) {
                 exitAction_checking();     // Exit-action current state
                 entryAction_emptyState();  // Entry-actions next state
-            }else if (Event::Error == e) {
+            } else if (Event::Error == e) {
                 exitAction_checking();     // Exit-action current state
                 entryAction_errorState();  // Entry-actions next state
             }
@@ -60,8 +60,8 @@ void BoxLevelCtrl::process(Event e) {
             if (Event::CheckForPackage == e) {
                 exitAction_fullState();  // Exit-action current state
                 entryAction_checking();  // Entry-actions next state
-            }else if (Event::Error == e) {
-                exitAction_fullState();     // Exit-action current state
+            } else if (Event::Error == e) {
+                exitAction_fullState();    // Exit-action current state
                 entryAction_errorState();  // Entry-actions next state
             }
             break;
@@ -88,31 +88,31 @@ void BoxLevelCtrl::process(Event e) {
 }
 //==emptyState==========================================================
 void BoxLevelCtrl::entryAction_emptyState() {
-    DBSTATUSln("BL Entering State: emptyState");
+    // DBSTATUSln("BL Entering State: emptyState");
     currentState = State::emptyState;  // state transition
     doActionFPtr = &BoxLevelCtrl::doAction_emptyState;
     digitalWrite(LOADINDICATOR_LED, LOW);
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_emptyState() {
-    DBINFO1ln("BL State: emptyState");
+    // DBINFO1ln("BL State: emptyState");
     //Generate the Event
     return Event::NoEvent;
 }
 
 void BoxLevelCtrl::exitAction_emptyState() {
-    DBSTATUSln("BL Leaving State: emptyState");
+    // DBSTATUSln("BL Leaving State: emptyState");
 }
 
 //==checking==========================================================
 void BoxLevelCtrl::entryAction_checking() {
-    DBSTATUSln("BL Entering State: checking");
+    // DBSTATUSln("BL Entering State: checking");
     currentState = State::checking;  // state transition
     doActionFPtr = &BoxLevelCtrl::doAction_checking;
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_checking() {
-    DBINFO1ln("BL State: checking");
+    // DBINFO1ln("BL State: checking");
     if (pSensorArray.getSensorData()) {
         return Event::PackageDetected;
     } else {
@@ -122,26 +122,26 @@ BoxLevelCtrl::Event BoxLevelCtrl::doAction_checking() {
 }
 
 void BoxLevelCtrl::exitAction_checking() {
-    DBSTATUSln("BL Leaving State: checking");
+    // DBSTATUSln("BL Leaving State: checking");
 }
 
 //==fullState==========================================================
 void BoxLevelCtrl::entryAction_fullState() {
-    DBSTATUSln("BL Entering State: fullState");
+    // DBSTATUSln("BL Entering State: fullState");
     currentState = State::fullState;  // state transition
     doActionFPtr = &BoxLevelCtrl::doAction_fullState;
     digitalWrite(LOADINDICATOR_LED, HIGH);
 }
 
 BoxLevelCtrl::Event BoxLevelCtrl::doAction_fullState() {
-    DBINFO1ln("BL State: fullState");
+    // DBINFO1ln("BL State: fullState");
     //Generate the Event
 
     return Event::NoEvent;
 }
 
 void BoxLevelCtrl::exitAction_fullState() {
-    DBSTATUSln("BL Leaving State: fullState");
+    // DBSTATUSln("BL Leaving State: fullState");
 }
 
 //==errorState========================================================
