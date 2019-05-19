@@ -48,13 +48,13 @@ class BoxCtrl {
     };
 
     struct Box {
-        String id = DEFAULT_HOSTNAME;
-        Sector actualSector = Sector::SorticHandover;
-        int actualLine = 1;
-        String cargo = "null";
-        String status = "null";
-        String ack = "null";
-        String req = "null";
+        String id = DEFAULT_HOSTNAME;                  ///< Boxname
+        Sector actualSector = Sector::SorticHandover;  ///< actual sector initialise with Sortic handover
+        int actualLine = 1;                            ///< actual line initialised with 1
+        String cargo = "null";                         ///< cargo; not used atm
+        String status = "null";                        ///< status of the Box FSM
+        String ack = "null";                           ///< ack for handshake vehicle
+        String req = "null";                           ///< req for handshake vehicle
     } box;
 
     /**
@@ -66,9 +66,6 @@ class BoxCtrl {
                        CalcOptVal,           ///< Calculated Optimum Value
                        AnswerReceived,       ///< Answer received
                        NoAnswerReceived,     ///< No Answer received
-                                             //    InqVehicRespond,    ///< Inquired Vehicle responded
-                                             //    InqNoVehicRespond,  ///< Inquired Vehicle didnt responded
-                                             //    NoVehicRespond,     ///< None of the Inquired Vehicle did responded
                        Error,                ///< Error occured
                        Resume,               ///< Resume after Error occured
                        NoEvent               ///< No event generated
@@ -157,7 +154,7 @@ class BoxCtrl {
      * 
      * call Comm.loop and check for incoming Error-Message \n
      * call BoxLevelCtrl with Event::CheckForPackage \n
-     * if BoxLvl is in FullState return Event SBReadyForTransport \n
+     * if BoxLvl is in FullState and at HandoverSortic or in EmptyState and at HandOverTransfer return Event SBReadyForTransport \n
      * 
      * @return BoxCtrl::Event - generated Event
      */

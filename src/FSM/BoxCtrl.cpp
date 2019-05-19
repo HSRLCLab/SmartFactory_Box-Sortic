@@ -137,6 +137,9 @@ void BoxCtrl::entryAction_readSensorVal() {
     currentState = State::readSensorVal;  // state transition
     doActionFPtr = &BoxCtrl::doAction_readSensorVal;
     publishState(currentState);  //Update Current State and Publish
+
+    previousMillis = millis();
+    currentMillis = millis();
 }
 
 BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
@@ -147,8 +150,16 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
         return Event::Error;
     }
 
+    currentMillis = millis();
+    if ((currentMillis - previousMillis) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+        pComm.publishMessage(decodeSector(box.actualSector), "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+    }
+
     pBoxlevelctrl.loop(BoxLevelCtrl::Event::CheckForPackage);
-    if (BoxLevelCtrl::State::fullState == pBoxlevelctrl.getcurrentState()) {
+    if ((BoxLevelCtrl::State::fullState == pBoxlevelctrl.getcurrentState() &&
+         box.actualSector == BoxCtrl::Sector::SorticHandover) ||
+        (BoxLevelCtrl::State::emptyState == pBoxlevelctrl.getcurrentState() &&
+         box.actualSector == BoxCtrl::Sector::TransferHandover)) {
         return Event::SBReadyForTransport;
     }
 
@@ -227,10 +238,10 @@ BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
         temp = pComm.pop();
         DBINFO3ln(decodeSector(box.actualSector) + String("==") + temp.sector);
         //Check if actual sector same as sector from vehicle
-        if (decodeSector(box.actualSector) == temp.sector) {  
+        if (decodeSector(box.actualSector) == temp.sector) {
             DBINFO3ln(String(abs(temp.line - box.actualLine)) + String(" < ") + String(abs(nearestVehicleStr.line - box.actualLine)));
             //Check if this vehicle is nearer than the actual near vehicle
-            if (abs(temp.line - box.actualLine) < abs(nearestVehicleStr.line - box.actualLine)) { 
+            if (abs(temp.line - box.actualLine) < abs(nearestVehicleStr.line - box.actualLine)) {
                 //load nearestVehcile with actual vehicle if necessary
                 nearestVehicleStr = temp;
             }
@@ -320,7 +331,8 @@ BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
     }
 
     if ((currentMillis - previousMillis) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
-        pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\"}");
+                                                                    // pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\"}");
+        pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
     }
 
     //Wait for response
@@ -352,6 +364,7 @@ void BoxCtrl::entryAction_waitForTransport() {
     currentState = State::waitForTransport;  // state transition
     doActionFPtr = &BoxCtrl::doAction_waitForTransport;
     publishState(currentState);  //Update Current State and Publish
+    pComm.publishMessage("Box/" + String(box.id) + "/position", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + String(box.ack) + "\",\"line\":\"" + String(box.ack) + "\"}");
     pComm.subscribe("Box/" + String(box.id) + "/position");
 }
 
@@ -368,6 +381,7 @@ BoxCtrl::Event BoxCtrl::doAction_waitForTransport() {
         DBINFO2ln(String("temp.id: ") + String(temp.id) + String("==") + String("box.ack: ") + String(box.ack));
         DBINFO2ln(String("temp.sector: ") + String(temp.sector) + String("/") + String("temp.line: ") + String(temp.line));
         Sector sector = decodeSector(temp.sector);
+        //Check for valid message form ack vehicle
         if ((temp.id == box.ack) && (sector != BoxCtrl::Sector::error) && (temp.line != 0)) {
             box.actualLine = temp.line;
             box.actualSector = sector;
