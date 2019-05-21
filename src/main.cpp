@@ -26,7 +26,7 @@
 // ===================================== Global Variables =====================================
 // MQTTTasks *TaskMain;                                   ///< filled in NetworkManager.cpp, used for saving incoming Messages, FIFO order
 // NetworkManager *mNetwP;                                ///< used for NetworkManager access outside setup()
-// SensorArray *mSarrP;                                   ///< used for SensorArray access outside setup()
+SensorArray *mSarrP;                                   ///< used for SensorArray access outside setup()
 // double value_max[NUM_OF_MAXVALUES_VEHICLES_STORE];     ///< best optimal value from vehicle, Element 0 ist best, Element 1 is second best, etc. (decending order)
 // String hostname_max[NUM_OF_MAXVALUES_VEHICLES_STORE];  ///< name of Vehicle with best value, Element 0 ist best, Element 1 is second best, etc. (decending order)
 // bool hasAnswered = false;                              ///< variable used to see if Vehicle have answered
@@ -135,11 +135,11 @@ BoxCtrl *boxctrl;
  * after each powerup or reset of the board
  */
 void setup() {
-    if (DEBUGGER) {
-        Serial.begin(9600);  //Initialize serial
-        while (!Serial)
-            ;  // wait for serial port to connect
-    }
+    // if (DEBUGGER) {
+    //     Serial.begin(9600);  //Initialize serial
+    //     while (!Serial)
+    //         ;  // wait for serial port to connect
+    // }
     LOG1("-.-.-.- SETUP -.-.-.-");
     LOG3("entering setup - initializing components");
     // #if !(SERVICE_MODE > 0)
@@ -176,6 +176,7 @@ void setup() {
 void loop() {
     DBFUNCCALLln("loop()======================================================");
     boxctrl->loop();
+    //  mSarrP->SensorArray::getSensorData();
     delay(1000);
 }
 // delay(1000);

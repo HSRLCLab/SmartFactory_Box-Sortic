@@ -39,7 +39,7 @@
 #define DEFAULT_MQTT_PORT 1883       ///< MQTT connection port
 
 // #define DEFAULT_HOSTNAME (String("SB") + String(random(0xffff), HEX))  ///< for Vehicles, used for MQTT and WiFi, must be unique in Network
-#define DEFAULT_HOSTNAME "SB1"
+#define DEFAULT_HOSTNAME "SB2"
 // #define DEFAULT_HOSTNAME_SMARTBOX "SmartBox"  ///< for SmartBoxes, used for MQTT and WiFi, must be unique in Network
 // #define DEFAULT_HOSTNAME_VEHICLE "Vehicle"    ///< for Vehicles, used for MQTT and WiFi, must be unique in Network
 
@@ -48,17 +48,11 @@
 #define MAX_JSON_MESSAGES_SAVED 20  ///< max num of saved JSON items, must be smaller than num of vehicles!
 #define MAX_MQTT_TOPIC_DEPTH 5      ///< how many topics can be in row, e.g. SmartBox/SB1/level are 3 topic levels
 
-// struct myJSONStr {
-//     String topic = "default";
-//     String sensor = "default";
-//     long time = -1;
-//     float data[2] = {-1, -1};
-// };
-
 // {
 //   "id": "hostanme",
 //   "topic": "tpois/topic",
-//   "sector": "uhuaralakfkjsfk",
+//   "status": "driving",
+//   "sector": "transit",
 //   "line": 1,
 //   "ack":"hostname",
 //   "req":"hostname",
@@ -75,34 +69,9 @@ struct myJSONStr {
     String ack = "-1";
     String req = "-1";
     String cargo = "-1";
+    bool token = false;
     bool error = false;
 };
-/*
-{
-    "urgent":   false,
-    "topic":    "default",
-    "hostname": "default",
-    "request":  "default",
-    "level":    -5,
-    "vehicleparams" :[0.1,1.1,2.2,3.3,4.4]
-}
-*/
 
-// struct myJSONStr {
-//     bool urgent = false;
-//     String topic = "default";
-//     String hostname = "default";
-//     String request = "default";
-//     int level = -5;  ///< describes Smart Box level states, -5 is default if not set!
-//     /**
-//      * @brief vehilce Params
-//      *
-//      * [0]: velocity v \n
-//      * [1]: movingdirection vd \n
-//      * [2]: distance d \n
-//      * [3]: open tasks t \n
-//      */
-//     double vehicleParams[5];
-// };
 
 #endif

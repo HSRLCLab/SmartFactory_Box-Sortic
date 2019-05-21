@@ -50,7 +50,7 @@ class BoxCtrl {
     struct Box {
         String id = DEFAULT_HOSTNAME;                  ///< Boxname
         Sector actualSector = Sector::SorticHandover;  ///< actual sector initialise with Sortic handover
-        int actualLine = 1;                            ///< actual line initialised with 1
+        int actualLine = 2;                            ///< actual line initialised with 1
         String cargo = "null";                         ///< cargo; not used atm
         String status = "null";                        ///< status of the Box FSM
         String ack = "null";                           ///< ack for handshake vehicle
@@ -67,6 +67,7 @@ class BoxCtrl {
                        AnswerReceived,       ///< Answer received
                        NoAnswerReceived,     ///< No Answer received
                        Error,                ///< Error occured
+                       Reset,///< Reset after Error occured
                        Resume,               ///< Resume after Error occured
                        NoEvent               ///< No event generated
     };
@@ -109,6 +110,7 @@ class BoxCtrl {
                        publishOptVehicle,    //hasOptVehiclePublish()
                        waitForAck,           //checkIfAckReceivedfromResponses()
                        waitForTransport,     //checkIfTransporedfromResponses()
+                       resetState,
                        errorState };
 
     State lastStateBevorError;  ///< holds the last state of the FSM so it's possible to resume after error
@@ -128,14 +130,15 @@ class BoxCtrl {
 
     // int pMaxLoopCountForMessages = 1;
     // void checkMessages();
-    myJSONStr pTemp;
+    // myJSONStr pTemp;
 
     unsigned long currentMillis = 0;   ///< will store current time
     unsigned long previousMillis = 0;  ///< will store last time
-    unsigned long WaitForResponsesInMillis = 5000;
+    unsigned long previousMillisPublish = 0; ///< will store last publish time
+    // unsigned long WaitForResponsesInMillis = 5000;
     // int NUM_OF_MAXVALUES_VEHICLES_STORE = 2;
-    int pVehicleRating[NUM_OF_MAXVALUES_VEHICLES_STORE];
-    int increment = 0;
+    // int pVehicleRating[NUM_OF_MAXVALUES_VEHICLES_STORE];
+    // int increment = 0;
 
     // int TimeBetweenPublish = 500;
 
@@ -319,6 +322,25 @@ class BoxCtrl {
      */
     void exitAction_errorState();
 
+    //==resetState==========================================================
+    /**
+     * @brief entry action of the resetState
+     * 
+     */
+    void entryAction_resetState();
+
+    /**
+     * @brief main action of the resetState
+     * 
+     *  @return BoxCtrl::Event - generated Event
+     */
+    BoxCtrl::Event doAction_resetState();
+
+    /**
+     * @brief exit action of the resetState
+     * 
+     */
+    void exitAction_resetState();
     //============================================================================
     //==Aux-Function==============================================================
     /**
@@ -337,7 +359,20 @@ class BoxCtrl {
      */
     String decodeEvent(Event event);
 
+    /**
+     * @brief Decodes the Sector-Enum and returns a description
+     * 
+     * @param sector - Sector to decode
+     * @return String - Sector as String
+     */
     String decodeSector(Sector sector);
+
+    /**
+     * @brief Decodes the Sector-Enum and returns a description
+     * 
+     * @param sector - String to decode
+     * @return BoxCtrl::Sector - Sector as Sector
+     */
     BoxCtrl::Sector decodeSector(String sector);
 
     void publishState(State state);

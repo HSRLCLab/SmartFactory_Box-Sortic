@@ -127,6 +127,17 @@ void BoxCtrl::process(Event e) {
                         break;
                 }
             }
+            if (Event::Reset == e) {
+                exitAction_errorState();   // Exit-action current state
+                entryAction_resetState();  // Entry-actions next state
+            }
+            break;
+        case State::resetState:
+            if (Event::Resume == e) {
+                exitAction_resetState();      // Exit-action current state
+                entryAction_readSensorVal();  // Entry-actions next state
+            }
+            break;
         default:
             break;
     }
@@ -139,7 +150,8 @@ void BoxCtrl::entryAction_readSensorVal() {
     publishState(currentState);  //Update Current State and Publish
 
     previousMillis = millis();
-    currentMillis = millis();
+    previousMillisPublish = previousMillis;
+    currentMillis = previousMillis;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
@@ -151,7 +163,8 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
     }
 
     currentMillis = millis();
-    if ((currentMillis - previousMillis) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+        previousMillisPublish = millis();
         pComm.publishMessage(decodeSector(box.actualSector), "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
     }
 
@@ -178,12 +191,14 @@ void BoxCtrl::entryAction_waitForVehicle() {
     publishState(currentState);  //Update Current State and Publish
 
     previousMillis = millis();
-    currentMillis = millis();
+    previousMillisPublish = previousMillis;
+    currentMillis = previousMillis;
     //Subscribe to Topics
     pComm.subscribe("Vehicle/+/available");
     // pComm.unsubscribe("Vehicle/+/handshake");
     // pComm.unsubscribe("Vehicle/V1/handshake");
     pComm.unsubscribe("Vehicle/" + String(box.req) + "/handshake");
+    pComm.clear();
     //Update Box Infos
     box.ack = "null";
     box.req = "null";
@@ -270,12 +285,13 @@ void BoxCtrl::entryAction_publishOptVehicle() {
     //Subscribe to Topics
     pComm.subscribe("Vehicle/" + String(box.req) + "/handshake");
     previousMillis = millis();
-    currentMillis = millis();
+    previousMillisPublish = previousMillis;
+    currentMillis = previousMillis;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
     DBINFO1ln("State: publishOptVehicle");
-    currentMillis = millis();
+    
 
     pComm.loop();  //Check for new Messages
     if (checkForError()) {
@@ -283,7 +299,9 @@ BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
     }
 
     //Publish decision
-    if ((currentMillis - previousMillis) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+    currentMillis = millis();
+    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+        previousMillisPublish = millis();
         pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"req\":\"" + String(box.req) + "\"}");
     }
 
@@ -316,7 +334,8 @@ void BoxCtrl::entryAction_waitForAck() {
     doActionFPtr = &BoxCtrl::doAction_waitForAck;
     publishState(currentState);  //Update Current State and Publish
     previousMillis = millis();
-    currentMillis = millis();
+    previousMillisPublish = previousMillis;
+    currentMillis = previousMillis;
 }
 
 BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
@@ -330,8 +349,9 @@ BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
         return Event::Error;
     }
 
-    if ((currentMillis - previousMillis) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
-                                                                    // pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\"}");
+    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+        previousMillisPublish = millis();
+        // pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\"}");
         pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
     }
 
@@ -411,12 +431,15 @@ BoxCtrl::Event BoxCtrl::doAction_errorState() {
     DBINFO1ln("State: errorState");
     //Generate the Event
     pComm.loop();  //Check for new Messages
-                   // if (!pComm.isEmpty()) {
     while (!pComm.isEmpty()) {
         // if (!pComm.first().error) {
-        if (!pComm.pop().error) {
+        myJSONStr temp = pComm.pop();
+        if (!temp.error && !temp.token) {
             // pComm.shift();
             return Event::Resume;
+        } else if (temp.error && temp.token) {
+            // pComm.shift();
+            return Event::Reset;
         }
     }
     return Event::NoEvent;
@@ -425,6 +448,36 @@ BoxCtrl::Event BoxCtrl::doAction_errorState() {
 void BoxCtrl::exitAction_errorState() {
     DBSTATUSln("Leaving State: errorState");
     pComm.clear();
+}
+
+//==resetState========================================================
+void BoxCtrl::entryAction_resetState() {
+    DBERROR("Entering State: resetState");
+    lastStateBevorError = currentState;
+    currentState = State::resetState;  // state transition
+    doActionFPtr = &BoxCtrl::doAction_resetState;
+    publishState(currentState);  //Update Current State and Publish
+    pComm.clear();
+}
+
+BoxCtrl::Event BoxCtrl::doAction_resetState() {
+    DBINFO1ln("State: resetState");
+    //Generate the Event
+     pComm.loop();  //Check for new Messages
+    while (!pComm.isEmpty()) {
+        myJSONStr temp = pComm.pop();
+        if (!temp.error && !temp.token) {
+            return Event::Resume;
+        }
+    }
+    return Event::NoEvent;
+}
+
+void BoxCtrl::exitAction_resetState() {
+    DBSTATUSln("Leaving State: resetState");
+    pComm.clear();
+    // box = Box();  //reset struct
+    box = {};  //reset struct
 }
 
 //============================================================================
@@ -452,6 +505,9 @@ String BoxCtrl::decodeState(State state) {
         case State::errorState:
             return "errorState";
             break;
+            case State::resetState:
+            return "resetState";
+            break;
         default:
             return "ERROR: No matching state";
             break;
@@ -475,20 +531,14 @@ String BoxCtrl::decodeEvent(Event event) {
         case Event::NoAnswerReceived:
             return "Event::NoAnswerReceived";
             break;
-        // case Event::InqVehicRespond:
-        //     return "Event::InqVehicRespond";
-        //     break;
-        // case Event::InqNoVehicRespond:
-        //     return "Event::InqNoVehicRespond";
-        //     break;
-        // case Event::NoVehicRespond:
-        //     return "Event::NoVehicRespond";
-        //     break;
         case Event::Error:
             return "Event::Error";
             break;
         case Event::Resume:
             return "Event::Resume";
+            break;
+            case Event::Reset:
+            return "Event::Reset";
             break;
         case Event::NoEvent:
             return "Event::NoEvent";
