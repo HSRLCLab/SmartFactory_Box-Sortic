@@ -177,7 +177,7 @@ void loop() {
     DBFUNCCALLln("loop()======================================================");
     boxctrl->loop();
     //  mSarrP->SensorArray::getSensorData();
-    delay(1000);
+    // delay(1000);
 }
 // delay(1000);
 // #if SERVICE_MODE == 2

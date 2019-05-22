@@ -400,11 +400,11 @@ BoxCtrl::Event BoxCtrl::doAction_waitForTransport() {
         myJSONStr temp = pComm.pop();
         DBINFO2ln(String("temp.id: ") + String(temp.id) + String("==") + String("box.ack: ") + String(box.ack));
         DBINFO2ln(String("temp.sector: ") + String(temp.sector) + String("/") + String("temp.line: ") + String(temp.line));
-        Sector sector = decodeSector(temp.sector);
+        Sector tempsector = decodeSector(temp.sector);
         //Check for valid message form ack vehicle
-        if ((temp.id == box.ack) && (sector != BoxCtrl::Sector::error) && (temp.line != 0)) {
+        if ((temp.id == box.ack) && (tempsector != BoxCtrl::Sector::error) && (temp.line != 0)) {
             box.actualLine = temp.line;
-            box.actualSector = sector;
+            box.actualSector = tempsector;
             return Event::SBReady;
         }
     }
