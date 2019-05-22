@@ -1,1 +1,1394 @@
-[{"id":"d47b60ee.d33ef","type":"tab","label":"MQTT Console","disabled":false,"info":""},{"id":"7e6689d9.045628","type":"debug","z":"d47b60ee.d33ef","name":"MQTT # RAW","active":false,"console":"false","complete":"payload","x":720,"y":140,"wires":[]},{"id":"96ebb62d.af1d48","type":"function","z":"d47b60ee.d33ef","name":"Store and shift msg vehicle","func":"\n\n\n// initialise the counter to 0 if it doesn't exist already\nvar msgCollection = context.get('msgCollection')|| \n{SV1: {handshake: {}, available: {}, position: {}, status: {}, name: 'SV1', topicType: ''}, \nSV2: {handshake: {}, available: {}, position: {}, status: {}, name: 'SV2', topicType: ''}};\n\n\nmsg.payload = JSON.parse(msg.payload);\n\nvar msgVehicle = msg.topic.substring(msg.topic.indexOf('/') + 1, msg.topic.lastIndexOf('/'))\nconsole.info(msgVehicle);\nvar msgTopic = msg.topic.substring(msg.topic.lastIndexOf('/') + 1);\nmsgCollection[msgVehicle].topicType = msgTopic;\nif (msgTopic === 'handshake') {\n    msgCollection[msgVehicle].handshake = msg.payload;\n} else if (msgTopic === 'available') {\n    msgCollection[msgVehicle].available = msg.payload;\n} else if (msgTopic === 'position') {\n    msgCollection[msgVehicle].position = msg.payload;\n} else if (msgTopic === 'status') {\n    msgCollection[msgVehicle].status = msg.payload;\n}\n// store the value back\ncontext.set('msgCollection',msgCollection);\n\n// make it part of the outgoing msg object\n\nmsg.payload = msgCollection;\nreturn msg;\n","outputs":1,"noerr":0,"x":420,"y":200,"wires":[["f65f423d.adb41","f137ce0.405dd3"]]},{"id":"f65f423d.adb41","type":"debug","z":"d47b60ee.d33ef","name":"mqtt array","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","x":710,"y":220,"wires":[]},{"id":"f137ce0.405dd3","type":"ui_template","z":"d47b60ee.d33ef","group":"6c09e5e3.69196c","name":"MQTT Output Vehicle","order":1,"width":"10","height":"10","format":"\n<div id=\"scoped-content\">\n    <style type=\"text/css\" scoped>\n       td {\n            width: 50%;\n            vertical-align: top;\n        }\n        table {\n            width: 100%;\n        }\n        td.small {\n            width: 10%;\n        }\n        td.medium {\n            width: 20%;\n        }\n    </style>\n    \n    <table ng-repeat=\"vehicle in msg.payload\">\n        <tr>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n        </tr>\n        <tr>\n            <td rowspan=\"7\" class=\"small\">Vehicle</td>\n            <td rowspan=\"7\" class=\"small\">{{vehicle.name}}</td>\n            <td rowspan=\"1\" class=\"small\">status</td>\n            <td rowspan=\"1\" class=\"small\">status:</td>\n            <td rowspan=\"1\">{{vehicle.status.status}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">handshake</td>\n            <td rowspan=\"1\" class=\"small\">rec:</td>\n            <td rowspan=\"1\">{{vehicle.handshake.req}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"1\" class=\"small\">ack:</td>\n            <td rowspan=\"1\">{{vehicle.handshake.ack}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">available</td>\n            <td rowspan=\"1\" class=\"small\">sector:</td>\n            <td rowspan=\"1\">{{vehicle.available.sector}}</td>\n        </tr>\n        <tr>\n            \n            <td rowspan=\"1\" class=\"small\">line:</td>\n            <td rowspan=\"1\">{{vehicle.available.line}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">position</td>\n            <td rowspan=\"1\" class=\"small\">sector:</td>\n            <td rowspan=\"1\">{{vehicle.position.sector}}</td>\n        </tr>\n        <tr>\n             <td rowspan=\"1\" class=\"small\">line:</td>\n             <td rowspan=\"1\">{{vehicle.position.line}}</td>\n        </tr>\n    </table>\n</div>","storeOutMessages":true,"fwdInMessages":true,"templateScope":"local","x":740,"y":180,"wires":[[]]},{"id":"777f8d1c.f01f24","type":"mqtt out","z":"d47b60ee.d33ef","name":"","topic":"","qos":"","retain":"","broker":"168381c7.cca46e","x":850,"y":840,"wires":[]},{"id":"b645b19c.9cb33","type":"ui_text_input","z":"d47b60ee.d33ef","name":"Message","label":"Message","tooltip":"","group":"6c09e5e3.69196c","order":4,"width":"","height":"","passthru":true,"mode":"text","delay":"300","topic":"message","x":240,"y":780,"wires":[["ad5be6ba.b91828"]]},{"id":"462d150e.e8655c","type":"ui_button","z":"d47b60ee.d33ef","name":"Submit","group":"6c09e5e3.69196c","order":5,"width":"6","height":"2","passthru":false,"label":"SUBMIT","tooltip":"","color":"black","bgcolor":"","icon":"fa-arrow-circle-o-up","payload":"submit","payloadType":"str","topic":"submit","x":230,"y":820,"wires":[["ad5be6ba.b91828"]]},{"id":"ad5be6ba.b91828","type":"function","z":"d47b60ee.d33ef","name":"Store and Submit","func":"context.msg = context.msg || {};\n\nswitch (msg.topic){\n    case 'message':\n        context.msg.payload = msg.payload;\n        break;\n    case 'topic':\n        context.msg.topic = msg.payload;\n        break;\n    case 'submit':\n        if(context.msg.topic){\n            return context.msg;\n        }else{\n            context.msg.topic=\"#\"; // set default topic\n            return context.msg;\n        }\n}","outputs":"1","noerr":0,"x":510,"y":800,"wires":[["777f8d1c.f01f24","80f200d7.881be"]]},{"id":"80f200d7.881be","type":"debug","z":"d47b60ee.d33ef","name":"MQTT Monitor","active":true,"console":"false","complete":"true","x":820,"y":800,"wires":[]},{"id":"262faa17.e68566","type":"ui_text_input","z":"d47b60ee.d33ef","name":"Topic","label":"Topic/","tooltip":"","group":"6c09e5e3.69196c","order":3,"width":"","height":"","passthru":true,"mode":"text","delay":300,"topic":"topic","x":230,"y":740,"wires":[["ad5be6ba.b91828"]]},{"id":"4bdf945.bb43c6c","type":"ui_button","z":"d47b60ee.d33ef","name":"Clear","group":"6c09e5e3.69196c","order":6,"width":"4","height":"2","passthru":false,"label":"CLEAR","tooltip":"","color":"black","bgcolor":"","icon":"fa-trash","payload":"","payloadType":"str","topic":"","x":90,"y":760,"wires":[["262faa17.e68566","b645b19c.9cb33"]]},{"id":"f5ed21af.08da4","type":"comment","z":"d47b60ee.d33ef","name":"MQTT Console","info":"This flow demonstrates how to view MQTT data\n\nIt is also a nice demonstration how you can\nuse an array to shift data into the UI template\n\n\nUI Viewable:\nhttp://localhost:1880/ui\n\nWritten by\nCory Guynn\n2016\nwww.InternetOfLEG0.com\n\n\nhttp://www.internetoflego.com/node-red-mqtt-console/","x":140,"y":100,"wires":[]},{"id":"52aa893f.19b8b8","type":"mqtt in","z":"d47b60ee.d33ef","name":"","topic":"Vehicle/#","qos":"0","broker":"168381c7.cca46e","x":120,"y":140,"wires":[["7e6689d9.045628","96ebb62d.af1d48"]]},{"id":"cd7496de.32a9d8","type":"inject","z":"d47b60ee.d33ef","name":"{\"id\":\"SV1\",\"req\":\"SB1\"}","topic":"","payload":"{\"id\":\"SV2\",\"req\":\"SB1\",\"ack\":\"SB5\"}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":240,"y":940,"wires":[["f06543cb.3f27c"]]},{"id":"f06543cb.3f27c","type":"mqtt out","z":"d47b60ee.d33ef","name":"","topic":"Vehicle/SV2/handshake","qos":"","retain":"","broker":"168381c7.cca46e","x":650,"y":940,"wires":[]},{"id":"3ed8e687.11c87a","type":"inject","z":"d47b60ee.d33ef","name":"{\"id\":\"SV1\",\"req\":\"SB1\"}","topic":"","payload":"{\"id\":\"SV3\",\"sector\":\"blabla\",\"line\":6}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":240,"y":1000,"wires":[["911494cb.03d1e8"]]},{"id":"911494cb.03d1e8","type":"mqtt out","z":"d47b60ee.d33ef","name":"","topic":"Vehicle/SV3/available","qos":"","retain":"","broker":"168381c7.cca46e","x":640,"y":1000,"wires":[]},{"id":"ff3263b6.f14fd","type":"inject","z":"d47b60ee.d33ef","name":"{\"id\":\"SV3\",\"status\":\"blabla\"}","topic":"","payload":"{\"id\":\"SV3\",\"status\":\"blabla\"}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":260,"y":1080,"wires":[["34517c66.acb264"]]},{"id":"34517c66.acb264","type":"mqtt out","z":"d47b60ee.d33ef","name":"","topic":"Vehicle/SV2/status","qos":"","retain":"","broker":"168381c7.cca46e","x":630,"y":1080,"wires":[]},{"id":"86ee58d6.ffe718","type":"debug","z":"d47b60ee.d33ef","name":"MQTT # RAW","active":false,"console":"false","complete":"payload","x":720,"y":280,"wires":[]},{"id":"373c0519.a7c4ba","type":"debug","z":"d47b60ee.d33ef","name":"mqtt array","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","x":710,"y":360,"wires":[]},{"id":"95e0533f.2dc67","type":"ui_template","z":"d47b60ee.d33ef","group":"6c09e5e3.69196c","name":"MQTT Output Box","order":2,"width":"10","height":"10","format":"\n<div id=\"scoped-content\">\n    <style type=\"text/css\" scoped>\n       td {\n            width: 50%;\n            vertical-align: top;\n        }\n        table {\n            width: 100%;\n        }\n        td.small {\n            width: 10%;\n        }\n        td.medium {\n            width: 20%;\n        }\n    </style>\n    \n    <table ng-repeat=\"box in msg.payload\">\n        <tr>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n        </tr>\n        <tr>\n            <td rowspan=\"7\" class=\"small\">Box</td>\n            <td rowspan=\"7\" class=\"small\">{{box.name}}</td>\n            <td rowspan=\"1\" class=\"small\">status</td>\n            <td rowspan=\"1\" class=\"small\">status:</td>\n            <td rowspan=\"1\">{{box.status.status}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">handshake</td>\n            <td rowspan=\"1\" class=\"small\">rec:</td>\n            <td rowspan=\"1\">{{box.handshake.req}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"1\" class=\"small\">ack:</td>\n            <td rowspan=\"1\">{{box.handshake.ack}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"1\" class=\"medium\">cargo</td>\n            <td rowspan=\"1\" class=\"small\">cargo:</td>\n            <td rowspan=\"1\">{{box.cargo.cargo}}</td>\n        </tr>\n\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">position</td>\n            <td rowspan=\"1\" class=\"small\">sector:</td>\n            <td rowspan=\"1\">{{box.position.sector}}</td>\n        </tr>\n        <tr>\n             <td rowspan=\"1\" class=\"small\">line:</td>\n             <td rowspan=\"1\">{{box.position.line}}</td>\n        </tr>\n    </table>\n</div>","storeOutMessages":true,"fwdInMessages":true,"templateScope":"local","x":730,"y":320,"wires":[[]]},{"id":"a90c551.8ef3aa8","type":"mqtt in","z":"d47b60ee.d33ef","name":"","topic":"Box/#","qos":"0","broker":"168381c7.cca46e","x":110,"y":280,"wires":[["86ee58d6.ffe718","75d2c508.55241c"]]},{"id":"8f3bc454.e4f088","type":"inject","z":"d47b60ee.d33ef","name":"{\"id\":\"SB1\",\"req\":\"SV1\"}","topic":"","payload":"{\"id\":\"SB1\",\"req\":\"SV1\",\"ack\":\"SV5\"}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":1040,"y":960,"wires":[["1d0f0580.6334bb"]]},{"id":"1d0f0580.6334bb","type":"mqtt out","z":"d47b60ee.d33ef","name":"","topic":"Box/SB2/handshake","qos":"","retain":"","broker":"168381c7.cca46e","x":1440,"y":960,"wires":[]},{"id":"75d2c508.55241c","type":"function","z":"d47b60ee.d33ef","name":"Store and shift msg box","func":"\n\n\n// initialise the counter to 0 if it doesn't exist already\nvar msgCollection = context.get('msgCollection')|| \n{SB1: {handshake: {}, cargo: {}, position: {}, status: {}, name: 'SB1', topicType: ''}, \nSB2: {handshake: {}, cargo: {}, position: {}, status: {}, name: 'SB2', topicType: ''},\nSB3: {handshake: {}, cargo: {}, position: {}, status: {}, name: 'SB3', topicType: ''}};\n\n\nmsg.payload = JSON.parse(msg.payload);\n\nvar msgVehicle = msg.topic.substring(msg.topic.indexOf('/') + 1, msg.topic.lastIndexOf('/'))\nconsole.info(msgVehicle);\nvar msgTopic = msg.topic.substring(msg.topic.lastIndexOf('/') + 1);\nmsgCollection[msgVehicle].topicType = msgTopic;\nif (msgTopic === 'handshake') {\n    msgCollection[msgVehicle].handshake = msg.payload;\n} else if (msgTopic === 'cargo') {\n    msgCollection[msgVehicle].cargo = msg.payload;\n} else if (msgTopic === 'position') {\n    msgCollection[msgVehicle].position = msg.payload;\n} else if (msgTopic === 'status') {\n    msgCollection[msgVehicle].status = msg.payload;\n}\n// store the value back\ncontext.set('msgCollection',msgCollection);\n\n// make it part of the outgoing msg object\n\nmsg.payload = msgCollection;\nreturn msg;\n","outputs":1,"noerr":0,"x":390,"y":340,"wires":[["95e0533f.2dc67","373c0519.a7c4ba"]]},{"id":"79cf7f6b.933a","type":"inject","z":"d47b60ee.d33ef","name":"{\"id\":\"SB1\",\"req\":\"SV1\"}","topic":"","payload":"{\"id\":\"SB1\",\"cargo\":\"apefl\",\"ack\":\"SV5\"}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":1040,"y":1060,"wires":[["bd9181d6.3b88f"]]},{"id":"bd9181d6.3b88f","type":"mqtt out","z":"d47b60ee.d33ef","name":"","topic":"Box/SB2/cargo","qos":"","retain":"","broker":"168381c7.cca46e","x":1420,"y":1060,"wires":[]},{"id":"6c09e5e3.69196c","type":"ui_group","z":"","name":"MQTTDash","tab":"d5ad08c.184b2f8","disp":true,"width":"20","collapse":false,"disabled":false,"hidden":false},{"id":"168381c7.cca46e","type":"mqtt-broker","z":"","name":"Rasp MQTT Broker","broker":"localhost","port":"1883","clientid":"","usetls":false,"compatmode":true,"keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","closeTopic":"","closePayload":"","willTopic":"","willQos":"0","willPayload":""},{"id":"d5ad08c.184b2f8","type":"ui_tab","z":"","name":"MQTTDash","icon":"dashboard","disabled":false,"hidden":false}]
+[
+    {
+        "id": "d47b60ee.d33ef",
+        "type": "tab",
+        "label": "MQTT Console",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "7e6689d9.045628",
+        "type": "debug",
+        "z": "d47b60ee.d33ef",
+        "name": "MQTT # RAW",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 720,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "96ebb62d.af1d48",
+        "type": "function",
+        "z": "d47b60ee.d33ef",
+        "name": "Store and shift msg vehicle",
+        "func": "\n\n\n// initialise the counter to 0 if it doesn't exist already\nvar msgCollection = context.get('msgCollection')|| \n{SV1: {handshake: {}, available: {}, position: {}, status: {}, name: 'SV1', topicType: ''}, \nSV2: {handshake: {}, available: {}, position: {}, status: {}, name: 'SV2', topicType: ''}};\n\n\nmsg.payload = JSON.parse(msg.payload);\n\nvar msgVehicle = msg.topic.substring(msg.topic.indexOf('/') + 1, msg.topic.lastIndexOf('/'))\nconsole.info(msgVehicle);\nvar msgTopic = msg.topic.substring(msg.topic.lastIndexOf('/') + 1);\nmsgCollection[msgVehicle].topicType = msgTopic;\nif (msgTopic === 'handshake') {\n    msgCollection[msgVehicle].handshake = msg.payload;\n} else if (msgTopic === 'available') {\n    msgCollection[msgVehicle].available = msg.payload;\n} else if (msgTopic === 'position') {\n    msgCollection[msgVehicle].position = msg.payload;\n} else if (msgTopic === 'status') {\n    msgCollection[msgVehicle].status = msg.payload;\n}\n// store the value back\ncontext.set('msgCollection',msgCollection);\n\n// make it part of the outgoing msg object\n\nmsg.payload = msgCollection;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 420,
+        "y": 200,
+        "wires": [
+            [
+                "f65f423d.adb41",
+                "f137ce0.405dd3"
+            ]
+        ]
+    },
+    {
+        "id": "f65f423d.adb41",
+        "type": "debug",
+        "z": "d47b60ee.d33ef",
+        "name": "mqtt array",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 710,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "f137ce0.405dd3",
+        "type": "ui_template",
+        "z": "d47b60ee.d33ef",
+        "group": "6c09e5e3.69196c",
+        "name": "MQTT Output Vehicle",
+        "order": 1,
+        "width": "7",
+        "height": "9",
+        "format": "\n<div id=\"scoped-content\">\n    <style type=\"text/css\" scoped>\n       td {\n            width: 50%;\n            vertical-align: top;\n        }\n        table {\n            width: 100%;\n        }\n        td.small {\n            width: 10%;\n        }\n        td.medium {\n            width: 20%;\n        }\n    </style>\n    \n    <table ng-repeat=\"vehicle in msg.payload\">\n        <tr>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n        </tr>\n        <tr>\n            <td rowspan=\"7\" class=\"small\">Vehicle</td>\n            <td rowspan=\"7\" class=\"small\">{{vehicle.name}}</td>\n            <td rowspan=\"1\" class=\"small\">status</td>\n            <td rowspan=\"1\" class=\"small\">status:</td>\n            <td rowspan=\"1\">{{vehicle.status.status}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">handshake</td>\n            <td rowspan=\"1\" class=\"small\">rec:</td>\n            <td rowspan=\"1\">{{vehicle.handshake.req}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"1\" class=\"small\">ack:</td>\n            <td rowspan=\"1\">{{vehicle.handshake.ack}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">available</td>\n            <td rowspan=\"1\" class=\"small\">sector:</td>\n            <td rowspan=\"1\">{{vehicle.available.sector}}</td>\n        </tr>\n        <tr>\n            \n            <td rowspan=\"1\" class=\"small\">line:</td>\n            <td rowspan=\"1\">{{vehicle.available.line}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">position</td>\n            <td rowspan=\"1\" class=\"small\">sector:</td>\n            <td rowspan=\"1\">{{vehicle.position.sector}}</td>\n        </tr>\n        <tr>\n             <td rowspan=\"1\" class=\"small\">line:</td>\n             <td rowspan=\"1\">{{vehicle.position.line}}</td>\n        </tr>\n    </table>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 740,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f5ed21af.08da4",
+        "type": "comment",
+        "z": "d47b60ee.d33ef",
+        "name": "MQTT Console",
+        "info": "This flow demonstrates how to view MQTT data\n\nIt is also a nice demonstration how you can\nuse an array to shift data into the UI template\n\n\nUI Viewable:\nhttp://localhost:1880/ui\n\nWritten by\nCory Guynn\n2016\nwww.InternetOfLEG0.com\n\n\nhttp://www.internetoflego.com/node-red-mqtt-console/",
+        "x": 140,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "52aa893f.19b8b8",
+        "type": "mqtt in",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/#",
+        "qos": "0",
+        "broker": "168381c7.cca46e",
+        "x": 120,
+        "y": 140,
+        "wires": [
+            [
+                "7e6689d9.045628",
+                "96ebb62d.af1d48"
+            ]
+        ]
+    },
+    {
+        "id": "cd7496de.32a9d8",
+        "type": "inject",
+        "z": "d47b60ee.d33ef",
+        "name": "{\"id\":\"SV1\",\"req\":\"SB1\"}",
+        "topic": "",
+        "payload": "{\"id\":\"SV2\",\"req\":\"SB1\",\"ack\":\"SB5\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 240,
+        "y": 940,
+        "wires": [
+            [
+                "f06543cb.3f27c"
+            ]
+        ]
+    },
+    {
+        "id": "f06543cb.3f27c",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV2/handshake",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 650,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "3ed8e687.11c87a",
+        "type": "inject",
+        "z": "d47b60ee.d33ef",
+        "name": "{\"id\":\"SV1\",\"req\":\"SB1\"}",
+        "topic": "",
+        "payload": "{\"id\":\"SV3\",\"sector\":\"blabla\",\"line\":6}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 240,
+        "y": 1000,
+        "wires": [
+            [
+                "911494cb.03d1e8"
+            ]
+        ]
+    },
+    {
+        "id": "911494cb.03d1e8",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV3/available",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 640,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "ff3263b6.f14fd",
+        "type": "inject",
+        "z": "d47b60ee.d33ef",
+        "name": "{\"id\":\"SV3\",\"status\":\"blabla\"}",
+        "topic": "",
+        "payload": "{\"id\":\"SV3\",\"status\":\"blabla\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 260,
+        "y": 1080,
+        "wires": [
+            [
+                "34517c66.acb264"
+            ]
+        ]
+    },
+    {
+        "id": "34517c66.acb264",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV2/status",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 630,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "86ee58d6.ffe718",
+        "type": "debug",
+        "z": "d47b60ee.d33ef",
+        "name": "MQTT # RAW",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 720,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "373c0519.a7c4ba",
+        "type": "debug",
+        "z": "d47b60ee.d33ef",
+        "name": "mqtt array",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 710,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "95e0533f.2dc67",
+        "type": "ui_template",
+        "z": "d47b60ee.d33ef",
+        "group": "6c09e5e3.69196c",
+        "name": "MQTT Output Box",
+        "order": 2,
+        "width": "7",
+        "height": "9",
+        "format": "\n<div id=\"scoped-content\">\n    <style type=\"text/css\" scoped>\n       td {\n            width: 50%;\n            vertical-align: top;\n        }\n        table {\n            width: 100%;\n        }\n        td.small {\n            width: 10%;\n        }\n        td.medium {\n            width: 20%;\n        }\n    </style>\n    \n    <table ng-repeat=\"box in msg.payload\">\n        <tr>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n            <th></th>\n        </tr>\n        <tr>\n            <td rowspan=\"7\" class=\"small\">Box</td>\n            <td rowspan=\"7\" class=\"small\">{{box.name}}</td>\n            <td rowspan=\"1\" class=\"small\">status</td>\n            <td rowspan=\"1\" class=\"small\">status:</td>\n            <td rowspan=\"1\">{{box.status.status}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">handshake</td>\n            <td rowspan=\"1\" class=\"small\">rec:</td>\n            <td rowspan=\"1\">{{box.handshake.req}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"1\" class=\"small\">ack:</td>\n            <td rowspan=\"1\">{{box.handshake.ack}}</td>\n        </tr>\n        <tr>\n            <td rowspan=\"1\" class=\"medium\">cargo</td>\n            <td rowspan=\"1\" class=\"small\">cargo:</td>\n            <td rowspan=\"1\">{{box.cargo.cargo}}</td>\n        </tr>\n\n        <tr>\n            <td rowspan=\"2\" class=\"medium\">position</td>\n            <td rowspan=\"1\" class=\"small\">sector:</td>\n            <td rowspan=\"1\">{{box.position.sector}}</td>\n        </tr>\n        <tr>\n             <td rowspan=\"1\" class=\"small\">line:</td>\n             <td rowspan=\"1\">{{box.position.line}}</td>\n        </tr>\n    </table>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "templateScope": "local",
+        "x": 730,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a90c551.8ef3aa8",
+        "type": "mqtt in",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/#",
+        "qos": "0",
+        "broker": "168381c7.cca46e",
+        "x": 110,
+        "y": 280,
+        "wires": [
+            [
+                "86ee58d6.ffe718",
+                "75d2c508.55241c"
+            ]
+        ]
+    },
+    {
+        "id": "8f3bc454.e4f088",
+        "type": "inject",
+        "z": "d47b60ee.d33ef",
+        "name": "{\"id\":\"SB1\",\"req\":\"SV1\"}",
+        "topic": "",
+        "payload": "{\"id\":\"SB1\",\"req\":\"SV1\",\"ack\":\"SV5\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 500,
+        "y": 1200,
+        "wires": [
+            [
+                "1d0f0580.6334bb"
+            ]
+        ]
+    },
+    {
+        "id": "1d0f0580.6334bb",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB2/handshake",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 900,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "75d2c508.55241c",
+        "type": "function",
+        "z": "d47b60ee.d33ef",
+        "name": "Store and shift msg box",
+        "func": "\n\n\n// initialise the counter to 0 if it doesn't exist already\nvar msgCollection = context.get('msgCollection')|| \n{SB1: {handshake: {}, cargo: {}, position: {}, status: {}, name: 'SB1', topicType: ''}, \nSB2: {handshake: {}, cargo: {}, position: {}, status: {}, name: 'SB2', topicType: ''},\nSB3: {handshake: {}, cargo: {}, position: {}, status: {}, name: 'SB3', topicType: ''}};\n\n\nmsg.payload = JSON.parse(msg.payload);\n\nvar msgVehicle = msg.topic.substring(msg.topic.indexOf('/') + 1, msg.topic.lastIndexOf('/'))\nconsole.info(msgVehicle);\nvar msgTopic = msg.topic.substring(msg.topic.lastIndexOf('/') + 1);\nmsgCollection[msgVehicle].topicType = msgTopic;\nif (msgTopic === 'handshake') {\n    msgCollection[msgVehicle].handshake = msg.payload;\n} else if (msgTopic === 'cargo') {\n    msgCollection[msgVehicle].cargo = msg.payload;\n} else if (msgTopic === 'position') {\n    msgCollection[msgVehicle].position = msg.payload;\n} else if (msgTopic === 'status') {\n    msgCollection[msgVehicle].status = msg.payload;\n}\n// store the value back\ncontext.set('msgCollection',msgCollection);\n\n// make it part of the outgoing msg object\n\nmsg.payload = msgCollection;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 340,
+        "wires": [
+            [
+                "95e0533f.2dc67",
+                "373c0519.a7c4ba"
+            ]
+        ]
+    },
+    {
+        "id": "79cf7f6b.933a",
+        "type": "inject",
+        "z": "d47b60ee.d33ef",
+        "name": "{\"id\":\"SB1\",\"req\":\"SV1\"}",
+        "topic": "",
+        "payload": "{\"id\":\"SB1\",\"cargo\":\"apefl\",\"ack\":\"SV5\"}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 500,
+        "y": 1300,
+        "wires": [
+            [
+                "bd9181d6.3b88f"
+            ]
+        ]
+    },
+    {
+        "id": "bd9181d6.3b88f",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB2/cargo",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 880,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "343611c8.1f99ee",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "ClearGUi",
+        "group": "a8842134.d4d49",
+        "order": 1,
+        "width": "3",
+        "height": "1",
+        "passthru": false,
+        "label": "CLEAR GUI",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"status\":\"\",\"rec\":\"\",\"ack\":\"\",\"sector\":\"\",\"line\":\"\",\"cargo\":\"\"}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1380,
+        "y": 260,
+        "wires": [
+            [
+                "4b6050b8.d218",
+                "9ea486af.570a98",
+                "6adcb37e.c5429c",
+                "eec57c35.8ba2",
+                "1a8041b1.1fe52e",
+                "546e4f8.2f457b",
+                "e76c6bf1.6e1638",
+                "a0bb7e85.8245d",
+                "49e3819c.aa364",
+                "cf0b6ad0.8c7e88",
+                "a6c1ce40.ac0ac",
+                "645cdc1b.c83ba4",
+                "f1d8b56c.2d2ef8",
+                "9891ef94.4b87f",
+                "958983f9.ec518",
+                "8c9a4b03.77a938",
+                "ab48d565.0ad988",
+                "5d3a8ef6.72cc1",
+                "93288ccb.22305",
+                "4a74df09.82ff5"
+            ]
+        ]
+    },
+    {
+        "id": "4b6050b8.d218",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV1/handshake",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1743.75,
+        "y": 115,
+        "wires": []
+    },
+    {
+        "id": "9ea486af.570a98",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV1/status",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1723,
+        "y": 161,
+        "wires": []
+    },
+    {
+        "id": "6adcb37e.c5429c",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV1/available",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1730,
+        "y": 207,
+        "wires": []
+    },
+    {
+        "id": "eec57c35.8ba2",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV1/position",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1729,
+        "y": 257,
+        "wires": []
+    },
+    {
+        "id": "49e3819c.aa364",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB1/handshake",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1740,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "cf0b6ad0.8c7e88",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB1/status",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1720,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "a6c1ce40.ac0ac",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB1/cargo",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1720,
+        "y": 423,
+        "wires": []
+    },
+    {
+        "id": "645cdc1b.c83ba4",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB1/position",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1730,
+        "y": 468,
+        "wires": []
+    },
+    {
+        "id": "1a8041b1.1fe52e",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV2/handshake",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2030,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "546e4f8.2f457b",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV2/status",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2009.25,
+        "y": 166,
+        "wires": []
+    },
+    {
+        "id": "e76c6bf1.6e1638",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV2/available",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2016.25,
+        "y": 212,
+        "wires": []
+    },
+    {
+        "id": "a0bb7e85.8245d",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/SV2/position",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2015.25,
+        "y": 262,
+        "wires": []
+    },
+    {
+        "id": "f1d8b56c.2d2ef8",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB2/handshake",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2020,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "9891ef94.4b87f",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB2/status",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2000,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "958983f9.ec518",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB2/cargo",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2000,
+        "y": 423,
+        "wires": []
+    },
+    {
+        "id": "8c9a4b03.77a938",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB2/position",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2010,
+        "y": 468,
+        "wires": []
+    },
+    {
+        "id": "ab48d565.0ad988",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB3/handshake",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2300,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "5d3a8ef6.72cc1",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB3/status",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2280,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "93288ccb.22305",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB3/cargo",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2280,
+        "y": 423,
+        "wires": []
+    },
+    {
+        "id": "4a74df09.82ff5",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/SB3/position",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2290,
+        "y": 468,
+        "wires": []
+    },
+    {
+        "id": "e26e4167.12ead",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "error",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1790,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "89f53a72.750988",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "group": "a8842134.d4d49",
+        "order": 3,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Error",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":true}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1400,
+        "y": 580,
+        "wires": [
+            [
+                "e26e4167.12ead"
+            ]
+        ]
+    },
+    {
+        "id": "8500be94.2f7c1",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "group": "a8842134.d4d49",
+        "order": 4,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":true,\"token\":true}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1390,
+        "y": 620,
+        "wires": [
+            [
+                "e26e4167.12ead"
+            ]
+        ]
+    },
+    {
+        "id": "967fa73c.bdbae8",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "group": "a8842134.d4d49",
+        "order": 5,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Resume",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":false,\"token\":false}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1400,
+        "y": 660,
+        "wires": [
+            [
+                "e26e4167.12ead"
+            ]
+        ]
+    },
+    {
+        "id": "2e2c5088.212c7",
+        "type": "ui_text",
+        "z": "d47b60ee.d33ef",
+        "group": "a8842134.d4d49",
+        "order": 2,
+        "width": "3",
+        "height": "1",
+        "name": "",
+        "label": "All",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 1380,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "d720891f.3d9318",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Box/error",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1800,
+        "y": 832,
+        "wires": []
+    },
+    {
+        "id": "3fb57a24.518266",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "ErrorBox",
+        "group": "a8842134.d4d49",
+        "order": 7,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Error",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":true}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1430,
+        "y": 792,
+        "wires": [
+            [
+                "d720891f.3d9318"
+            ]
+        ]
+    },
+    {
+        "id": "d013b471.3c5258",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "ResetBox",
+        "group": "a8842134.d4d49",
+        "order": 8,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":true,\"token\":true}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1420,
+        "y": 832,
+        "wires": [
+            [
+                "d720891f.3d9318"
+            ]
+        ]
+    },
+    {
+        "id": "b4a20ab6.54c3f8",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "ResumeBox",
+        "group": "a8842134.d4d49",
+        "order": 9,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Resume",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":false,\"token\":false}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1430,
+        "y": 872,
+        "wires": [
+            [
+                "d720891f.3d9318"
+            ]
+        ]
+    },
+    {
+        "id": "ce6a2155.e8f1a",
+        "type": "ui_text",
+        "z": "d47b60ee.d33ef",
+        "group": "a8842134.d4d49",
+        "order": 6,
+        "width": "3",
+        "height": "1",
+        "name": "",
+        "label": "Box",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 1400,
+        "y": 752,
+        "wires": []
+    },
+    {
+        "id": "3cfd94b6.3babfc",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Vehicle/error",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 1810,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "80974d21.b264a",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "ErrorVehicle",
+        "group": "a8842134.d4d49",
+        "order": 11,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Error",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":true}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1440,
+        "y": 980,
+        "wires": [
+            [
+                "3cfd94b6.3babfc"
+            ]
+        ]
+    },
+    {
+        "id": "125d675d.5d6449",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "ResetVehicle",
+        "group": "a8842134.d4d49",
+        "order": 12,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":true,\"token\":true}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1430,
+        "y": 1020,
+        "wires": [
+            [
+                "3cfd94b6.3babfc"
+            ]
+        ]
+    },
+    {
+        "id": "665c95e9.c7914c",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "ResumeVehicle",
+        "group": "a8842134.d4d49",
+        "order": 13,
+        "width": "1",
+        "height": "1",
+        "passthru": false,
+        "label": "Resume",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "{\"error\":false,\"token\":false}",
+        "payloadType": "json",
+        "topic": "",
+        "x": 1440,
+        "y": 1060,
+        "wires": [
+            [
+                "3cfd94b6.3babfc"
+            ]
+        ]
+    },
+    {
+        "id": "eeeaa735.e7f488",
+        "type": "ui_text",
+        "z": "d47b60ee.d33ef",
+        "group": "a8842134.d4d49",
+        "order": 10,
+        "width": "3",
+        "height": "1",
+        "name": "",
+        "label": "Vehicle",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 1410,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "3ecb836a.02cabc",
+        "type": "ui_text",
+        "z": "d47b60ee.d33ef",
+        "group": "a8842134.d4d49",
+        "order": 15,
+        "width": "3",
+        "height": "1",
+        "name": "",
+        "label": "Block Gateway",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 1420,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "1b1d0538.a4cbeb",
+        "type": "ui_switch",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "label": "Sortic",
+        "tooltip": "",
+        "group": "a8842134.d4d49",
+        "order": 16,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 1390,
+        "y": 1220,
+        "wires": [
+            [
+                "a18b8894.c69b28"
+            ]
+        ]
+    },
+    {
+        "id": "2df03d2f.d13cf2",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Sortic/Gateway",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2200,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "fbef50c7.ee8c6",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "Transfer/Gateway",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 2210,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "1f040a6d.ad8e86",
+        "type": "debug",
+        "z": "d47b60ee.d33ef",
+        "name": "Gateway",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "x": 2220,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "a5ae6571.af21f8",
+        "type": "inject",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "",
+        "payload": "{\"token\":false}",
+        "payloadType": "json",
+        "repeat": "0.5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 1780,
+        "y": 1240,
+        "wires": [
+            [
+                "ff3d2ddb.c61a4",
+                "f58a3284.c9c5b"
+            ]
+        ]
+    },
+    {
+        "id": "ff3d2ddb.c61a4",
+        "type": "switch",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "property": "SorticGatewayBlock",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "true",
+                "vt": "jsonata"
+            },
+            {
+                "t": "eq",
+                "v": "false",
+                "vt": "jsonata"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1970,
+        "y": 1180,
+        "wires": [
+            [
+                "1f040a6d.ad8e86",
+                "2df03d2f.d13cf2"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "ee4cbf04.6c47",
+        "type": "ui_switch",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "label": "Transfer",
+        "tooltip": "",
+        "group": "a8842134.d4d49",
+        "order": 17,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 1400,
+        "y": 1280,
+        "wires": [
+            [
+                "7a4d08a5.f2b7a8"
+            ]
+        ]
+    },
+    {
+        "id": "7a4d08a5.f2b7a8",
+        "type": "function",
+        "z": "d47b60ee.d33ef",
+        "name": "set flow var",
+        "func": "flow.set(\"SorticGatewayBlock\",msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1550,
+        "y": 1280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f58a3284.c9c5b",
+        "type": "switch",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "property": "TransferGatewayBlock",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "true",
+                "vt": "jsonata"
+            },
+            {
+                "t": "eq",
+                "v": "false",
+                "vt": "jsonata"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1970,
+        "y": 1300,
+        "wires": [
+            [
+                "1f040a6d.ad8e86",
+                "fbef50c7.ee8c6"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a18b8894.c69b28",
+        "type": "function",
+        "z": "d47b60ee.d33ef",
+        "name": "set flow var",
+        "func": "flow.set(\"TransferGatewayBlock\",msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1550,
+        "y": 1220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "777f8d1c.f01f24",
+        "type": "mqtt out",
+        "z": "d47b60ee.d33ef",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "168381c7.cca46e",
+        "x": 850,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "b645b19c.9cb33",
+        "type": "ui_text_input",
+        "z": "d47b60ee.d33ef",
+        "name": "Message",
+        "label": "Message",
+        "tooltip": "",
+        "group": "6c09e5e3.69196c",
+        "order": 4,
+        "width": "",
+        "height": "",
+        "passthru": true,
+        "mode": "text",
+        "delay": "300",
+        "topic": "message",
+        "x": 240,
+        "y": 780,
+        "wires": [
+            [
+                "ad5be6ba.b91828"
+            ]
+        ]
+    },
+    {
+        "id": "462d150e.e8655c",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "Submit",
+        "group": "6c09e5e3.69196c",
+        "order": 5,
+        "width": "6",
+        "height": "2",
+        "passthru": false,
+        "label": "SUBMIT",
+        "tooltip": "",
+        "color": "black",
+        "bgcolor": "",
+        "icon": "fa-arrow-circle-o-up",
+        "payload": "submit",
+        "payloadType": "str",
+        "topic": "submit",
+        "x": 230,
+        "y": 820,
+        "wires": [
+            [
+                "ad5be6ba.b91828"
+            ]
+        ]
+    },
+    {
+        "id": "ad5be6ba.b91828",
+        "type": "function",
+        "z": "d47b60ee.d33ef",
+        "name": "Store and Submit",
+        "func": "context.msg = context.msg || {};\n\nswitch (msg.topic){\n    case 'message':\n        context.msg.payload = msg.payload;\n        break;\n    case 'topic':\n        context.msg.topic = msg.payload;\n        break;\n    case 'submit':\n        if(context.msg.topic){\n            return context.msg;\n        }else{\n            context.msg.topic=\"#\"; // set default topic\n            return context.msg;\n        }\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 510,
+        "y": 800,
+        "wires": [
+            [
+                "777f8d1c.f01f24",
+                "80f200d7.881be"
+            ]
+        ]
+    },
+    {
+        "id": "80f200d7.881be",
+        "type": "debug",
+        "z": "d47b60ee.d33ef",
+        "name": "MQTT Monitor",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 820,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "262faa17.e68566",
+        "type": "ui_text_input",
+        "z": "d47b60ee.d33ef",
+        "name": "Topic",
+        "label": "Topic/",
+        "tooltip": "",
+        "group": "6c09e5e3.69196c",
+        "order": 3,
+        "width": "",
+        "height": "",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "x": 230,
+        "y": 740,
+        "wires": [
+            [
+                "ad5be6ba.b91828"
+            ]
+        ]
+    },
+    {
+        "id": "4bdf945.bb43c6c",
+        "type": "ui_button",
+        "z": "d47b60ee.d33ef",
+        "name": "Clear",
+        "group": "6c09e5e3.69196c",
+        "order": 6,
+        "width": "4",
+        "height": "2",
+        "passthru": false,
+        "label": "CLEAR",
+        "tooltip": "",
+        "color": "black",
+        "bgcolor": "",
+        "icon": "fa-trash",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "x": 90,
+        "y": 760,
+        "wires": [
+            [
+                "b645b19c.9cb33",
+                "262faa17.e68566"
+            ]
+        ]
+    },
+    {
+        "id": "6c09e5e3.69196c",
+        "type": "ui_group",
+        "z": "",
+        "name": "Status",
+        "tab": "d5ad08c.184b2f8",
+        "order": 2,
+        "disp": true,
+        "width": "14",
+        "collapse": false,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "168381c7.cca46e",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "Rasp MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "a8842134.d4d49",
+        "type": "ui_group",
+        "z": "",
+        "name": "Control",
+        "tab": "d5ad08c.184b2f8",
+        "order": 1,
+        "disp": true,
+        "width": "3",
+        "collapse": false
+    },
+    {
+        "id": "d5ad08c.184b2f8",
+        "type": "ui_tab",
+        "z": "",
+        "name": "MQTTDash",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
