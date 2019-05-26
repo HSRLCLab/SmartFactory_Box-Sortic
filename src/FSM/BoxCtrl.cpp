@@ -148,7 +148,10 @@ void BoxCtrl::entryAction_readSensorVal() {
     currentState = State::readSensorVal;  // state transition
     doActionFPtr = &BoxCtrl::doAction_readSensorVal;
     publishState(currentState);  //Update Current State and Publish
-
+    publishPosition();
+    if (box.actualSector == BoxCtrl::Sector::SorticHandover) {
+        pComm.subscribe("Sortic/Handover");
+    }
     previousMillis = millis();
     previousMillisPublish = previousMillis;
     currentMillis = previousMillis;
@@ -162,17 +165,29 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
         return Event::Error;
     }
 
-    currentMillis = millis();
-    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
-        previousMillisPublish = millis();
-        pComm.publishMessage(decodeSector(box.actualSector), "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
-    }
+    // currentMillis = millis();
+    // if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+    //     previousMillisPublish = millis();
+    //     pComm.publishMessage(decodeSector(box.actualSector), "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+    // }
 
     pBoxlevelctrl.loop(BoxLevelCtrl::Event::CheckForPackage);
     if ((BoxLevelCtrl::State::fullState == pBoxlevelctrl.getcurrentState() &&
-         box.actualSector == BoxCtrl::Sector::SorticHandover) ||
-        (BoxLevelCtrl::State::emptyState == pBoxlevelctrl.getcurrentState() &&
-         box.actualSector == BoxCtrl::Sector::TransferHandover)) {
+         box.actualSector == BoxCtrl::Sector::SorticHandover)) {
+        if (!pComm.isEmpty()) {
+            myJSONStr temp = pComm.pop();
+            //Check if message is from req vehicle and if vehicle does req the correct box
+            if ((temp.line == box.actualLine) &&(temp.id=String("Sortic")) &&(temp.cargo.length() != 0)) {
+                box.cargo = temp.cargo;
+                pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\""+String(box.cargo)+"\"}");
+                return Event::SBReadyForTransport;
+            }
+        }
+
+    } else if ((BoxLevelCtrl::State::emptyState == pBoxlevelctrl.getcurrentState() &&
+                box.actualSector == BoxCtrl::Sector::TransferHandover)) {
+                    box.cargo = String("Empty");
+                    pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\"Empty\"}");
         return Event::SBReadyForTransport;
     }
 
@@ -181,6 +196,7 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
 
 void BoxCtrl::exitAction_readSensorVal() {
     DBSTATUSln("Leaving State: emptyState");
+    pComm.unsubscribe("Sortic/Handover");
 }
 
 //==waitForVehicle========================================================
@@ -291,7 +307,6 @@ void BoxCtrl::entryAction_publishOptVehicle() {
 
 BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
     DBINFO1ln("State: publishOptVehicle");
-    
 
     pComm.loop();  //Check for new Messages
     if (checkForError()) {
@@ -352,7 +367,7 @@ BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
     if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
         previousMillisPublish = millis();
         // pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\"}");
-        pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+        pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":\"" + String(box.actualLine) + "\",\"cargo\":\"" + String(box.cargo) + "\"}");
     }
 
     //Wait for response
@@ -463,7 +478,7 @@ void BoxCtrl::entryAction_resetState() {
 BoxCtrl::Event BoxCtrl::doAction_resetState() {
     DBINFO1ln("State: resetState");
     //Generate the Event
-     pComm.loop();  //Check for new Messages
+    pComm.loop();  //Check for new Messages
     while (!pComm.isEmpty()) {
         myJSONStr temp = pComm.pop();
         if (!temp.error && !temp.token) {
@@ -476,6 +491,7 @@ BoxCtrl::Event BoxCtrl::doAction_resetState() {
 void BoxCtrl::exitAction_resetState() {
     DBSTATUSln("Leaving State: resetState");
     pComm.clear();
+    clearGui();
     // box = Box();  //reset struct
     box = {};  //reset struct
 }
@@ -505,7 +521,7 @@ String BoxCtrl::decodeState(State state) {
         case State::errorState:
             return "errorState";
             break;
-            case State::resetState:
+        case State::resetState:
             return "resetState";
             break;
         default:
@@ -537,7 +553,7 @@ String BoxCtrl::decodeEvent(Event event) {
         case Event::Resume:
             return "Event::Resume";
             break;
-            case Event::Reset:
+        case Event::Reset:
             return "Event::Reset";
             break;
         case Event::NoEvent:
@@ -643,4 +659,15 @@ bool BoxCtrl::checkForError() {
 void BoxCtrl::publishState(State state) {
     box.status = decodeState(state);
     pComm.publishMessage("Box/" + String(box.id) + "/status", "{\"status\":\"" + String(box.status) + "\"}");
+}
+
+void BoxCtrl::publishPosition() {
+    pComm.publishMessage("Box/" + String(box.id) + "/position", "{\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+}
+
+void BoxCtrl::clearGui() {
+    pComm.publishMessage("Box/" + String(box.id) + "/status", "{\"status\":\"\"}");
+    pComm.publishMessage("Box/" + String(box.id) + "/position", "{\"sector\":\"\",\"line\":\"\"}");
+    pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\"\"}");
+    pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"ack\":\"\",\"req\":\"\"}");
 }

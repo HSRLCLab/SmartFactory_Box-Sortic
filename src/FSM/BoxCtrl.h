@@ -67,7 +67,7 @@ class BoxCtrl {
                        AnswerReceived,       ///< Answer received
                        NoAnswerReceived,     ///< No Answer received
                        Error,                ///< Error occured
-                       Reset,///< Reset after Error occured
+                       Reset,                ///< Reset after Error occured
                        Resume,               ///< Resume after Error occured
                        NoEvent               ///< No event generated
     };
@@ -132,9 +132,9 @@ class BoxCtrl {
     // void checkMessages();
     // myJSONStr pTemp;
 
-    unsigned long currentMillis = 0;   ///< will store current time
-    unsigned long previousMillis = 0;  ///< will store last time
-    unsigned long previousMillisPublish = 0; ///< will store last publish time
+    unsigned long currentMillis = 0;          ///< will store current time
+    unsigned long previousMillis = 0;         ///< will store last time
+    unsigned long previousMillisPublish = 0;  ///< will store last publish time
     // unsigned long WaitForResponsesInMillis = 5000;
     // int NUM_OF_MAXVALUES_VEHICLES_STORE = 2;
     // int pVehicleRating[NUM_OF_MAXVALUES_VEHICLES_STORE];
@@ -375,6 +375,8 @@ class BoxCtrl {
      */
     BoxCtrl::Sector decodeSector(String sector);
 
+    void publishPosition();
+
     void publishState(State state);
     /**
      * @brief 
@@ -383,5 +385,7 @@ class BoxCtrl {
      * @return false - 
      */
     bool checkForError();
+
+    void clearGui();
 };
 #endif
