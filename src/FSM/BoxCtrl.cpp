@@ -165,11 +165,16 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
         return Event::Error;
     }
 
-    // currentMillis = millis();
-    // if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
-    //     previousMillisPublish = millis();
-    //     pComm.publishMessage(decodeSector(box.actualSector), "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
-    // }
+    currentMillis = millis();
+    // Publish/Block HandoverPosition
+    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+        previousMillisPublish = millis();
+        if (box.actualSector == Sector::SorticHandover) {
+            pComm.publishMessage("Sortic/Handover", "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+        } else if (box.actualSector == Sector::TransferHandover) {
+            pComm.publishMessage("Transfer/Handover", "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+        }
+    }
 
     pBoxlevelctrl.loop(BoxLevelCtrl::Event::CheckForPackage);
     if ((BoxLevelCtrl::State::fullState == pBoxlevelctrl.getcurrentState() &&
@@ -177,17 +182,17 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
         if (!pComm.isEmpty()) {
             myJSONStr temp = pComm.pop();
             //Check if message is from req vehicle and if vehicle does req the correct box
-            if ((temp.line == box.actualLine) &&(temp.id=String("Sortic")) &&(temp.cargo.length() != 0)) {
+            if ((temp.line == box.actualLine) && (temp.id = String("Sortic")) && (temp.cargo.length() != 0)&& (temp.cargo!= String("null"))) {
                 box.cargo = temp.cargo;
-                pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\""+String(box.cargo)+"\"}");
+                pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\"" + String(box.cargo) + "\"}");
                 return Event::SBReadyForTransport;
             }
         }
 
     } else if ((BoxLevelCtrl::State::emptyState == pBoxlevelctrl.getcurrentState() &&
                 box.actualSector == BoxCtrl::Sector::TransferHandover)) {
-                    box.cargo = String("Empty");
-                    pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\"Empty\"}");
+        box.cargo = String("Empty");
+        pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\"Empty\"}");
         return Event::SBReadyForTransport;
     }
 
