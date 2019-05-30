@@ -15,11 +15,14 @@
 BoxCtrl::BoxCtrl() : currentState(State::readSensorVal) {
     DBFUNCCALLln("BoxCtrl::BoxCtrl()");
     delay(100);
+    clearGui();
     publishState(currentState);
     pComm.unsubscribe("#");
     pComm.subscribe("Box/" + String(box.id) + "/error");
     pComm.subscribe("Box/error");
     pComm.subscribe("error");
+    delay(100);
+    publishPosition();
 }
 
 void BoxCtrl::loop() {
@@ -170,9 +173,9 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
     if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
         previousMillisPublish = millis();
         if (box.actualSector == Sector::SorticHandover) {
-            pComm.publishMessage("Sortic/Handover", "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+            pComm.publishMessage("Sortic/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
         } else if (box.actualSector == Sector::TransferHandover) {
-            pComm.publishMessage("Transfer/Handover", "{\"id\":\"" + String(box.id) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+            pComm.publishMessage("Transfer/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
         }
     }
 
@@ -182,7 +185,7 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
         if (!pComm.isEmpty()) {
             myJSONStr temp = pComm.pop();
             //Check if message is from req vehicle and if vehicle does req the correct box
-            if ((temp.line == box.actualLine) && (temp.id = String("Sortic")) && (temp.cargo.length() != 0)&& (temp.cargo!= String("null"))) {
+            if ((temp.line == box.actualLine) && (temp.id = String("Sortic")) && (temp.cargo.length() != 0) && (temp.cargo != String("null"))) {
                 box.cargo = temp.cargo;
                 pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\"" + String(box.cargo) + "\"}");
                 return Event::SBReadyForTransport;
@@ -193,6 +196,7 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
                 box.actualSector == BoxCtrl::Sector::TransferHandover)) {
         box.cargo = String("Empty");
         pComm.publishMessage("Box/" + String(box.id) + "/cargo", "{\"cargo\":\"Empty\"}");
+        //Update BoxPosition
         return Event::SBReadyForTransport;
     }
 
@@ -230,6 +234,17 @@ BoxCtrl::Event BoxCtrl::doAction_waitForVehicle() {
     pComm.loop();  //Check for new Messages
     if (checkForError()) {
         return Event::Error;
+    }
+
+    currentMillis = millis();
+    // Publish/Block HandoverPosition
+    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+        previousMillisPublish = millis();
+        if (box.actualSector == Sector::SorticHandover) {
+            pComm.publishMessage("Sortic/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
+        } else if (box.actualSector == Sector::TransferHandover) {
+            pComm.publishMessage("Transfer/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
+        }
     }
 
     //wait time or max response
@@ -283,7 +298,7 @@ BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
             }
         }
     }
-    if (nearestVehicleStr.line != 0 && decodeSector(nearestVehicleStr.sector) != BoxCtrl::Sector::error) {
+    if (nearestVehicleStr.line != 0 && decodeSector(nearestVehicleStr.sector) != BoxCtrl::Sector::error && decodeSector(nearestVehicleStr.sector) == box.actualSector) {
         box.req = nearestVehicleStr.id;
         return Event::CalcOptVal;
     }
@@ -318,11 +333,19 @@ BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
         return Event::Error;
     }
 
+    currentMillis = millis();
+    
+
     //Publish decision
     currentMillis = millis();
     if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
         previousMillisPublish = millis();
         pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"req\":\"" + String(box.req) + "\"}");
+    if (box.actualSector == Sector::SorticHandover) { // Publish/Block HandoverPosition
+            pComm.publishMessage("Sortic/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
+        } else if (box.actualSector == Sector::TransferHandover) {
+            pComm.publishMessage("Transfer/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
+        }
     }
 
     //Wait for response
@@ -372,7 +395,7 @@ BoxCtrl::Event BoxCtrl::doAction_waitForAck() {
     if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
         previousMillisPublish = millis();
         // pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\"}");
-        pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":\"" + String(box.actualLine) + "\",\"cargo\":\"" + String(box.cargo) + "\"}");
+        pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"ack\":\"" + String(box.ack) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + ",\"cargo\":\"" + String(box.cargo) + "\"}");
     }
 
     //Wait for response
@@ -454,12 +477,14 @@ BoxCtrl::Event BoxCtrl::doAction_errorState() {
     while (!pComm.isEmpty()) {
         // if (!pComm.first().error) {
         myJSONStr temp = pComm.pop();
-        if (!temp.error && !temp.token) {
-            // pComm.shift();
-            return Event::Resume;
-        } else if (temp.error && temp.token) {
-            // pComm.shift();
-            return Event::Reset;
+        if (temp.topic.endsWith("error")) {  //check if message from an error-topic
+            if (!temp.error && !temp.token) {
+                // pComm.shift();
+                return Event::Resume;
+            } else if (temp.error && temp.token) {
+                // pComm.shift();
+                return Event::Reset;
+            }
         }
     }
     return Event::NoEvent;
@@ -476,6 +501,7 @@ void BoxCtrl::entryAction_resetState() {
     lastStateBevorError = currentState;
     currentState = State::resetState;  // state transition
     doActionFPtr = &BoxCtrl::doAction_resetState;
+    clearGui();
     publishState(currentState);  //Update Current State and Publish
     pComm.clear();
 }
@@ -486,8 +512,10 @@ BoxCtrl::Event BoxCtrl::doAction_resetState() {
     pComm.loop();  //Check for new Messages
     while (!pComm.isEmpty()) {
         myJSONStr temp = pComm.pop();
-        if (!temp.error && !temp.token) {
-            return Event::Resume;
+        if (temp.topic.endsWith("error")) {  //check if message from an error-topic
+            if (!temp.error && !temp.token) {
+                return Event::Resume;
+            }
         }
     }
     return Event::NoEvent;
@@ -576,7 +604,7 @@ String BoxCtrl::decodeSector(Sector sector) {
             return "SorticHandover";
             break;
         case Sector::SorticToHandover:
-            return "SorticHandover";
+            return "SorticToHandover";
             break;
         case Sector::SorticWaitForGateway:
             return "SorticWaitForGateway";
@@ -606,7 +634,7 @@ String BoxCtrl::decodeSector(Sector sector) {
             return "TransferWaitForGateway";
             break;
         case Sector::TransferToHandover:
-            return "TransferHandover";
+            return "TransferToHandover";
             break;
         case Sector::TransferHandover:
             return "TransferHandover";
@@ -667,7 +695,7 @@ void BoxCtrl::publishState(State state) {
 }
 
 void BoxCtrl::publishPosition() {
-    pComm.publishMessage("Box/" + String(box.id) + "/position", "{\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":\"" + String(box.actualLine) + "\"}");
+    pComm.publishMessage("Box/" + String(box.id) + "/position", "{\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
 }
 
 void BoxCtrl::clearGui() {

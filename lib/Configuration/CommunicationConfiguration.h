@@ -38,8 +38,9 @@
 #define DEFAULT_MQTT_BROKER_IP4 22   ///<
 #define DEFAULT_MQTT_PORT 1883       ///< MQTT connection port
 
-// #define DEFAULT_HOSTNAME (String("SB") + String(random(0xffff), HEX))  ///< for Vehicles, used for MQTT and WiFi, must be unique in Network
-#define DEFAULT_HOSTNAME "SB2"
+// #define DEFAULT_HOSTNAME_RAND String(random(0xffff), HEX)  ///< for Vehicles, used for MQTT and WiFi, must be unique in Network
+const int DEFAUL_HOSTNAME_NUMBER = 3; 
+#define DEFAULT_HOSTNAME (String("SB") + String(DEFAUL_HOSTNAME_NUMBER))  // + DEFAULT_HOSTNAME_RAND)
 // #define DEFAULT_HOSTNAME_SMARTBOX "SmartBox"  ///< for SmartBoxes, used for MQTT and WiFi, must be unique in Network
 // #define DEFAULT_HOSTNAME_VEHICLE "Vehicle"    ///< for Vehicles, used for MQTT and WiFi, must be unique in Network
 

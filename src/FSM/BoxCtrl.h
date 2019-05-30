@@ -50,7 +50,7 @@ class BoxCtrl {
     struct Box {
         String id = DEFAULT_HOSTNAME;                  ///< Boxname
         Sector actualSector = Sector::SorticHandover;  ///< actual sector initialise with Sortic handover
-        int actualLine = 2;                            ///< actual line initialised with 1
+        int actualLine = DEFAUL_HOSTNAME_NUMBER;                            ///< actual line initialised with 1
         String cargo = "";                         ///< cargo; not used atm
         String status = "null";                        ///< status of the Box FSM
         String ack = "null";                           ///< ack for handshake vehicle
