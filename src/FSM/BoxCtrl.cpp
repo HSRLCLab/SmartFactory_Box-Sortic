@@ -12,7 +12,7 @@
  */
 #include "BoxCtrl.h"
 //=====PUBLIC====================================================================================
-BoxCtrl::BoxCtrl() : currentState(State::readSensorVal) {
+BoxCtrl::BoxCtrl() : currentState(State::readSensorVal), doActionFPtr(&BoxCtrl::doAction_readSensorVal) {
     DBFUNCCALLln("BoxCtrl::BoxCtrl()");
     delay(100);
     clearGui();

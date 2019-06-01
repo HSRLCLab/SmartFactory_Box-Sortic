@@ -1,3 +1,0 @@
-[submodule "lib/MQTTCommunication"]
-	path = lib/MQTTCommunication
-	url = https://github.com/LMazzole/MQTTCommunication.git

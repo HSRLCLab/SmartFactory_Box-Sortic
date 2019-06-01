@@ -20,7 +20,7 @@
 #include "MainConfiguration.h"
 
 #include "BoxLevelCtrl.h"
-#include "Communication.h"
+#include "MQTTCommunication.h"
 
 /**
  * @brief The Box Controll class contains the FSM for the complete Box
@@ -50,8 +50,8 @@ class BoxCtrl {
     struct Box {
         String id = DEFAULT_HOSTNAME;                  ///< Boxname
         Sector actualSector = Sector::SorticHandover;  ///< actual sector initialise with Sortic handover
-        int actualLine = DEFAUL_HOSTNAME_NUMBER;                            ///< actual line initialised with 1
-        String cargo = "";                         ///< cargo; not used atm
+        int actualLine = DEFAUL_HOSTNAME_NUMBER;       ///< actual line initialised with 1
+        String cargo = "";                             ///< cargo;
         String status = "null";                        ///< status of the Box FSM
         String ack = "null";                           ///< ack for handshake vehicle
         String req = "null";                           ///< req for handshake vehicle
@@ -122,10 +122,10 @@ class BoxCtrl {
      * 
      * https://stackoverflow.com/questions/1485983/calling-c-class-methods-via-a-function-pointer
      */
-    Event (BoxCtrl::*doActionFPtr)(void) = &BoxCtrl::doAction_readSensorVal;
+    Event (BoxCtrl::*doActionFPtr)(void) = nullptr;
 
     BoxLevelCtrl pBoxlevelctrl;
-    Communication pComm;
+    Communication pComm = Communication(DEFAULT_HOSTNAME);
     // NetworkManager pComm;
 
     // int pMaxLoopCountForMessages = 1;
