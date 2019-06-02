@@ -24,7 +24,7 @@ const unsigned int SMARTBOX_ITERATION_VACKS_SECONDS = 5;   ///< SB waits this am
 const unsigned int TIME_BETWEEN_PUBLISH = 500;
 const int DEFAUL_HOSTNAME_NUMBER = 2; 
 #define DEFAULT_HOSTNAME (String("SB") + String(DEFAUL_HOSTNAME_NUMBER))  
-#define NUM_OF_MAXVALUES_VEHICLES_STORE 2  ///< how much best values can be stored, must be smaller or equal than NUM_OF_VEHICLES_IN_FIELD!
+#define NUM_OF_MAXVALUES_VEHICLES_STORE 2  ///< how much best values can be stored!
 
 
 #endif

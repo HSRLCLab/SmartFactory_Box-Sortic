@@ -7,5 +7,6 @@ var searchData=
   ['log1',['LOG1',['../_log_configuration_8h.html#a725cb016aa71fa3a6782ec22aac946ad',1,'LogConfiguration.h']]],
   ['log2',['LOG2',['../_log_configuration_8h.html#acd88d5795f3015d13a12faf6757d4001',1,'LogConfiguration.h']]],
   ['log3',['LOG3',['../_log_configuration_8h.html#a901028fe5b096fc09e84585e652e535f',1,'LogConfiguration.h']]],
-  ['log4',['LOG4',['../_log_configuration_8h.html#af007b088ed0b8e1612a6164d60014d47',1,'LogConfiguration.h']]]
+  ['log4',['LOG4',['../_log_configuration_8h.html#af007b088ed0b8e1612a6164d60014d47',1,'LogConfiguration.h']]],
+  ['loglevelconfiguration',['LOGLEVELCONFIGURATION',['../_log_configuration_8h.html#aa677c13a0f66689caf1e05fedbce7494',1,'LogConfiguration.h']]]
 ];

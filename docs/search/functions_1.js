@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['boxctrl',['BoxCtrl',['../class_box_ctrl.html#a4bfdcebe709041d0c3195a62151c870b',1,'BoxCtrl']]],
-  ['boxlevelctrl',['BoxLevelCtrl',['../class_box_level_ctrl.html#a814a64135a5eca58faf1f98c4469cb76',1,'BoxLevelCtrl']]]
+  ['checkforerror',['checkForError',['../class_box_ctrl.html#a769cf592cbf9f89403f9d89a3feb8f30',1,'BoxCtrl']]],
+  ['cleargui',['clearGui',['../class_box_ctrl.html#ad77ef90f0af515ca1c352b3c555482f3',1,'BoxCtrl']]]
 ];

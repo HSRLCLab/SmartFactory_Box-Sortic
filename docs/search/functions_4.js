@@ -1,23 +1,5 @@
 var searchData=
 [
-  ['entryaction_5fcalculateoptvehicle',['entryAction_calculateOptVehicle',['../class_box_ctrl.html#a111b6a699db8e0e7aaedc1cb2cfc0aa9',1,'BoxCtrl']]],
-  ['entryaction_5fchecking',['entryAction_checking',['../class_box_level_ctrl.html#a53f8914d33d0a6ac508b58f2b95b6629',1,'BoxLevelCtrl']]],
-  ['entryaction_5femptystate',['entryAction_emptyState',['../class_box_level_ctrl.html#a0adef1471a7a1bc9a13b68fbbffefe84',1,'BoxLevelCtrl']]],
-  ['entryaction_5ferrorstate',['entryAction_errorState',['../class_box_level_ctrl.html#a62898ffa48cd47aef3d1dc0a7ae26188',1,'BoxLevelCtrl::entryAction_errorState()'],['../class_box_ctrl.html#a4da70168119064f37173bfa02c20b159',1,'BoxCtrl::entryAction_errorState()']]],
-  ['entryaction_5ffullstate',['entryAction_fullState',['../class_box_level_ctrl.html#ae44d0fd7e054517792f427981326409a',1,'BoxLevelCtrl']]],
-  ['entryaction_5fpublishoptvehicle',['entryAction_publishOptVehicle',['../class_box_ctrl.html#a725759fd396522c0d953e7b2b8d2e9b5',1,'BoxCtrl']]],
-  ['entryaction_5freadsensorval',['entryAction_readSensorVal',['../class_box_ctrl.html#a1c85f3c11dbfbdb7a6fc1fc3aeb52c47',1,'BoxCtrl']]],
-  ['entryaction_5fwaitforack',['entryAction_waitForAck',['../class_box_ctrl.html#aaa9b83b21c3668bf7ccd5d3d23f5ab1d',1,'BoxCtrl']]],
-  ['entryaction_5fwaitfortransport',['entryAction_waitForTransport',['../class_box_ctrl.html#a910af18d21e8684bb8748c7bed123444',1,'BoxCtrl']]],
-  ['entryaction_5fwaitforvehicle',['entryAction_waitForVehicle',['../class_box_ctrl.html#a676e58e9d8429d35e85bf5320b1ca83e',1,'BoxCtrl']]],
-  ['exitaction_5fcalculateoptvehicle',['exitAction_calculateOptVehicle',['../class_box_ctrl.html#a98b7536c800ad570f59238d20e7d2fe3',1,'BoxCtrl']]],
-  ['exitaction_5fchecking',['exitAction_checking',['../class_box_level_ctrl.html#af7e8c5d2db0b31f11ccf910531a1faa7',1,'BoxLevelCtrl']]],
-  ['exitaction_5femptystate',['exitAction_emptyState',['../class_box_level_ctrl.html#a31793b4e99249b03871bfbd94dba96f2',1,'BoxLevelCtrl']]],
-  ['exitaction_5ferrorstate',['exitAction_errorState',['../class_box_level_ctrl.html#ac3c461d0fe24f47aec761382f9607b9f',1,'BoxLevelCtrl::exitAction_errorState()'],['../class_box_ctrl.html#a7e1ecea0ddc98db82f4361762f74ca8c',1,'BoxCtrl::exitAction_errorState()']]],
-  ['exitaction_5ffullstate',['exitAction_fullState',['../class_box_level_ctrl.html#a989cbc672431a8abdb81c937282661e1',1,'BoxLevelCtrl']]],
-  ['exitaction_5fpublishoptvehicle',['exitAction_publishOptVehicle',['../class_box_ctrl.html#a544c3fa508777f8baf39338c6b1687c6',1,'BoxCtrl']]],
-  ['exitaction_5freadsensorval',['exitAction_readSensorVal',['../class_box_ctrl.html#ad29f407851045cd21a88aa23f77b1ff1',1,'BoxCtrl']]],
-  ['exitaction_5fwaitforack',['exitAction_waitForAck',['../class_box_ctrl.html#a42e20b3a9cd6745a09728549a669eb10',1,'BoxCtrl']]],
-  ['exitaction_5fwaitfortransport',['exitAction_waitForTransport',['../class_box_ctrl.html#a414b86dbaaea1962b012973acb12ab9f',1,'BoxCtrl']]],
-  ['exitaction_5fwaitforvehicle',['exitAction_waitForVehicle',['../class_box_ctrl.html#af54907b51bfd007235af8c35c50a252e',1,'BoxCtrl']]]
+  ['getcurrentstate',['getcurrentState',['../class_box_level_ctrl.html#a114f7367caca9f9f86369037c5c8cc43',1,'BoxLevelCtrl']]],
+  ['getsensordata',['getSensorData',['../class_sensor_array.html#a6ff77d529254099a81a770cf10f8138f',1,'SensorArray']]]
 ];

@@ -1,9 +1,11 @@
 var searchData=
 [
-  ['sbready',['SBReady',['../class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a97d4a635842e6b2a1e8ecdbc20552c6b',1,'BoxCtrl']]],
-  ['sbreadyfortransport',['SBReadyForTransport',['../class_box_ctrl.html#aea5ba65c3ab60146c3015cbf8f478af2a3dfe63e4ed37ce7abdca84874ebede51',1,'BoxCtrl']]],
-  ['sorticgateway',['SorticGateway',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a0acaa903c278d35a6709633585d9b76e',1,'BoxCtrl']]],
-  ['sortichandover',['SorticHandover',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a3a7d7d4f2845e5fd09296ec79e8b3c3c',1,'BoxCtrl']]],
-  ['sortictohandover',['SorticToHandover',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68abcf0ebff461f9c19e95611262b9b4c89',1,'BoxCtrl']]],
-  ['sorticwaitforgateway',['SorticWaitForGateway',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a9c90801aa6bc3af44167121de50341b4',1,'BoxCtrl']]]
+  ['transfergateway',['TransferGateway',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68ad331a438dc896d87d3f8ca6484db6aa2',1,'BoxCtrl']]],
+  ['transferhandover',['TransferHandover',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68aef7baa6f4bee86e08087cfbfa2be3300',1,'BoxCtrl']]],
+  ['transfertohandover',['TransferToHandover',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a3f1ca4297ce6c53789d502625dca13f0',1,'BoxCtrl']]],
+  ['transferwaitforgateway',['TransferWaitForGateway',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a777d7d806fce61e555042aab33f76266',1,'BoxCtrl']]],
+  ['transittosortic',['TransitToSortic',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68ae81bb4f2dd656ccbb81c3ccdb2ad9754',1,'BoxCtrl']]],
+  ['transittotransfer',['TransitToTransfer',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a97244495f4e80aedfd4693e5cede3e3b',1,'BoxCtrl']]],
+  ['transitwaitforgatewaysortic',['TransitWaitForGatewaySortic',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68af701b8b1faaa61e600a5f71680c059b0',1,'BoxCtrl']]],
+  ['transitwaitforgatewaytransfer',['TransitWaitForGatewayTransfer',['../class_box_ctrl.html#ab3471c53666c0471358079cf95b4ae68a2464c8f93d31723702b353b815e9eecd',1,'BoxCtrl']]]
 ];

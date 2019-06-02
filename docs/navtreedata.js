@@ -23,15 +23,14 @@ for the JavaScript code in this file
 */
 var NAVTREE =
 [
-  [ "SmartFactoryBox", "index.html", [
-    [ "Smart Box", "md__v_1__git__smart_factory_box__r_e_a_d_m_e.html", null ],
+  [ "SmartBox-Sortic", "index.html", [
+    [ "Smart Box", "md__v_1__git__smart_factory__box-_sortic__r_e_a_d_m_e.html", null ],
     [ "Todo List", "todo.html", null ],
-    [ "Bug List", "bug.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", "functions_dup" ],
+        [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
         [ "Enumerations", "functions_enum.html", null ]
@@ -43,8 +42,6 @@ var NAVTREE =
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
         [ "Variables", "globals_vars.html", null ],
-        [ "Enumerations", "globals_enum.html", null ],
-        [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
@@ -53,8 +50,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_box_ctrl_8cpp.html",
-"class_communication.html#aa6bf0a64203030930e74ee61153edd3a"
+"_box_ctrl_8cpp.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

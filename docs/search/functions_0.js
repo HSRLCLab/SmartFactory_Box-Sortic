@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['addmessage',['addMessage',['../class_m_q_t_t_tasks.html#a3c737b92cd3108132d2989f28ac08297',1,'MQTTTasks']]]
+  ['boxctrl',['BoxCtrl',['../class_box_ctrl.html#a4bfdcebe709041d0c3195a62151c870b',1,'BoxCtrl']]],
+  ['boxlevelctrl',['BoxLevelCtrl',['../class_box_level_ctrl.html#a814a64135a5eca58faf1f98c4469cb76',1,'BoxLevelCtrl']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['doactionfptr',['doActionFPtr',['../class_box_level_ctrl.html#a6864f1ee3b54ec72a3671df949371a85',1,'BoxLevelCtrl::doActionFPtr()'],['../class_box_ctrl.html#a2c519c77b1b6514e2cc125ddf949d1df',1,'BoxCtrl::doActionFPtr()']]]
+  ['id',['id',['../struct_box_ctrl_1_1_box.html#a7581630079d378103d2847e7ae99f683',1,'BoxCtrl::Box']]]
 ];
