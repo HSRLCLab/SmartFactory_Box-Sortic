@@ -2,7 +2,7 @@
 
 The SmartFactory_Box-Sortic is an implementation from the SmartFactory Project for Sortic.
 
-SmartFactory_Box-Sortic is a SmartBox which can detect it's fill level. It knows if it must be emptied or filled and communicates this information wirelessly to her environment using the [SmartFactory_MQTTCommunication](https://github.com/LMazzole/SmartFactory_MQTTCommunication)-component.
+SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows if it must be emptied or filled and communicates this information wirelessly to her environment using the [SmartFactory_MQTTCommunication](https://github.com/LMazzole/SmartFactory_MQTTCommunication)-component.
 
   An Finite State Machine (FSM) based on the pattern of the [ArdFSM](<https://github.com/LMazzole/ArdFSM>) is used to control the processes.
 
@@ -28,6 +28,8 @@ SmartFactory_Box-Sortic is a SmartBox which can detect it's fill level. It knows
    - [FAQ's](#faqs)
       - [I'd like to use this code in my project. What do I need to know?](#id-like-to-use-this-code-in-my-project-what-do-i-need-to-know)
    - [ToDo's](#todos)
+      - [Hardware](#hardware-1) 	
+      - [Software](#software-1)
    - [Contributors](#contributors)
    - [Changelog](#changelog)
 - [License](#license)
@@ -68,17 +70,19 @@ For a description of the MQTT-Technologie take a look at the [MQTTCommunication-
 
 <img src="./docs/images/SmartBox.jpeg" height="300"/>
 
-For a SmartBox the following hardware is needed:
+To build a SmartBox the following hardware is needed:
 * 1x [Adafruit Feather M0 WiFi - ATSAMD21 + ATWINC1500](https://www.adafruit.com/product/3010) from Adafruit.
 * 1x LED + 560 Ohm Resistor
 * 3x [Grove - Digital Distance Interrupter](http://wiki.seeedstudio.com/Grove-Digital_Distance_Interrupter_0.5_to_5cm-GP2Y0D805Z0F/)
 * 1x Battery with an JST 2.0 Connection
-* 1x Box with platform
+* 1x [Box](<https://www.haneu.de/rasterplan-lagersichtkasten-gr-8-gelb.html>) (85 x 105 x 45 mm) with platform
 
 ## Software
 
 All functions and files are documented on the [GitHub-Page](https://lmazzole.github.io/SmartFactory_MQTTCommunication/).  
 The Documentation includes also the [MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>)-Files.
+
+It's important to mention that all functions are non blocking and as short as possible so no other process starves.
 
 ### Dependency Graph
 
@@ -104,7 +108,6 @@ In MainConfiguration.h are all important settings for the Box defined:
 * The Hostname number (DEFAUL_HOSTNAME_NUMBER)
 * The Hostname "SB"+ Hostnamenumber (DEFAULT_HOSTNAME)
 * The maximum number of vehicles that will be evaluated (NUM_OF_MAXVALUES_VEHICLES_STORE)
-* 
 
 #### SensorConfiguration.h
 
@@ -137,7 +140,11 @@ Note right of Vehicles : Asynchronous <br/> MQTT communication
 > * Use the same Handshake and Communication-Sequence for your carrier as documented in  [SmartFactory-Sortic](https://github.com/LMazzole/SmartFactory-Sortic).
 
 ### ToDo's
-
+#### Hardware
+- [ ] Only if a package is loaded or not is detected. It cannot be detected how full the box is. therefore the sensor concept has to be reworked.
+- [ ] The battery of the box must be recharged by hand. Inductive charging while waiting would be desirable.
+- [ ] Cable routing and mounting must be revised.
+#### Software
 The open ToDo's can be found in the Documentation on the [GitHub-Page](https://lmazzole.github.io/SmartFactory_Box-Sortic/todo.html)
 
 ### Contributors
