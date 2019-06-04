@@ -37,12 +37,13 @@ SmartFactory_Box-Sortic is a SmartBox which can detect it's fill level. It knows
 The implementation of the SmartFactory project  in Sortic looks like this:
 
 <img src="./docs/images/RepoOverview.png" height="300"/>
+
 The associated  Repositorys are:  
-[SmartFactory-Sortic](https://github.com/LMazzole/SmartFactory-Sortic)  
-[SmartFactory_Box-Sortic](https://github.com/LMazzole/SmartFactory_Box-Sortic)  
-[SmartFactory_Vehicle-Sortic](https://github.com/LMazzole/SmartFactory_Vehicle-Sortic)  
-[SmartFactory_Vehicle-Basis](https://github.com/LMazzole/SmartFactory_Vehicle-Basis)  
-[SmartFactory_MQTTCommunication](https://github.com/LMazzole/SmartFactory_MQTTCommunication)  
+  [SmartFactory-Sortic](https://github.com/LMazzole/SmartFactory-Sortic)  
+  [SmartFactory_Box-Sortic](https://github.com/LMazzole/SmartFactory_Box-Sortic)  
+  [SmartFactory_Vehicle-Sortic](https://github.com/LMazzole/SmartFactory_Vehicle-Sortic)  
+  [SmartFactory_Vehicle-Basis](https://github.com/LMazzole/SmartFactory_Vehicle-Basis)  
+  [SmartFactory_MQTTCommunication](https://github.com/LMazzole/SmartFactory_MQTTCommunication)  
 
 ## Tools and Technologies
 
