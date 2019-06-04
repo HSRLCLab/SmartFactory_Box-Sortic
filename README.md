@@ -11,28 +11,8 @@ SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows 
 ## Table of Content
 
 <!-- TOC Generated with https://magnetikonline.github.io/markdown-toc-generate/ -->
-- [The SmartFactroy Project - Sortic](#the-smartfactroy-project---sortic)
-- [Tools and Technologies](#tools-and-technologies)
-   - [Doxygen](#doxygen)
-   - [VSCode PlatformIO](#vscode-platformio)
-   - [MQTT](#mqtt)
-- [Documentation](#documentation)
-   - [Hardware](#hardware)
-   - [Software](#software)
-      - [Dependency Graph](#dependency-graph)
-      - [Collaboration Diagram](#collaboration-diagram)
-      - [Important Functions and Files](#important-functions-and-files)
-         - [MainConfiguration.h](#mainconfigurationh)
-         - [SensorConfiguration.h](#sensorconfigurationh)
-      - [Communication](#communication)
-   - [FAQ's](#faqs)
-      - [I'd like to use this code in my project. What do I need to know?](#id-like-to-use-this-code-in-my-project-what-do-i-need-to-know)
-   - [ToDo's](#todos)
-      - [Hardware](#hardware-1) 	
-      - [Software](#software-1)
-   - [Contributors](#contributors)
-   - [Changelog](#changelog)
-- [License](#license)
+
+
 
 ## The SmartFactroy Project - Sortic
 
@@ -49,12 +29,12 @@ The associated  Repositorys are:
 
 ## Tools and Technologies
 
-The Source-code is written in C++.
+The source-code is written in C++.
 To achieve this project, the following listed tools and technologies were used.
 
 ### Doxygen
 
-Doxygen is used for the documentation of the sourcecode.  
+Doxygen is used for the documentation of the source-code.  
 An intorduction to *Doxygen* and how to install it can be found in the [ArdFSM-Repo](https://github.com/LMazzole/ArdFSM#documentation-with-doxygen).  
 
 ### VSCode PlatformIO
@@ -118,19 +98,17 @@ In SensorConfiguration.h are all settings for the Sensors defined:
 * Pin-number of the Load-Indicator LED
 
 ### Communication 
+
 Detailed information about the communication process between the Box and its surrounding are documented in the [SmartFactroy-Sortic-ReadMe](<https://github.com/LMazzole/SmartFactory-Sortic#smartfactory-sortic>).
 
-```mermaid
-sequenceDiagram
-SmartBox -->> Vehicles: I'm full
-Vehicles -->> SmartBox: here are my Parameters
-SmartBox-->> Vehicles : ok, I'm asking for VehicleX
-Vehicles -->> SmartBox: VehicleX is coming
-Vehicles -->> SmartBox: VehicleX is transporting Box
-Vehicles -->> SmartBox: VehicleX has transported and returned Box
-Note right of Vehicles : Asynchronous <br/> MQTT communication
+#### Handshake with Vehicle
 
-```
+<img src="./docs/images/Handshake-simple.svg" height="500" />
+
+
+#### Sortic to Vehicle
+
+<img src="./docs/images/SorticToSB-simple.svg" height="350" />
 
 ## FAQ's
 
@@ -138,7 +116,7 @@ Note right of Vehicles : Asynchronous <br/> MQTT communication
 
 > This Repository is specifically for Sortic. You can still use it, if you stick to the following rules:  
 >
-> * Use the same Handshake and Communication-Sequence for your carrier as documented in  [SmartFactory-Sortic](https://github.com/LMazzole/SmartFactory-Sortic).
+> * Use the same Handshake and Communication-Sequence for your carrier as documented in  [SmartFactory-Sortic](https://github.com/LMazzole/SmartFactory-Sortic) and [Communication](#communication).
 
 ### ToDo's
 #### Hardware
@@ -150,7 +128,8 @@ The open ToDo's can be found in the Documentation on the [GitHub-Page](https://l
 
 ### Contributors
 
-[Luca Mazzoleni](https://github.com/LMazzole)
+- [Luca Mazzoleni](https://github.com/LMazzole)
+- Luciano Bettinaglio
 
 ### Changelog
 
