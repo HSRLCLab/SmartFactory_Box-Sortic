@@ -25,7 +25,9 @@ var NAVTREE =
 [
   [ "SmartBox-Sortic", "index.html", [
     [ "Smart Box", "md__v_1__git__smart_factory__box-_sortic__r_e_a_d_m_e.html", null ],
+    [ ":<em>Git_SmartFactory_Box-Sortic</em>.piolibdeps_MQTTCommunication_README MQTTCommunication", "md__v.html", null ],
     [ "Todo List", "todo.html", null ],
+    [ "Bug List", "bug.html", null ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -50,7 +52,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_box_ctrl_8cpp.html"
+"_box_ctrl_8cpp.html",
+"classmy_j_s_o_n.html#ace499de7665ab481672fb942788955c9"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

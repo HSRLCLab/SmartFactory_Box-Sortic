@@ -1,0 +1,5 @@
+<map id="BoxCtrl.h" name="BoxCtrl.h">
+<area shape="rect" id="node1" title="The Box Controll class contains the FSM for the BoxLevel." alt="" coords="66,5,142,32"/>
+<area shape="rect" id="node2" href="$_box_ctrl_8cpp.html" title="Implementation of the Box Controll&#45;Class." alt="" coords="5,80,96,107"/>
+<area shape="rect" id="node3" href="$main_8cpp.html" title="Smart Box main file." alt="" coords="120,80,195,107"/>
+</map>

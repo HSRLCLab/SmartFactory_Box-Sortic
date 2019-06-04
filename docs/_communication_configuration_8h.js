@@ -1,7 +1,5 @@
 var _communication_configuration_8h =
 [
-    [ "myJSONStr", "structmy_j_s_o_n_str.html", "structmy_j_s_o_n_str" ],
-    [ "DEFAULT_HOSTNAME", "_communication_configuration_8h.html#acbd0b3def6b58577376d5c5edbc1f8d1", null ],
     [ "DEFAULT_MQTT_BROKER_IP1", "_communication_configuration_8h.html#a5d22797e1aecb523d51e001e4b18bfcd", null ],
     [ "DEFAULT_MQTT_BROKER_IP2", "_communication_configuration_8h.html#a3d7bfc12d81b39f60b4c466d73b0f9bd", null ],
     [ "DEFAULT_MQTT_BROKER_IP3", "_communication_configuration_8h.html#a5bef8a41df9bae6c18ba9a7cbe7334b1", null ],

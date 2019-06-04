@@ -1,0 +1,20 @@
+<map id="BoxCtrl.h" name="BoxCtrl.h">
+<area shape="rect" id="node1" title="The Box Controll class contains the FSM for the BoxLevel." alt="" coords="724,5,800,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="591,304,669,331"/>
+<area shape="rect" id="node3" href="$_main_configuration_8h.html" title="contains the default configuration for the main function" alt="" coords="890,80,1026,107"/>
+<area shape="rect" id="node4" href="$_box_level_ctrl_8h.html" title="The BoxLevel Controll class contains the FSM for the BoxLevel." alt="" coords="5,155,111,181"/>
+<area shape="rect" id="node8" href="$_m_q_t_t_communication_8h.html" title="The Connection&#45;class is used as interface." alt="" coords="593,80,752,107"/>
+<area shape="rect" id="node5" href="$_log_configuration_8h.html" title="Contains Pre&#45;Compiler directives for diffent Serialprints for Datalogin." alt="" coords="253,304,383,331"/>
+<area shape="rect" id="node6" href="$_sensor_array_8h.html" title="The Sensor Array." alt="" coords="61,229,167,256"/>
+<area shape="rect" id="node7" href="$_sensor_configuration_8h.html" title="file that contains the default sensor configuration" alt="" coords="39,304,189,331"/>
+<area shape="rect" id="node9" href="$_communication_configuration_8h.html" title="file that contains the default network configuration" alt="" coords="301,155,500,181"/>
+<area shape="rect" id="node10" title=" " alt="" coords="524,155,635,181"/>
+<area shape="rect" id="node11" href="$_network_8h.html" title="The Network class establishes a WLAN&#45;Connection." alt="" coords="391,229,522,256"/>
+<area shape="rect" id="node14" href="$my_j_s_o_n_8h.html" title="myJSON class handels the conversion from the JSON&#45;Format into a struct" alt="" coords="674,229,815,256"/>
+<area shape="rect" id="node17" href="$my_m_q_t_t_8h.html" title="This class handels the MQTT connection." alt="" coords="135,155,277,181"/>
+<area shape="rect" id="node12" title=" " alt="" coords="512,304,567,331"/>
+<area shape="rect" id="node13" title=" " alt="" coords="407,304,488,331"/>
+<area shape="rect" id="node15" href="$my_j_s_o_n_str_8h.html" title=" " alt="" coords="821,304,924,331"/>
+<area shape="rect" id="node16" title=" " alt="" coords="693,304,797,331"/>
+<area shape="rect" id="node18" title=" " alt="" coords="191,229,303,256"/>
+</map>

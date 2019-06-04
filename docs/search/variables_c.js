@@ -1,24 +1,7 @@
 var searchData=
 [
-  ['pass',['pass',['../class_network_manager.html#a530410b61b9b22b89d146b35498830b8',1,'NetworkManager']]],
-  ['pboxlevelctrl',['pBoxlevelctrl',['../class_box_ctrl.html#ab840a5272489ccdbe8f6be28a4d85c42',1,'BoxCtrl']]],
-  ['pbrokerip',['pBrokerIP',['../classmy_m_q_t_t.html#a86a31975764922935b74f610c1477497',1,'myMQTT']]],
-  ['pbrokerport',['pBrokerPort',['../classmy_m_q_t_t.html#a353d2fe6752bcdfe04dd98f1e137ab05',1,'myMQTT']]],
-  ['pclient',['pClient',['../class_communication.html#aacb5eaa628281d49ca2972b23c8ac652',1,'Communication']]],
-  ['pcomm',['pComm',['../class_box_ctrl.html#ae1a4fdce35217d388d8cdac247012e42',1,'BoxCtrl']]],
-  ['pencryption',['pEncryption',['../class_network.html#a20c58da03c41b7a9f1b5145e2ce320ea',1,'Network']]],
-  ['phostname',['pHostname',['../classmy_m_q_t_t.html#a4a0245cabf326ffe19716458e97617d5',1,'myMQTT']]],
-  ['piplocal',['pIPLocal',['../class_network.html#a9b9b7c16c50e1f7cdda59447b66af4f9',1,'Network']]],
-  ['pmac',['pMac',['../class_network.html#a48797e41acbbfd72643633e482b97f9f',1,'Network']]],
-  ['pmacrouter',['pMacRouter',['../class_network.html#a59728fee5cb48783f2f6531d64602dee',1,'Network']]],
-  ['pmymqtt',['pMymqtt',['../class_communication.html#ae827543871f89ae91a3451dd7299695e',1,'Communication']]],
-  ['pnetwork',['pNetwork',['../class_communication.html#aa6bf0a64203030930e74ee61153edd3a',1,'Communication']]],
-  ['pparscapacity',['pParsCapacity',['../classmy_j_s_o_n.html#ac76c8f7f3a8d3631406177ca44ccd2cd',1,'myJSON']]],
-  ['ppassword',['pPassword',['../class_network.html#a45441e8f4bb03d725e1c59504cf744ba',1,'Network']]],
-  ['previousmillis',['previousMillis',['../class_box_ctrl.html#ad7265e35db0a8cb078088e416ad426d9',1,'BoxCtrl']]],
-  ['prssi',['pRssi',['../class_network.html#aff68bd617b4f085f650a21d6982cacc7',1,'Network']]],
-  ['psensorarray',['pSensorArray',['../class_box_level_ctrl.html#acc282cef876c15bf8888642cb1194c3d',1,'BoxLevelCtrl']]],
-  ['pssid',['pSsid',['../class_network.html#a37b8b3f25aed35e0813c78e494ea8575',1,'Network']]],
-  ['ptemp',['pTemp',['../class_box_ctrl.html#aa77dc13980e5da27ec3adef9f76c9453',1,'BoxCtrl']]],
-  ['pvehiclerating',['pVehicleRating',['../class_box_ctrl.html#a868e84e30d638c24bd62b0cf323e570c',1,'BoxCtrl']]]
+  ['sector',['sector',['../structmy_j_s_o_n_str.html#a9af6b277c881ad4811835102ce45d82b',1,'myJSONStr']]],
+  ['smartbox_5fiteration_5fvacks_5fseconds',['SMARTBOX_ITERATION_VACKS_SECONDS',['../_main_configuration_8h.html#a2af1bd8d84c52e8c059618952f000f41',1,'MainConfiguration.h']]],
+  ['smartbox_5fwaitfor_5fvehicles_5fseconds',['SMARTBOX_WAITFOR_VEHICLES_SECONDS',['../_main_configuration_8h.html#a591c57db45f13b98aa0d43dce1fe8d3a',1,'MainConfiguration.h']]],
+  ['status',['status',['../struct_box_ctrl_1_1_box.html#af6b601dd08e45e88e3b8b7fcb4a1acf8',1,'BoxCtrl::Box::status()'],['../structmy_j_s_o_n_str.html#aa20d4e1d49713bde35d6e0ad4d215429',1,'myJSONStr::status()']]]
 ];

@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['network',['Network',['../class_network.html#a3cc2fb4f8fa4d507077e8da85ce5a1c8',1,'Network::Network()'],['../class_network.html#ae6f9b681ab940621329802b53f7ac1fc',1,'Network::Network(String ssid, String password)']]],
-  ['networkmanager',['NetworkManager',['../class_network_manager.html#a5aaf71c4aa7a2efab7f1dbae02312280',1,'NetworkManager::NetworkManager()'],['../class_network_manager.html#a037cd49d3d3e709217f9cf9c3ac85da7',1,'NetworkManager::NetworkManager(IPAddress broker, String ssid2=DEFAULT_WIFI_SSID, String pass2=DEFAULT_WIFI_PASSWORD, const int mmQTTport=DEFAULT_MQTT_PORT, const int pins[4]=default_pins)']]]
+  ['sensorarray',['SensorArray',['../class_sensor_array.html#a0acd7cd3df437ed32d0b6859845c9ed3',1,'SensorArray']]],
+  ['setup',['setup',['../main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d',1,'main.cpp']]],
+  ['shift',['shift',['../class_communication.html#a0925e5cd26fc4fc3a0f99c1997bf0644',1,'Communication']]],
+  ['size',['size',['../class_communication.html#a097f09aba41fec80fd226c75b91c1cd5',1,'Communication']]],
+  ['structisequal',['StructIsEqual',['../classmy_j_s_o_n.html#a4291e1d5fc0369d03f8e094bf1db2b31',1,'myJSON']]],
+  ['subscribe',['subscribe',['../class_communication.html#ae7600b9fe0f1249effde2852e8101593',1,'Communication::subscribe()'],['../classmy_m_q_t_t.html#a55566e23e8705bf3390b6f8209cbd9a1',1,'myMQTT::subscribe()']]]
 ];

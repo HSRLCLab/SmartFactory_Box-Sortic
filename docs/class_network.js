@@ -1,7 +1,6 @@
 var class_network =
 [
-    [ "Network", "class_network.html#a3cc2fb4f8fa4d507077e8da85ce5a1c8", null ],
-    [ "Network", "class_network.html#ae6f9b681ab940621329802b53f7ac1fc", null ],
+    [ "Network", "class_network.html#a0dfd4ee86e18346c40a7ec13c66c679d", null ],
     [ "connectToWiFi", "class_network.html#ad7fff536b31740411da0e7c8f281eda9", null ],
     [ "decodeEncryptionType", "class_network.html#a07eee94a1b113e65c9d1c6b8c6c6ee44", null ],
     [ "decodeWiFistate", "class_network.html#a31ebd477ecb0f08f85b7fa52b9f2bb7a", null ],
@@ -16,5 +15,9 @@ var class_network =
     [ "pMacRouter", "class_network.html#a59728fee5cb48783f2f6531d64602dee", null ],
     [ "pPassword", "class_network.html#a45441e8f4bb03d725e1c59504cf744ba", null ],
     [ "pRssi", "class_network.html#aff68bd617b4f085f650a21d6982cacc7", null ],
-    [ "pSsid", "class_network.html#a37b8b3f25aed35e0813c78e494ea8575", null ]
+    [ "pSsid", "class_network.html#a37b8b3f25aed35e0813c78e494ea8575", null ],
+    [ "pWifi_CS", "class_network.html#a30246c34ee6f97772dbf27f685c21943", null ],
+    [ "pWifi_EN", "class_network.html#a7d8d5e27f99515be28c396bcf2694cd3", null ],
+    [ "pWiFi_IRQ", "class_network.html#ac72ce5aa90e751a2254d01e035adc6c5", null ],
+    [ "pWifi_RST", "class_network.html#af3c6ee0460d5f234a1339516aeb52564", null ]
 ];

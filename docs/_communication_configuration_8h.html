@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SmartFactoryBox: CommunicationConfiguration.h File Reference</title>
+<title>SmartBox-Sortic: CommunicationConfiguration.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -29,8 +29,9 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">SmartFactoryBox
+   <div id="projectname">SmartBox-Sortic
    </div>
+   <div id="projectbrief">SmartFactory</div>
   </td>
  </tr>
  </tbody>
@@ -86,7 +87,6 @@ $(document).ready(function(){initNavTree('_communication_configuration_8h.html',
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
 <div class="title">CommunicationConfiguration.h File Reference</div>  </div>
@@ -95,15 +95,22 @@ $(document).ready(function(){initNavTree('_communication_configuration_8h.html',
 
 <p>file that contains the default network configuration  
 <a href="#details">More...</a></p>
-
+<div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><img src="_communication_configuration_8h__dep__incl.png" border="0" usemap="#_communication_configuration_8hdep" alt=""/></div>
+<map name="_communication_configuration_8hdep" id="_communication_configuration_8hdep">
+<area shape="rect"  title="file that contains the default network configuration" alt="" coords="78,5,277,32"/>
+<area shape="rect"  href="_m_q_t_t_communication_8h.html" title="The Connection&#45;class is used as interface." alt="" coords="98,80,257,107"/>
+<area shape="rect"  href="_box_ctrl_8h.html" title="The Box Controll class contains the FSM for the BoxLevel." alt="" coords="66,155,142,181"/>
+<area shape="rect"  href="_m_q_t_t_communication_8cpp.html" title="Implementation of the Connection class." alt="" coords="166,155,338,181"/>
+<area shape="rect"  href="_box_ctrl_8cpp.html" title="Implementation of the Box Controll&#45;Class." alt="" coords="5,229,96,256"/>
+<area shape="rect"  href="main_8cpp.html" title="Smart Box main file." alt="" coords="120,229,195,256"/>
+</map>
+</div>
+</div>
 <p><a href="_communication_configuration_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmy_j_s_o_n_str.html">myJSONStr</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structmy_j_s_o_n_str.html" title="myJSONStr">myJSONStr</a>  <a href="structmy_j_s_o_n_str.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a7ea92631acc3bc41ae5eadc069323267"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_communication_configuration_8h.html#a7ea92631acc3bc41ae5eadc069323267">DEFAULT_WIFI_SSID</a>&#160;&#160;&#160;&quot;DigitalLab&quot;</td></tr>
@@ -132,8 +139,6 @@ Macros</h2></td></tr>
 <tr class="memitem:a01342056d524ed0b20f9e0ccc800d1db"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_communication_configuration_8h.html#a01342056d524ed0b20f9e0ccc800d1db">DEFAULT_MQTT_PORT</a>&#160;&#160;&#160;1883</td></tr>
 <tr class="memdesc:a01342056d524ed0b20f9e0ccc800d1db"><td class="mdescLeft">&#160;</td><td class="mdescRight">MQTT connection port.  <a href="#a01342056d524ed0b20f9e0ccc800d1db">More...</a><br /></td></tr>
 <tr class="separator:a01342056d524ed0b20f9e0ccc800d1db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbd0b3def6b58577376d5c5edbc1f8d1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_communication_configuration_8h.html#acbd0b3def6b58577376d5c5edbc1f8d1">DEFAULT_HOSTNAME</a>&#160;&#160;&#160;&quot;SB1&quot;</td></tr>
-<tr class="separator:acbd0b3def6b58577376d5c5edbc1f8d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a268cecf8b27e3323864627d776dee31d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_communication_configuration_8h.html#a268cecf8b27e3323864627d776dee31d">MAX_JSON_PARSE_SIZE</a>&#160;&#160;&#160;300</td></tr>
 <tr class="memdesc:a268cecf8b27e3323864627d776dee31d"><td class="mdescLeft">&#160;</td><td class="mdescRight">max buffer size to parse JSON objects, size of the pool in bytes, can be calculated in <a href="https://arduinojson.org/v5/assistant/">https://arduinojson.org/v5/assistant/</a>  <a href="#a268cecf8b27e3323864627d776dee31d">More...</a><br /></td></tr>
 <tr class="separator:a268cecf8b27e3323864627d776dee31d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -152,28 +157,12 @@ Macros</h2></td></tr>
 1.0 - SA SmartFactroyBox HS 2018</dd></dl>
 <dl class="section date"><dt>Date</dt><dd>2019-03-07</dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2019</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Switch Password to .ini file <br />
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Switch Password to .ini file <br />
 <a href="https://community.platformio.org/t/how-to-specify-ota-upload-password-outside-platformio-ini/3588">https://community.platformio.org/t/how-to-specify-ota-upload-password-outside-platformio-ini/3588</a> <br />
 <a href="http://docs.platformio.org/en/latest/envvars.html#building">http://docs.platformio.org/en/latest/envvars.html#building</a> </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="acbd0b3def6b58577376d5c5edbc1f8d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acbd0b3def6b58577376d5c5edbc1f8d1">&#9670;&nbsp;</a></span>DEFAULT_HOSTNAME</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_HOSTNAME&#160;&#160;&#160;&quot;SB1&quot;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="_communication_configuration_8h_source.html#l00042">42</a> of file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
-
-</div>
-</div>
 <a id="a5d22797e1aecb523d51e001e4b18bfcd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5d22797e1aecb523d51e001e4b18bfcd">&#9670;&nbsp;</a></span>DEFAULT_MQTT_BROKER_IP1</h2>
 
@@ -372,7 +361,7 @@ Macros</h2></td></tr>
 
 <p>max num of saved JSON items, must be smaller than num of vehicles! </p>
 
-<p class="definition">Definition at line <a class="el" href="_communication_configuration_8h_source.html#l00048">48</a> of file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_communication_configuration_8h_source.html#l00044">44</a> of file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
 
 </div>
 </div>
@@ -390,7 +379,7 @@ Macros</h2></td></tr>
 
 <p>max buffer size to parse JSON objects, size of the pool in bytes, can be calculated in <a href="https://arduinojson.org/v5/assistant/">https://arduinojson.org/v5/assistant/</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="_communication_configuration_8h_source.html#l00047">47</a> of file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_communication_configuration_8h_source.html#l00043">43</a> of file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
 
 </div>
 </div>
@@ -408,7 +397,7 @@ Macros</h2></td></tr>
 
 <p>how many topics can be in row, e.g. SmartBox/SB1/level are 3 topic levels </p>
 
-<p class="definition">Definition at line <a class="el" href="_communication_configuration_8h_source.html#l00049">49</a> of file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_communication_configuration_8h_source.html#l00045">45</a> of file <a class="el" href="_communication_configuration_8h_source.html">CommunicationConfiguration.h</a>.</p>
 
 </div>
 </div>
@@ -417,7 +406,7 @@ Macros</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_97aefd0d527b934f1d99a682da8fe6a9.html">lib</a></li><li class="navelem"><a class="el" href="dir_8ea013883fbe8a03e4e1a7bdb3690119.html">Configuration</a></li><li class="navelem"><a class="el" href="_communication_configuration_8h.html">CommunicationConfiguration.h</a></li>
+    <li class="navelem"><a class="el" href="dir_ccd24bce1b9814cf663f258823c8802b.html">.piolibdeps</a></li><li class="navelem"><a class="el" href="dir_955cb612160b0ce825607463478112bb.html">MQTTCommunication</a></li><li class="navelem"><a class="el" href="dir_dd0843085dd16ed28a93ddb3a270ade6.html">src</a></li><li class="navelem"><a class="el" href="_communication_configuration_8h.html">CommunicationConfiguration.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.15 </li>

@@ -1,7 +1,5 @@
 var classmy_m_q_t_t =
 [
-    [ "myMQTT", "classmy_m_q_t_t.html#a7226346708f45985a07c48609cad140c", null ],
-    [ "myMQTT", "classmy_m_q_t_t.html#abd984cf65e49bc7aec2c57154495feee", null ],
     [ "myMQTT", "classmy_m_q_t_t.html#a279474d24c098fcf26a6d433bf794160", null ],
     [ "connectToMQTT", "classmy_m_q_t_t.html#a6d495c08a06513954b95d961f0595959", null ],
     [ "decodeMQTTstate", "classmy_m_q_t_t.html#ae4372969b093a2487479005ccb398cbc", null ],

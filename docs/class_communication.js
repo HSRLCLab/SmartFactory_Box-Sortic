@@ -1,6 +1,6 @@
 var class_communication =
 [
-    [ "Communication", "class_communication.html#a88aa7a2d2ac5202e2b8eef787d1a8689", null ],
+    [ "Communication", "class_communication.html#ab88eb4c3af7925175dc96a1781da7437", null ],
     [ "clear", "class_communication.html#ab1c097a0ede778d6edd57be55fed77d6", null ],
     [ "first", "class_communication.html#ab188e8647d1b8abba12dba6101fe4096", null ],
     [ "getElement", "class_communication.html#a39b312c42c6977923b275047a84e81fe", null ],
@@ -17,6 +17,7 @@ var class_communication =
     [ "unsubscribe", "class_communication.html#a6be65dea68cf039e41df2986386dac61", null ],
     [ "funcPointer", "class_communication.html#a0b8c2ab44fad41881b8da21367a02da4", null ],
     [ "pClient", "class_communication.html#aacb5eaa628281d49ca2972b23c8ac652", null ],
+    [ "pHostname", "class_communication.html#aa6d4be2b35368ae426852d1cd2b03ef8", null ],
     [ "pMymqtt", "class_communication.html#ae827543871f89ae91a3451dd7299695e", null ],
     [ "pNetwork", "class_communication.html#aa6bf0a64203030930e74ee61153edd3a", null ]
 ];

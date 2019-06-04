@@ -1,0 +1,9 @@
+<map id="myJSON.h" name="myJSON.h">
+<area shape="rect" id="node1" title="myJSON class handels the conversion from the JSON&#45;Format into a struct" alt="" coords="211,5,296,32"/>
+<area shape="rect" id="node2" href="$_m_q_t_t_communication_8h.html" title="The Connection&#45;class is used as interface." alt="" coords="98,80,257,107"/>
+<area shape="rect" id="node7" href="$my_j_s_o_n_8cpp.html" title="Implementation of the myJSON&#45;class." alt="" coords="281,80,380,107"/>
+<area shape="rect" id="node3" href="$_box_ctrl_8h.html" title="The Box Controll class contains the FSM for the BoxLevel." alt="" coords="66,155,142,181"/>
+<area shape="rect" id="node6" href="$_m_q_t_t_communication_8cpp.html" title="Implementation of the Connection class." alt="" coords="166,155,338,181"/>
+<area shape="rect" id="node4" href="$_box_ctrl_8cpp.html" title="Implementation of the Box Controll&#45;Class." alt="" coords="5,229,96,256"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="Smart Box main file." alt="" coords="120,229,195,256"/>
+</map>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sensorarray',['SensorArray',['../class_sensor_array.html',1,'']]]
+  ['communication',['Communication',['../class_communication.html',1,'']]]
 ];
