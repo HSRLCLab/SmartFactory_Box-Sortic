@@ -14,7 +14,7 @@ SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows 
 
 [TOC]
 
-## The SmartFactroy Project - Sortic
+## The SmartFactory Project - Sortic
 
 The implementation of the SmartFactory project  for Sortic looks like this:
 
@@ -49,7 +49,7 @@ For a description of the MQTT-Technologie take a look at the [MQTTCommunication-
 
 ## Hardware
 
-<img src="./docs/images/SmartBox.jpeg" height="300"/>
+<img src="./docs/images/SmartBox.jpeg" height="300"/> <img src="./docs/images/package.png" height="200"/>
 
 To build a SmartBox the following hardware is needed:
 * 1x [Adafruit Feather M0 WiFi - ATSAMD21 + ATWINC1500](https://www.adafruit.com/product/3010) from Adafruit.
@@ -115,7 +115,7 @@ For an handshake with a vehicle the topic *Box/box.id/handshake* is used. The Co
 
 <img src="./docs/images/Handshake-detailed.svg" height="650" />
 
-#### Sortic to Vehicle
+#### Sortic to Box
 
 So that the Box knows what it has loaded, it subscribes itself to the topic Sortic/Handover.  
 It updated its loading information if a valid message is received.
@@ -139,12 +139,12 @@ It updated its loading information if a valid message is received.
 All open ToDo's can be found in the Documentation on the [GitHub-Page](https://lmazzole.github.io/SmartFactory_Box-Sortic/todo.html)
 - [ ] Split the Code in 2 Repos: Box-Sortic and Box-Basis in order to increase reusability.
 
-### Contributors
+## Contributors
 
 - [Luca Mazzoleni](https://github.com/LMazzole)
 - Luciano Bettinaglio
 
-### Changelog
+## Changelog
 
 V 1.0	-	Release BA FS19	-	[Luca Mazzoleni](https://github.com/LMazzole)
 
