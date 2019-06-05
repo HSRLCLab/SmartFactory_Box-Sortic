@@ -12,7 +12,7 @@ SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows 
 
 <!-- TOC Generated with https://magnetikonline.github.io/markdown-toc-generate/ -->
 
-
+[TOC]
 
 ## The SmartFactroy Project - Sortic
 
@@ -58,12 +58,14 @@ To build a SmartBox the following hardware is needed:
 * 1x Battery with an JST 2.0 Connection
 * 1x [Box](<https://www.haneu.de/rasterplan-lagersichtkasten-gr-8-gelb.html>) (85 x 105 x 45 mm) with platform
 
+For detailed building instructions please contact [Felix Nyffenegger](mailto:felix.nyffenegger@hsr.ch).
+
 ## Software
 
-All functions and files are documented on the [GitHub-Page](https://lmazzole.github.io/SmartFactory_MQTTCommunication/).  
-The Documentation includes also the [MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>)-Files.
+All functions and files are documented on the [GitHub-Page with Doxygen](https://lmazzole.github.io/SmartFactory_MQTTCommunication/).  
+The documentation includes also the [MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>)-Files.
 
-It's important to mention that all functions are non blocking and as short as possible so no other process starves.
+It's important to mention that all functions are non blocking and as short as possible so no other process starves. This way a degree of parallelism can be achieved.
 
 ### Dependency Graph
 
@@ -99,16 +101,26 @@ In SensorConfiguration.h are all settings for the Sensors defined:
 
 ### Communication 
 
-Detailed information about the communication process between the Box and its surrounding are documented in the [SmartFactroy-Sortic-ReadMe](<https://github.com/LMazzole/SmartFactory-Sortic#smartfactory-sortic>).
+The SmartBox communicates via the [SmartFactory_MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>) to an MQTT-Broker, who distributes the messages. The communication works by subscribing to various topics. The subscribed Topics change depending on action and position of the Box. The TopicTree looks like this:
+
+<img src="./docs/images/MQTTTopics.png" height="600" />
+
+The box is constantly subscribed to the topics: *error, Box/error, Box/box.id/error* and also always publishes its status to *Box/box.id/status*. 
+
+More information about the communication process and the complete procedure is documented in [SmartFactroy-Sortic-ReadMe](<https://github.com/LMazzole/SmartFactory-Sortic#smartfactory-sortic>). 
 
 #### Handshake with Vehicle
 
-<img src="./docs/images/Handshake-simple.svg" height="500" />
+For an handshake with a vehicle the topic *Box/box.id/handshake* is used. The Confirmation of the new position is send from the vehicle to the *Box/box.id/position*.
 
+<img src="./docs/images/Handshake-detailed.svg" height="600" />
 
 #### Sortic to Vehicle
 
-<img src="./docs/images/SorticToSB-simple.svg" height="350" />
+So that the Box knows what it has loaded, it subscribes itself to the topic Sortic/Handover.  
+It updated its loading information if a valid message is received.
+
+<img src="./docs/images/SorticToSB-detailed.svg" height="350" />
 
 ## FAQ's
 
@@ -124,8 +136,8 @@ Detailed information about the communication process between the Box and its sur
 - [ ] The battery of the box must be recharged by hand. Inductive charging while waiting would be desirable.
 - [ ] Cable routing and mounting must be revised.
 #### Software
-The open ToDo's can be found in the Documentation on the [GitHub-Page](https://lmazzole.github.io/SmartFactory_Box-Sortic/todo.html)
-
+All open ToDo's can be found in the Documentation on the [GitHub-Page](https://lmazzole.github.io/SmartFactory_Box-Sortic/todo.html)
+- [ ] Split the Code in 2 Repos: Box-Sortic and Box-Basis in order to increase reusability.
 ### Contributors
 
 - [Luca Mazzoleni](https://github.com/LMazzole)
