@@ -2,9 +2,9 @@
 
 The SmartFactory_Box-Sortic is an implementation from the SmartFactory Project for Sortic.
 
-SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows if it must be emptied or filled and communicates this information wirelessly to her environment using the [SmartFactory_MQTTCommunication](https://github.com/LMazzole/SmartFactory_MQTTCommunication)-component.
+SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows if it must be emptied or filled and communicates this information wirelessly to its environment using the [SmartFactory_MQTTCommunication](https://github.com/LMazzole/SmartFactory_MQTTCommunication)-component.
 
- Multiple nested  Finite State Machines (FSM) based on the pattern of the [ArdFSM](<https://github.com/LMazzole/ArdFSM>) are used to control the processes.
+ Multiple nested Finite State Machines (FSM) based on the pattern of the [ArdFSM](<https://github.com/LMazzole/ArdFSM>) are used to control these processes.
 
 <!-- add Pagebreak: <div style="page-break-after: always;"></div> -->
 
@@ -16,7 +16,7 @@ SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows 
 
 ## The SmartFactory Project - Sortic
 
-The implementation of the SmartFactory project  for Sortic looks like this:
+The implementation of the SmartFactory project for Sortic looks like this:
 
 <img src="./docs/images/RepoOverview.png" height="300"/>
 
@@ -29,7 +29,7 @@ The associated  Repositorys are:
 
 ## Tools and Technologies
 
-The source-code is written in C++.
+The source code is written in C++.
 To achieve this project, the following listed tools and technologies were used.
 
 ### Doxygen
@@ -65,7 +65,7 @@ For detailed building instructions please contact [Felix Nyffenegger](mailto:fel
 All functions and files are documented on the [GitHub-Page with Doxygen](https://lmazzole.github.io/SmartFactory_MQTTCommunication/).  
 The documentation includes also the [MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>)-Files.
 
-It's important to mention that all functions are non blocking and as short as possible so no other process starves. This way a degree of parallelism can be achieved.
+It is important to mention that all functions are non-blocking and as short as possible so no other process slow down. This way a degree of parallelism can be achieved.
 
 ### Dependency Graph
 
@@ -101,7 +101,7 @@ In [SensorConfiguration.h](<https://lmazzole.github.io/SmartFactory_Box-Sortic/_
 
 ### Communication 
 
-The SmartBox communicates via the [SmartFactory_MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>) to an MQTT-Broker, who distributes the messages. The communication works by subscribing to various topics. The subscribed Topics change depending on action and position of the Box. The TopicTree looks like this:
+The SmartBox communicates via the [SmartFactory_MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>) to an MQTT-Broker that distributes the messages. The communication works by subscribing to various topics. The subscribed topics change depending on action and position of the box. The TopicTree looks like this:
 
 <img src="./docs/images/MQTTTopics.png" height="600" />
 
@@ -111,13 +111,13 @@ More information about the communication process and the complete procedure is d
 
 #### Handshake with Vehicle
 
-For an handshake with a vehicle the topic *Box/box.id/handshake* is used. The Confirmation of the new position is send from the vehicle to the *Box/box.id/position*.
+For an handshake with a vehicle the topic *Box/box.id/handshake* is used. The confirmation of the new position is sent from the vehicle to the *Box/box.id/position*.
 
 <img src="./docs/images/Handshake-detailed.svg" height="650" />
 
 #### Sortic to Box
 
-So that the Box knows what it has loaded, it subscribes itself to the topic Sortic/Handover.  
+So that the box knows what it has loaded, it subscribes itself to the topic Sortic/Handover.  
 It updated its loading information if a valid message is received.
 
 <img src="./docs/images/SorticToSB-detailed.svg" height="350" />
@@ -126,13 +126,13 @@ It updated its loading information if a valid message is received.
 
 #### I'd like to use this code in my project. What do I need to know?  
 
-> This Repository is specifically for Sortic. You can still use it, if you stick to the following rules:  
+> This repository is designed specifically for Sortic. You can still use it, if you follow the rules below:  
 >
 > * Use the same Handshake and Communication-Sequence for your carrier as documented in  [SmartFactory-Sortic](https://github.com/LMazzole/SmartFactory-Sortic) and [Communication](#communication).
 
 ### ToDo's
 #### Hardware
-- [ ] Only if a package is loaded or not is detected. It cannot be detected how full the box is. therefore the sensor concept has to be reworked.
+- [ ] Only if a package is loaded or not is detected. It cannot be detected how full the box is, therefore the sensor concept has to be reworked.
 - [ ] The battery of the box must be recharged by hand. Inductive charging while waiting would be desirable.
 - [ ] Cable routing and mounting must be revised.
 #### Software
