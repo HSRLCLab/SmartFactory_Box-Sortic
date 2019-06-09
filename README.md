@@ -14,6 +14,8 @@ SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows 
 
 [TOC]
 
+<div style="page-break-after: always;"></div>
+
 ## The SmartFactory Project - Sortic
 
 The implementation of the SmartFactory project for Sortic looks like this:
@@ -45,6 +47,8 @@ The used  IDE is [VSCode](https://code.visualstudio.com/) with the [PlatformIO](
 
 For a description of the MQTT-Technologie take a look at the [MQTTCommunication-ReadMe](<https://github.com/LMazzole/SmartFactory_MQTTCommunication#mqtt>).   
 
+<div style="page-break-after: always;"></div>
+
 # Documentation
 
 ## Hardware
@@ -59,6 +63,8 @@ To build a SmartBox the following hardware is needed:
 * 1x [Box](<https://www.haneu.de/rasterplan-lagersichtkasten-gr-8-gelb.html>) (85 x 105 x 45 mm) with platform
 
 For detailed building instructions please contact [Felix Nyffenegger](mailto:felix.nyffenegger@hsr.ch).
+
+<div style="page-break-after: always;"></div>
 
 ## Software
 
@@ -111,6 +117,7 @@ In [SensorConfiguration.h](<https://lmazzole.github.io/SmartFactory_Box-Sortic/_
 * Pin-number of the Distance-Interrupter
 * Pin-number of the Load-Indicator LED
 
+<div style="page-break-after: always;"></div>
 ### Communication 
 
 The SmartBox communicates via the [SmartFactory_MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>) to an MQTT-Broker that distributes the messages. The communication works by subscribing to various topics. The subscribed topics change depending on action and position of the box. The TopicTree looks like this:
@@ -121,11 +128,15 @@ The box is constantly subscribed to the topics: *error, Box/error, Box/box.id/er
 
 More information about the communication process and the complete procedure is documented in [SmartFactroy-Sortic-ReadMe](<https://github.com/LMazzole/SmartFactory-Sortic#smartfactory-sortic>). 
 
+<div style="page-break-after: always;"></div>
+
 #### Handshake with Vehicle
 
 For an handshake with a vehicle the topic *Box/box.id/handshake* is used. The confirmation of the new position is sent from the vehicle to the *Box/box.id/position*.
 
 <p align="center"><img src="./docs/images/Handshake-detailed.svg" height="650" /></p>
+
+<div style="page-break-after: always;"></div>
 
 #### Sortic to Box
 
@@ -133,6 +144,8 @@ So that the box knows what it has loaded, it subscribes itself to the topic Sort
 It updated its loading information if a valid message is received.
 
 <p align="center"><img src="./docs/images/SorticToSB-detailed.svg" height="350" /></p>
+
+<div style="page-break-after: always;"></div>
 
 ## FAQ's
 
