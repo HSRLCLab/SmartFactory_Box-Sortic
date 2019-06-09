@@ -18,7 +18,7 @@ SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows 
 
 The implementation of the SmartFactory project for Sortic looks like this:
 
-<img src="./docs/images/RepoOverview.png" height="300"/>
+<p align="center"><img src="./docs/images/RepoOverview.png" height="300"/></p>
 
 The associated  Repositorys are:  
   [SmartFactory-Sortic](https://github.com/LMazzole/SmartFactory-Sortic)  
@@ -49,7 +49,7 @@ For a description of the MQTT-Technologie take a look at the [MQTTCommunication-
 
 ## Hardware
 
-<img src="./docs/images/SmartBox.jpeg" height="300"/> <img src="./docs/images/package.png" height="200"/>
+<p align="center"><img src="./docs/images/SmartBox.jpeg" height="300"/> <img src="./docs/images/package.png" height="200"/></p>
 
 To build a SmartBox the following hardware is needed:
 * 1x [Adafruit Feather M0 WiFi - ATSAMD21 + ATWINC1500](https://www.adafruit.com/product/3010) from Adafruit.
@@ -69,7 +69,11 @@ It is important to mention that all functions are non-blocking and as short as p
 
 ### Dependency Graph
 
-[<img src="./docs/main_8cpp__incl.png" height="300"/>](https://lmazzole.github.io/SmartFactory_Box-Sortic/main_8cpp.html)
+<p align="center">
+    <a href=https://lmazzole.github.io/SmartFactory_Box-Sortic/main_8cpp.html><img src="./docs/main_8cpp__incl.png" height="300" style="border:none;"/>
+    </a>
+    <p>Note: Click on image to open doxygen.</p>
+</p>
 
 Extern Libraries:  
 
@@ -77,7 +81,7 @@ Extern Libraries:
 
 ### Collaboration Diagram
 
-[<img src="./docs/class_box_ctrl__coll__graph.png" height="250" />](https://lmazzole.github.io/SmartFactory_Box-Sortic/class_box_ctrl.html)
+<p align="center">[<img src="./docs/class_box_ctrl__coll__graph.png" height="250" />]</p>(https://lmazzole.github.io/SmartFactory_Box-Sortic/class_box_ctrl.html)
 
 ### Important Functions and Files
 
@@ -103,7 +107,7 @@ In [SensorConfiguration.h](<https://lmazzole.github.io/SmartFactory_Box-Sortic/_
 
 The SmartBox communicates via the [SmartFactory_MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>) to an MQTT-Broker that distributes the messages. The communication works by subscribing to various topics. The subscribed topics change depending on action and position of the box. The TopicTree looks like this:
 
-<img src="./docs/images/MQTTTopics.png" height="600" />
+<p align="center"><img src="./docs/images/MQTTTopics.png" height="600" /></p>
 
 The box is constantly subscribed to the topics: *error, Box/error, Box/box.id/error* and also always publishes its status to *Box/box.id/status*. 
 
@@ -113,14 +117,14 @@ More information about the communication process and the complete procedure is d
 
 For an handshake with a vehicle the topic *Box/box.id/handshake* is used. The confirmation of the new position is sent from the vehicle to the *Box/box.id/position*.
 
-<img src="./docs/images/Handshake-detailed.svg" height="650" />
+<p align="center"><img src="./docs/images/Handshake-detailed.svg" height="650" /></p>
 
 #### Sortic to Box
 
 So that the box knows what it has loaded, it subscribes itself to the topic Sortic/Handover.  
 It updated its loading information if a valid message is received.
 
-<img src="./docs/images/SorticToSB-detailed.svg" height="350" />
+<p align="center"><img src="./docs/images/SorticToSB-detailed.svg" height="350" /></p>
 
 ## FAQ's
 
