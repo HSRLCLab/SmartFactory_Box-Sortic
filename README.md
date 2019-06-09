@@ -70,10 +70,12 @@ It is important to mention that all functions are non-blocking and as short as p
 ### Dependency Graph
 
 <p align="center">
-    <a href=https://lmazzole.github.io/SmartFactory_Box-Sortic/main_8cpp.html><img src="./docs/main_8cpp__incl.png" height="300" style="border:none;"/>
+    <a href=https://lmazzole.github.io/SmartFactory_Box-Sortic/main_8cpp.html>
+        <img src="./docs/main_8cpp__incl.png" height="300" style="border:none;"/>
     </a>
-    <p>Note: Click on image to open doxygen.</p>
+    <p align="center"><small>Click on image to open doxygen-documentation.</p>
 </p>
+
 
 Extern Libraries:  
 
@@ -81,7 +83,13 @@ Extern Libraries:
 
 ### Collaboration Diagram
 
-<p align="center">[<img src="./docs/class_box_ctrl__coll__graph.png" height="250" />]</p>(https://lmazzole.github.io/SmartFactory_Box-Sortic/class_box_ctrl.html)
+<p align="center">
+    <a href=https://lmazzole.github.io/SmartFactory_Box-Sortic/class_box_ctrl.html>
+        <img src="./docs/class_box_ctrl__coll__graph.png" height="250" style="border:none;"/>
+    </a>
+    <p align="center"><small>Click on image to open doxygen-documentation.</p>
+</p>
+
 
 ### Important Functions and Files
 
