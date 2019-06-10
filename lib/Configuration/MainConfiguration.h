@@ -19,9 +19,9 @@
 
 const unsigned int SMARTBOX_WAITFOR_VEHICLES_SECONDS = 5;                 ///< SB waits this amount of seconds for vehicles to respond
 const unsigned int SMARTBOX_ITERATION_VACKS_SECONDS = 5;                  ///< SB waits this amound of secnods for vehicles to send their acknoledgement to transport SB
-const unsigned int TIME_BETWEEN_PUBLISH = 500;                            ///< Time between MQTT-Message publish
+const unsigned int TIME_BETWEEN_PUBLISH = 300;                            ///< Time between MQTT-Message publish
 const int DEFAUL_HOSTNAME_NUMBER = 2;                                     ///< Number of the Vehicle. Used to dermine startline and for GUI
 #define DEFAULT_HOSTNAME (String("SB") + String(DEFAUL_HOSTNAME_NUMBER))  ///< Hostname used for identification of SV
-const unsigned int NUM_OF_MAXVALUES_VEHICLES_STORE = 2;                   ///< how much best values can be stored!
+const unsigned int NUM_OF_MAXVALUES_VEHICLES_STORE = 2;                   ///< how many best values can be stored!
 
 #endif
