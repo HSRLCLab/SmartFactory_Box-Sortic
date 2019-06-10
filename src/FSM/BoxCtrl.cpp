@@ -170,7 +170,8 @@ BoxCtrl::Event BoxCtrl::doAction_readSensorVal() {
 
     currentMillis = millis();
     // Publish/Block HandoverPosition
-    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
+    if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {
+        //only publish all xx seconds
         previousMillisPublish = millis();
         if (box.actualSector == Sector::SorticHandover) {
             pComm.publishMessage("Sortic/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
@@ -334,14 +335,13 @@ BoxCtrl::Event BoxCtrl::doAction_publishOptVehicle() {
     }
 
     currentMillis = millis();
-    
 
     //Publish decision
     currentMillis = millis();
     if ((currentMillis - previousMillisPublish) > TIME_BETWEEN_PUBLISH) {  //only publish all xx seconds
         previousMillisPublish = millis();
         pComm.publishMessage("Box/" + String(box.id) + "/handshake", "{\"id\":\"" + String(box.id) + "\",\"req\":\"" + String(box.req) + "\"}");
-    if (box.actualSector == Sector::SorticHandover) { // Publish/Block HandoverPosition
+        if (box.actualSector == Sector::SorticHandover) {  // Publish/Block HandoverPosition
             pComm.publishMessage("Sortic/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
         } else if (box.actualSector == Sector::TransferHandover) {
             pComm.publishMessage("Transfer/Handover", "{\"id\":\"" + String(box.id) + "\",\"sector\":\"" + decodeSector(box.actualSector) + "\",\"line\":" + String(box.actualLine) + "}");
@@ -525,7 +525,6 @@ void BoxCtrl::exitAction_resetState() {
     DBSTATUSln("Leaving State: resetState");
     pComm.clear();
     clearGui();
-    // box = Box();  //reset struct
     box = {};  //reset struct
 }
 

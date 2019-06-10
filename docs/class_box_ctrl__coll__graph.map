@@ -1,9 +1,6 @@
 <map id="BoxCtrl" name="BoxCtrl">
-<area shape="rect" id="node1" title="The Box Controll class contains the FSM for the complete Box." alt="" coords="222,184,287,211"/>
-<area shape="rect" id="node2" href="$class_communication.html" title="The Connection&#45;class provides the interface." alt="" coords="71,95,183,121"/>
-<area shape="rect" id="node3" href="$class_network.html" title="Handels the WLAN&#45;Connection." alt="" coords="5,5,75,32"/>
-<area shape="rect" id="node4" href="$classmy_m_q_t_t.html" title="Handels the MQTT connection." alt="" coords="99,5,173,32"/>
-<area shape="rect" id="node5" href="$class_box_level_ctrl.html" title="The BoxLevel Controll class contains the FSM for the BoxLevel." alt="" coords="207,95,302,121"/>
-<area shape="rect" id="node6" href="$class_sensor_array.html" title="The Class SensorArray saves data from the sensors." alt="" coords="207,5,302,32"/>
-<area shape="rect" id="node7" href="$struct_box_ctrl_1_1_box.html" title=" " alt="" coords="327,95,423,121"/>
+<area shape="rect" id="node1" title="The Box Controll class contains the FSM for the complete Box." alt="" coords="85,184,151,211"/>
+<area shape="rect" id="node2" href="$class_box_level_ctrl.html" title="The BoxLevel Controll class contains the FSM for the BoxLevel." alt="" coords="5,95,100,121"/>
+<area shape="rect" id="node3" href="$class_sensor_array.html" title="The Class SensorArray detects the box fill level." alt="" coords="5,5,100,32"/>
+<area shape="rect" id="node4" href="$struct_box_ctrl_1_1_box.html" title="Box class contains all relevant information about the box and its actual state." alt="" coords="125,95,221,121"/>
 </map>

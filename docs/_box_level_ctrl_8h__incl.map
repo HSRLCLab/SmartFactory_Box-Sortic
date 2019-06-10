@@ -1,7 +1,7 @@
 <map id="BoxLevelCtrl.h" name="BoxLevelCtrl.h">
-<area shape="rect" id="node1" title="The BoxLevel Controll class contains the FSM for the BoxLevel." alt="" coords="81,5,187,32"/>
+<area shape="rect" id="node1" title="The BoxLevel Controll class contains the FSM for the BoxLevel." alt="" coords="108,5,213,32"/>
 <area shape="rect" id="node2" href="$_log_configuration_8h.html" title="Contains Pre&#45;Compiler directives for diffent Serialprints for Datalogin." alt="" coords="5,155,135,181"/>
-<area shape="rect" id="node3" href="$_sensor_array_8h.html" title="The Sensor Array." alt="" coords="136,80,241,107"/>
+<area shape="rect" id="node3" href="$_sensor_array_8h.html" title="The Sensor Array detects the box fill level." alt="" coords="108,80,213,107"/>
+<area shape="rect" id="node5" href="$_sensor_configuration_8h.html" title="File that contains the default sensor configuration." alt="" coords="238,80,387,107"/>
 <area shape="rect" id="node4" title=" " alt="" coords="159,155,237,181"/>
-<area shape="rect" id="node5" href="$_sensor_configuration_8h.html" title="file that contains the default sensor configuration" alt="" coords="261,155,410,181"/>
 </map>

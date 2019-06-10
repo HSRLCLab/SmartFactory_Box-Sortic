@@ -88,33 +88,49 @@ $(document).ready(function(){initNavTree('class_sensor_array.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_sensor_array-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">SensorArray Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>The Class <a class="el" href="class_sensor_array.html" title="The Class SensorArray saves data from the sensors.">SensorArray</a> saves data from the sensors.  
+<p>The Class <a class="el" href="class_sensor_array.html" title="The Class SensorArray detects the box fill level.">SensorArray</a> detects the box fill level.  
  <a href="class_sensor_array.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_sensor_array_8h_source.html">SensorArray.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0acd7cd3df437ed32d0b6859845c9ed3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor_array.html#a0acd7cd3df437ed32d0b6859845c9ed3">SensorArray</a> ()</td></tr>
-<tr class="memdesc:a0acd7cd3df437ed32d0b6859845c9ed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Sensor Array object.  <a href="#a0acd7cd3df437ed32d0b6859845c9ed3">More...</a><br /></td></tr>
-<tr class="separator:a0acd7cd3df437ed32d0b6859845c9ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aa2d1de10bb5aa97fe318f42330b3ab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor_array.html#a2aa2d1de10bb5aa97fe318f42330b3ab">SensorArray</a> (const int Sensor1, const int Sensor2, const int Sensor3, const int LoadIndicatorLED)</td></tr>
+<tr class="memdesc:a2aa2d1de10bb5aa97fe318f42330b3ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Sensor Array object.  <a href="#a2aa2d1de10bb5aa97fe318f42330b3ab">More...</a><br /></td></tr>
+<tr class="separator:a2aa2d1de10bb5aa97fe318f42330b3ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ff77d529254099a81a770cf10f8138f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor_array.html#a6ff77d529254099a81a770cf10f8138f">getSensorData</a> ()</td></tr>
 <tr class="memdesc:a6ff77d529254099a81a770cf10f8138f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the Sensor Values.  <a href="#a6ff77d529254099a81a770cf10f8138f">More...</a><br /></td></tr>
 <tr class="separator:a6ff77d529254099a81a770cf10f8138f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ae4812d849978e90074a51d34bcf713c7"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor_array.html#ae4812d849978e90074a51d34bcf713c7">pSensor1</a></td></tr>
+<tr class="memdesc:ae4812d849978e90074a51d34bcf713c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pin LevelDetector 1.  <a href="#ae4812d849978e90074a51d34bcf713c7">More...</a><br /></td></tr>
+<tr class="separator:ae4812d849978e90074a51d34bcf713c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab73c10caea6099a903dc55c0ba0607fe"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor_array.html#ab73c10caea6099a903dc55c0ba0607fe">pSensor2</a></td></tr>
+<tr class="memdesc:ab73c10caea6099a903dc55c0ba0607fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pin LevelDetector 2.  <a href="#ab73c10caea6099a903dc55c0ba0607fe">More...</a><br /></td></tr>
+<tr class="separator:ab73c10caea6099a903dc55c0ba0607fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1abe5a1c0527afdd879a74d64c042283"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor_array.html#a1abe5a1c0527afdd879a74d64c042283">pSensor3</a></td></tr>
+<tr class="memdesc:a1abe5a1c0527afdd879a74d64c042283"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pin LevelDetector 3.  <a href="#a1abe5a1c0527afdd879a74d64c042283">More...</a><br /></td></tr>
+<tr class="separator:a1abe5a1c0527afdd879a74d64c042283"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe6230cc7662fcc9192c612b74e3e39f"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sensor_array.html#abe6230cc7662fcc9192c612b74e3e39f">pLoadIndicatorLED</a></td></tr>
+<tr class="memdesc:abe6230cc7662fcc9192c612b74e3e39f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pin for loadindicator LED.  <a href="#abe6230cc7662fcc9192c612b74e3e39f">More...</a><br /></td></tr>
+<tr class="separator:abe6230cc7662fcc9192c612b74e3e39f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>The Class <a class="el" href="class_sensor_array.html" title="The Class SensorArray saves data from the sensors.">SensorArray</a> saves data from the sensors. </p>
+<div class="textblock"><p>The Class <a class="el" href="class_sensor_array.html" title="The Class SensorArray detects the box fill level.">SensorArray</a> detects the box fill level. </p>
 
 <p class="definition">Definition at line <a class="el" href="_sensor_array_8h_source.html#l00027">27</a> of file <a class="el" href="_sensor_array_8h_source.html">SensorArray.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0acd7cd3df437ed32d0b6859845c9ed3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0acd7cd3df437ed32d0b6859845c9ed3">&#9670;&nbsp;</a></span>SensorArray()</h2>
+<a id="a2aa2d1de10bb5aa97fe318f42330b3ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2aa2d1de10bb5aa97fe318f42330b3ab">&#9670;&nbsp;</a></span>SensorArray()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -122,18 +138,45 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">SensorArray::SensorArray </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>Sensor1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>Sensor2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>Sensor3</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>LoadIndicatorLED</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Construct a new Sensor Array object. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>exchange parameter, don't load defines in ctor </dd></dl>
-<p>initialize light LED, Output</p>
-<p>initialize sharp sensor 1, Input</p>
-<p>initialize sharp sensor 2, Input</p>
-<p>initialize sharp sensor 3, Input </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Sensor1</td><td>- Pin for LevelDetector 1 </td></tr>
+    <tr><td class="paramname">Sensor2</td><td>- Pin for LevelDetector 2 </td></tr>
+    <tr><td class="paramname">Sensor3</td><td>- Pin for LevelDetector 3 </td></tr>
+    <tr><td class="paramname">LoadIndicatorLED</td><td>- Pin for loadindicator LED </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="_sensor_array_8cpp_source.html#l00021">21</a> of file <a class="el" href="_sensor_array_8cpp_source.html">SensorArray.cpp</a>.</p>
 
@@ -160,9 +203,114 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>true Sensor found an Element (full) </dd>
 <dd>
 false Sensor found no Element (empty)</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Check multiple times if a Object is present for relaiability </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Check multiple times if a Object is present to increase relaiability </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="_sensor_array_8cpp_source.html#l00033">33</a> of file <a class="el" href="_sensor_array_8cpp_source.html">SensorArray.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ae4812d849978e90074a51d34bcf713c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4812d849978e90074a51d34bcf713c7">&#9670;&nbsp;</a></span>pSensor1</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int SensorArray::pSensor1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pin LevelDetector 1. </p>
+
+<p class="definition">Definition at line <a class="el" href="_sensor_array_8h_source.html#l00051">51</a> of file <a class="el" href="_sensor_array_8h_source.html">SensorArray.h</a>.</p>
+
+</div>
+</div>
+<a id="ab73c10caea6099a903dc55c0ba0607fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab73c10caea6099a903dc55c0ba0607fe">&#9670;&nbsp;</a></span>pSensor2</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int SensorArray::pSensor2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pin LevelDetector 2. </p>
+
+<p class="definition">Definition at line <a class="el" href="_sensor_array_8h_source.html#l00052">52</a> of file <a class="el" href="_sensor_array_8h_source.html">SensorArray.h</a>.</p>
+
+</div>
+</div>
+<a id="a1abe5a1c0527afdd879a74d64c042283"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1abe5a1c0527afdd879a74d64c042283">&#9670;&nbsp;</a></span>pSensor3</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int SensorArray::pSensor3</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pin LevelDetector 3. </p>
+
+<p class="definition">Definition at line <a class="el" href="_sensor_array_8h_source.html#l00053">53</a> of file <a class="el" href="_sensor_array_8h_source.html">SensorArray.h</a>.</p>
+
+</div>
+</div>
+<a id="abe6230cc7662fcc9192c612b74e3e39f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe6230cc7662fcc9192c612b74e3e39f">&#9670;&nbsp;</a></span>pLoadIndicatorLED</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int SensorArray::pLoadIndicatorLED</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pin for loadindicator LED. </p>
+
+<p class="definition">Definition at line <a class="el" href="_sensor_array_8h_source.html#l00054">54</a> of file <a class="el" href="_sensor_array_8h_source.html">SensorArray.h</a>.</p>
 
 </div>
 </div>

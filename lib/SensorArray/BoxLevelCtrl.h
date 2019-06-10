@@ -17,6 +17,7 @@
 #include "LogConfiguration.h"
 
 #include "SensorArray.h"
+#include "SensorConfiguration.h"
 
 /**
  * @brief The BoxLevel Controll class contains the FSM for the BoxLevel
@@ -33,21 +34,22 @@ class BoxLevelCtrl {
     */
     enum class Event { PackageDetected,    ///< Package detected
                        NoPackageDetected,  ///< No package detected
-                       CheckForPackage,
-                       Error,   ///< Error occured
-                       Resume,  ///< Resume after Error occured
-                       NoEvent  ///< No event generated
+                       CheckForPackage,    ///< Ext.: Check for package
+                       Error,              ///< Error occured
+                       Resume,             ///< Ext.:Resume after Error occured
+                       NoEvent             ///< No event generated
     };
 
     /**
     * @brief Enum holds all possible states
     * 
     */
-    enum class State { emptyState,  ///< empty State
-                       fullState,   ///< full State
-                       checking,
-                       errorState
+    enum class State { emptyState,  ///< Empty State
+                       fullState,   ///< Full State
+                       checking,    ///< check Boxlevel
+                       errorState   ///< Error-state
     };
+
     /**
      * @brief Construct a new Box Level Ctrl object
      * and initailize the currentState with emptyState
@@ -93,9 +95,9 @@ class BoxLevelCtrl {
      * 
      * https://stackoverflow.com/questions/1485983/calling-c-class-methods-via-a-function-pointer
      */
-    Event (BoxLevelCtrl::*doActionFPtr)(void) = &BoxLevelCtrl::doAction_emptyState;
+    Event (BoxLevelCtrl::*doActionFPtr)(void) = nullptr;
 
-    SensorArray pSensorArray;  ///< SensorArray Object
+    SensorArray pSensorArray = SensorArray(LB1, LB2, LB3, LOADINDICATOR_LED);  ///< SensorArray Object
 
     //=====StateFunctions=====
     //=====emptyState==========================================================

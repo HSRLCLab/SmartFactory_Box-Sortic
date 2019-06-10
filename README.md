@@ -14,6 +14,7 @@ SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows 
 
 [TOC]
 
+
 <div style="page-break-after: always;"></div>
 
 ## The SmartFactory Project - Sortic
@@ -79,7 +80,7 @@ It is important to mention that all functions are non-blocking and as short as p
     <a href=https://lmazzole.github.io/SmartFactory_Box-Sortic/main_8cpp.html>
         <img src="./docs/main_8cpp__incl.png" height="300" style="border:none;"/>
     </a>
-    <p align="center"><small>Click on image to open doxygen-documentation.</p>
+    <p align="center"><small>Click on the image to open doxygen-documentation.</p>
 </p>
 
 
@@ -118,6 +119,7 @@ In [SensorConfiguration.h](<https://lmazzole.github.io/SmartFactory_Box-Sortic/_
 * Pin-number of the Load-Indicator LED
 
 <div style="page-break-after: always;"></div>
+
 ### Communication 
 
 The SmartBox communicates via the [SmartFactory_MQTTCommunication](<https://github.com/LMazzole/SmartFactory_MQTTCommunication>) to an MQTT-Broker that distributes the messages. The communication works by subscribing to various topics. The subscribed topics change depending on action and position of the box. The TopicTree looks like this:

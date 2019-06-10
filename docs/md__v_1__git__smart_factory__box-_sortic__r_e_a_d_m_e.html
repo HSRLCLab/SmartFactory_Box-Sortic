@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SmartBox-Sortic: Smart Box</title>
+<title>SmartBox-Sortic: SmartFactory_Box-Sortic</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,13 +87,170 @@ $(document).ready(function(){initNavTree('md__v_1__git__smart_factory__box-_sort
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Smart Box </div>  </div>
+<div class="title">SmartFactory_Box-Sortic </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>The Code includes comments to give a better understanding of what is happening in the Code.</p>
-<p>If you with to see some graphs and get more explanation, I'll refer to my documentation (ask <a href="https://www.hsr.ch/">here</a> for permission).</p>
-<p>The Code is written in C++ on the Framework Platformio (IDE: Visual Studio Code).</p>
-<p>## <a class="el" href="class_communication.html" title="The Connection-class provides the interface.">Communication</a> Model </p><div class="fragment"><div class="line">sequenceDiagram</div><div class="line">SmartBox --&gt;&gt; Vehicles: I&#39;m full</div><div class="line">Vehicles --&gt;&gt; SmartBox: here are my Parameters</div><div class="line">SmartBox--&gt;&gt; Vehicles : ok, I&#39;m asking for VehicleX</div><div class="line">Vehicles --&gt;&gt; SmartBox: VehicleX is coming</div><div class="line">Vehicles --&gt;&gt; SmartBox: VehicleX is transporting Box</div><div class="line">Vehicles --&gt;&gt; SmartBox: VehicleX has transported and returned Box</div><div class="line">Note right of Vehicles : Asynchronous &lt;br/&gt; MQTT communication</div></div><!-- fragment --> </div></div><!-- PageDoc -->
+<div class="textblock"><p>The SmartFactory_Box-Sortic is an implementation from the SmartFactory Project for Sortic.</p>
+<p>SmartFactory_Box-Sortic is a SmartBox which can detect its fill level. It knows if it must be emptied or filled and communicates this information wirelessly to its environment using the <a href="https://github.com/LMazzole/SmartFactory_MQTTCommunication">SmartFactory_MQTTCommunication</a>-component.</p>
+<p>Multiple nested Finite State Machines (FSM) based on the pattern of the <a href="https://github.com/LMazzole/ArdFSM">ArdFSM</a> are used to control these processes.</p>
+<h2>Table of Content</h2>
+<div style="page-break-after: always;"></div><h2>The SmartFactory Project - Sortic</h2>
+<p>The implementation of the SmartFactory project for Sortic looks like this:</p>
+<img src="./docs/images/RepoOverview.png" height="300" alt="" class="inline"/>
+<p>The associated Repositorys are:</p>
+<p><a href="https://github.com/LMazzole/SmartFactory-Sortic">SmartFactory-Sortic</a></p>
+<p><a href="https://github.com/LMazzole/SmartFactory_Box-Sortic">SmartFactory_Box-Sortic</a></p>
+<p><a href="https://github.com/LMazzole/SmartFactory_Vehicle-Sortic">SmartFactory_Vehicle-Sortic</a></p>
+<p><a href="https://github.com/LMazzole/SmartFactory_Vehicle-Basis">SmartFactory_Vehicle-Basis</a></p>
+<p><a href="https://github.com/LMazzole/SmartFactory_MQTTCommunication">SmartFactory_MQTTCommunication</a></p>
+<h2>Tools and Technologies</h2>
+<p>The source code is written in C++. To achieve this project, the following listed tools and technologies were used.</p>
+<h3>Doxygen</h3>
+<p>Doxygen is used for the documentation of the source-code.</p>
+<p>An intorduction to <em>Doxygen</em> and how to install it can be found in the <a href="https://github.com/LMazzole/ArdFSM#documentation-with-doxygen">ArdFSM-Repo</a>.</p>
+<h3>VSCode PlatformIO</h3>
+<p>The used IDE is <a href="https://code.visualstudio.com/">VSCode</a> with the <a href="https://platformio.org/platformio-ide">PlatformIO</a>-Extension.</p>
+<h3>MQTT</h3>
+<p>For a description of the MQTT-Technologie take a look at the <a href="https://github.com/LMazzole/SmartFactory_MQTTCommunication#mqtt">MQTTCommunication-ReadMe</a>.</p>
+<div style="page-break-after: always;"></div><h1>Documentation</h1>
+<h2>Hardware</h2>
+<img src="./docs/images/SmartBox.jpeg" height="300" alt="" class="inline"/>
+ <img src="./docs/images/package.png" height="200" alt="" class="inline"/>
+<p>To build a SmartBox the following hardware is needed:</p><ul>
+<li>1x <a href="https://www.adafruit.com/product/3010">Adafruit Feather M0 WiFi - ATSAMD21 + ATWINC1500</a> from Adafruit.</li>
+<li>1x LED + 560 Ohm Resistor</li>
+<li>3x <a href="http://wiki.seeedstudio.com/Grove-Digital_Distance_Interrupter_0.5_to_5cm-GP2Y0D805Z0F/">Grove - Digital Distance Interrupter</a></li>
+<li>1x Battery with an JST 2.0 Connection</li>
+<li>1x <a href="https://www.haneu.de/rasterplan-lagersichtkasten-gr-8-gelb.html">Box</a> (85 x 105 x 45 mm) with platform</li>
+</ul>
+<p>For detailed building instructions please contact <a href="#" onclick="location.href='mai'+'lto:'+'fel'+'ix'+'.ny'+'ff'+'ene'+'gg'+'er@'+'hs'+'r.c'+'h'; return false;">Felix Nyffenegger</a>.</p>
+<div style="page-break-after: always;"></div><h2>Software</h2>
+<p>All functions and files are documented on the <a href="https://lmazzole.github.io/SmartFactory_MQTTCommunication/">GitHub-Page with Doxygen</a>.</p>
+<p>The documentation includes also the <a href="https://github.com/LMazzole/SmartFactory_MQTTCommunication">MQTTCommunication</a>-Files.</p>
+<p>It is important to mention that all functions are non-blocking and as short as possible so no other process slow down. This way a degree of parallelism can be achieved.</p>
+<h3>Dependency Graph</h3>
+<p><a href="https://lmazzole.github.io/SmartFactory_Box-Sortic/main_8cpp.html"><img src="./docs/main_8cpp__incl.png" height="300" style="border:none;" alt="" class="inline"/>
+ </a> </p>
+<p><small>Click on the image to open doxygen-documentation.</small></p>
+<p><small> </small></p>
+<p><small></small></p>
+<p><small>Extern Libraries:</small></p>
+<p><small></p><ul>
+<li><a href="https://github.com/LMazzole/SmartFactory_MQTTCommunication">SmartFactory_MQTTCommunication</a></li>
+</ul>
+<p></small></p>
+<p><small></p><h3>Collaboration Diagram</h3>
+<p></small></p>
+<p><small></small></p>
+<p><small></small></p>
+<p><small> <a href="https://lmazzole.github.io/SmartFactory_Box-Sortic/class_box_ctrl.html"><img src="./docs/class_box_ctrl__coll__graph.png" height="250" style="border:none;" alt="" class="inline"/>
+ </a> </small></p>
+<p><small><small>Click on image to open doxygen-documentation.</small></small></p>
+<p><small><small> </small></small></p>
+<p><small><small></small></small></p>
+<p><small><small></p><h3>Important Functions and Files</h3>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small></p><h4><a class="el" href="_main_configuration_8h.html" title="contains the default configuration for the smartbox">MainConfiguration.h</a></h4>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>In <a href="https://lmazzole.github.io/SmartFactory_Box-Sortic/_main_configuration_8h.html">MainConfiguration.h</a> are all important settings for the Box defined:</small></small></p>
+<p><small><small></p><ul>
+<li>How long the SmartBox for Vehicle-Responses waits (SMARTBOX_WAITFOR_VEHICLES_SECONDS)</li>
+<li>How long the SmartBox for Vehicle-Acknolegemnt waits (SMARTBOX_ITERATION_VACKS_SECONDS)</li>
+<li>Time between the MQTT Publishs (TIME_BETWEEN_PUBLISH)</li>
+<li>The Hostname number (DEFAUL_HOSTNAME_NUMBER)</li>
+<li>The Hostname "SB"+ Hostnamenumber (DEFAULT_HOSTNAME)</li>
+<li>The maximum number of vehicles that will be evaluated (NUM_OF_MAXVALUES_VEHICLES_STORE)</li>
+</ul>
+<p></small></small></p>
+<p><small><small></p><h4><a class="el" href="_sensor_configuration_8h.html" title="File that contains the default sensor configuration.">SensorConfiguration.h</a></h4>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>In <a href="https://lmazzole.github.io/SmartFactory_Box-Sortic/_sensor_configuration_8h.html">SensorConfiguration.h</a> are all settings for the Sensors defined:</small></small></p>
+<p><small><small></p><ul>
+<li>Pin-number of the Distance-Interrupter</li>
+<li>Pin-number of the Load-Indicator LED</li>
+</ul>
+<p></small></small></p>
+<p><small><small></p><div style="page-break-after: always;"></div><p></small></small></p>
+<p><small><small></p><h3>Communication</h3>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>The SmartBox communicates via the <a href="https://github.com/LMazzole/SmartFactory_MQTTCommunication">SmartFactory_MQTTCommunication</a> to an MQTT-Broker that distributes the messages. The communication works by subscribing to various topics. The subscribed topics change depending on action and position of the box. The TopicTree looks like this:</small></small></p>
+<p><small><small></small></small></p>
+<p><small><small><img src="./docs/images/MQTTTopics.png" height="600" alt="" class="inline"/>
+</small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>The box is constantly subscribed to the topics: <em>error, Box/error, Box/box.id/error</em> and also always publishes its status to <em>Box/box.id/status</em>.</small></small></p>
+<p><small><small>More information about the communication process and the complete procedure is documented in <a href="https://github.com/LMazzole/SmartFactory-Sortic#smartfactory-sortic">SmartFactroy-Sortic-ReadMe</a>.</small></small></p>
+<p><small><small></p><div style="page-break-after: always;"></div><p></small></small></p>
+<p><small><small></p><h4>Handshake with Vehicle</h4>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>For an handshake with a vehicle the topic <em>Box/box.id/handshake</em> is used. The confirmation of the new position is sent from the vehicle to the <em>Box/box.id/position</em>.</small></small></p>
+<p><small><small></small></small></p>
+<p><small><small><object type="image/svg+xml" data="./docs/images/Handshake-detailed.svg" height="650"></object>
+/>
+</small></small></p>
+<p><small><small></small></small></p>
+<p><small><small></p><div style="page-break-after: always;"></div><p></small></small></p>
+<p><small><small></p><h4>Sortic to Box</h4>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>So that the box knows what it has loaded, it subscribes itself to the topic Sortic/Handover.</small></small></p>
+<p><small><small>It updated its loading information if a valid message is received.</small></small></p>
+<p><small><small></small></small></p>
+<p><small><small><object type="image/svg+xml" data="./docs/images/SorticToSB-detailed.svg" height="350"></object>
+/>
+</small></small></p>
+<p><small><small></small></small></p>
+<p><small><small></p><div style="page-break-after: always;"></div><p></small></small></p>
+<p><small><small></p><h2>FAQ's</h2>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small></p><h4>I'd like to use this code in my project. What do I need to know?</h4>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small></p><blockquote class="doxtable">
+<p>This repository is designed specifically for Sortic. You can still use it, if you follow the rules below:</p>
+<ul>
+<li>Use the same Handshake and Communication-Sequence for your carrier as documented in <a href="https://github.com/LMazzole/SmartFactory-Sortic">SmartFactory-Sortic</a> and <a href="#communication">Communication</a>. </li>
+</ul>
+</blockquote>
+<p></small></small></p>
+<p><small><small></p><h3>ToDo's</h3>
+<p></small></small></p>
+<p><small><small> </p><h4>Hardware</h4>
+<p></small></small></p>
+<p><small><small></p><ul>
+<li>[ ] Only if a package is loaded or not is detected. It cannot be detected how full the box is, therefore the sensor concept has to be reworked.</li>
+<li>[ ] The battery of the box must be recharged by hand. Inductive charging while waiting would be desirable.</li>
+<li>[ ] Cable routing and mounting must be revised. <h4>Software</h4>
+</li>
+</ul>
+<p></small></small></p>
+<p><small><small> All open ToDo's can be found in the Documentation on the <a href="https://lmazzole.github.io/SmartFactory_Box-Sortic/todo.html">GitHub-Page</a></p><ul>
+<li>[ ] Split the Code in 2 Repos: Box-Sortic and Box-Basis in order to increase reusability.</li>
+</ul>
+<p></small></small></p>
+<p><small><small></p><h2>Contributors</h2>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small></p><ul>
+<li><a href="https://github.com/LMazzole">Luca Mazzoleni</a></li>
+<li>Luciano Bettinaglio</li>
+</ul>
+<p></small></small></p>
+<p><small><small></p><h2>Changelog</h2>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>V 1.0 - Release BA FS19 - <a href="https://github.com/LMazzole">Luca Mazzoleni</a></small></small></p>
+<p><small><small></p><h2>License</h2>
+<p></small></small></p>
+<p><small><small></small></small></p>
+<p><small><small>MIT License </small></small></p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

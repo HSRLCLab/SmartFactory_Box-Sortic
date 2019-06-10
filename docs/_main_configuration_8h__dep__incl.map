@@ -1,5 +1,5 @@
 <map id="MainConfiguration.h" name="MainConfiguration.h">
-<area shape="rect" id="node1" title="contains the default configuration for the main function" alt="" coords="36,5,172,32"/>
+<area shape="rect" id="node1" title="contains the default configuration for the smartbox" alt="" coords="36,5,172,32"/>
 <area shape="rect" id="node2" href="$_box_ctrl_8h.html" title="The Box Controll class contains the FSM for the BoxLevel." alt="" coords="66,80,142,107"/>
 <area shape="rect" id="node3" href="$_box_ctrl_8cpp.html" title="Implementation of the Box Controll&#45;Class." alt="" coords="5,155,96,181"/>
 <area shape="rect" id="node4" href="$main_8cpp.html" title="Smart Box main file." alt="" coords="120,155,195,181"/>

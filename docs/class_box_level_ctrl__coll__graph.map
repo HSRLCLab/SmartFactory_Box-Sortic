@@ -1,4 +1,4 @@
 <map id="BoxLevelCtrl" name="BoxLevelCtrl">
 <area shape="rect" id="node1" title="The BoxLevel Controll class contains the FSM for the BoxLevel." alt="" coords="5,95,100,121"/>
-<area shape="rect" id="node2" href="$class_sensor_array.html" title="The Class SensorArray saves data from the sensors." alt="" coords="5,5,100,32"/>
+<area shape="rect" id="node2" href="$class_sensor_array.html" title="The Class SensorArray detects the box fill level." alt="" coords="5,5,100,32"/>
 </map>

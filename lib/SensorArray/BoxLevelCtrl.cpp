@@ -13,7 +13,7 @@
 
 #include "BoxLevelCtrl.h"
 //=====PUBLIC====================================================================================
-BoxLevelCtrl::BoxLevelCtrl() : currentState(State::emptyState) {
+BoxLevelCtrl::BoxLevelCtrl() : currentState(State::emptyState), doActionFPtr(&BoxLevelCtrl::doAction_emptyState) {
 }
 
 void BoxLevelCtrl::loop() {

@@ -30,6 +30,10 @@
 class BoxCtrl {
     //=====PUBLIC====================================================================================
    public:
+    /**
+    * @brief Sector class holds all possible position on the gametable
+    * 
+    */
     enum class Sector {
         SorticHandover,                 ///< Sortic - Handover
         SorticToHandover,               ///< Sortic - to Handover
@@ -44,13 +48,17 @@ class BoxCtrl {
         TransferWaitForGateway,         ///< Transfer - wait for Gateway
         TransferToHandover,             ///< Transfer - to Handover
         TransferHandover,               ///< Transfer - Handover
-        error
+        error                           ///< Error - Used to throw parseerror
     };
 
+    /**
+     * @brief Box class contains all relevant information about the box and its actual state
+     * 
+     */
     struct Box {
-        String id = DEFAULT_HOSTNAME;                  ///< Boxname
+        String id = DEFAULT_HOSTNAME;                  ///< Boxname / Hostname of the Box
         Sector actualSector = Sector::SorticHandover;  ///< actual sector initialise with Sortic handover
-        int actualLine = DEFAUL_HOSTNAME_NUMBER;       ///< actual line initialised with 1
+        int actualLine = DEFAUL_HOSTNAME_NUMBER;       ///< actual line
         String cargo = "";                             ///< cargo;
         String status = "null";                        ///< status of the Box FSM
         String ack = "null";                           ///< ack for handshake vehicle
@@ -104,14 +112,15 @@ class BoxCtrl {
     * 
     * https://stackoverflow.com/questions/18335861/why-is-enum-class-preferred-over-plain-enum
     */
-    enum class State { readSensorVal,        //loopEmpty()
-                       waitForVehicle,       //waitForVehicle()
-                       calculateOptVehicle,  //getOptimalVehiclefromResponses()
-                       publishOptVehicle,    //hasOptVehiclePublish()
-                       waitForAck,           //checkIfAckReceivedfromResponses()
-                       waitForTransport,     //checkIfTransporedfromResponses()
-                       resetState,
-                       errorState };
+    enum class State { readSensorVal,        ///< read fill level
+                       waitForVehicle,       ///< wait for available vehicle
+                       calculateOptVehicle,  ///< Calculate desired vehicle
+                       publishOptVehicle,    ///< Publishe desired vehicle
+                       waitForAck,           ///< Wait for ack. from vehicle
+                       waitForTransport,     ///< Wait for Transport from vehicle
+                       resetState,           ///< Reset state
+                       errorState            ///< Error state
+    };
 
     State lastStateBevorError;  ///< holds the last state of the FSM so it's possible to resume after error
     State currentState;         ///< holds the current state of the FSM
@@ -124,23 +133,12 @@ class BoxCtrl {
      */
     Event (BoxCtrl::*doActionFPtr)(void) = nullptr;
 
-    BoxLevelCtrl pBoxlevelctrl;
-    Communication pComm = Communication(DEFAULT_HOSTNAME);
-    // NetworkManager pComm;
+    BoxLevelCtrl pBoxlevelctrl;                             ///< instance ot BoxLevelCtrl
+    Communication pComm = Communication(DEFAULT_HOSTNAME);  ///< instance of Communication with Box.id/hostname
 
-    // int pMaxLoopCountForMessages = 1;
-    // void checkMessages();
-    // myJSONStr pTemp;
-
-    unsigned long currentMillis = 0;          ///< will store current time
-    unsigned long previousMillis = 0;         ///< will store last time
-    unsigned long previousMillisPublish = 0;  ///< will store last publish time
-    // unsigned long WaitForResponsesInMillis = 5000;
-    // int NUM_OF_MAXVALUES_VEHICLES_STORE = 2;
-    // int pVehicleRating[NUM_OF_MAXVALUES_VEHICLES_STORE];
-    // int increment = 0;
-
-    // int TimeBetweenPublish = 500;
+    unsigned long currentMillis = 0;          ///< store current time
+    unsigned long previousMillis = 0;         ///< store last time
+    unsigned long previousMillisPublish = 0;  ///< store last publish time
 
     //=====StateFunctions===============================================================
     //==readSensorVal==========================================================
@@ -155,9 +153,10 @@ class BoxCtrl {
     /**
      * @brief main action of the readSensorVal
      * 
-     * call Comm.loop and check for incoming Error-Message \n
-     * call BoxLevelCtrl with Event::CheckForPackage \n
-     * if BoxLvl is in FullState and at HandoverSortic or in EmptyState and at HandOverTransfer return Event SBReadyForTransport \n
+     * - call Comm.loop and check for incoming Error-Message
+     * - call BoxLevelCtrl with Event::CheckForPackage
+     * - if BoxLvl is in FullState and at HandoverSortic or in EmptyState and at HandOverTransfer
+     *    - return Event SBReadyForTransport
      * 
      * @return BoxCtrl::Event - generated Event
      */
@@ -173,20 +172,20 @@ class BoxCtrl {
     /**
      * @brief entry action of the waitForVehicle
      * 
-     * publish state to "Box/box.id/status". \n
-	 * subscribe to "Vehicle/+/available". \n
-	 * unsubscribe from "Vehicle/box.req/handshake". \n
-	 * reset box.ack and box.req. \n
+     * - publish state to "Box/box.id/status".
+	 * - subscribe to "Vehicle/+/available".
+	 * - unsubscribe from "Vehicle/box.req/handshake".
+	 * - reset box.ack and box.req.
      */
     void entryAction_waitForVehicle();
 
     /**
      * @brief main action of the waitForVehicle
      * 
-     * call Comm.loop and check for incoming Error-Message. \n
-     * wait for SMARTBOX_WAITFOR_VEHICLES_SECONDS seconds and  \n
-     * if a message is received or more than NUM_OF_MAXVALUES_VEHICLES_STORE messages \n
-     * are recived return Event::AnswerReceived. \n
+     * - call Comm.loop and check for incoming Error-Message.
+     * - wait for SMARTBOX_WAITFOR_VEHICLES_SECONDS seconds 
+     *     - if a message is received or more than NUM_OF_MAXVALUES_VEHICLES_STORE messages are recived
+     *         - return Event::AnswerReceived.
      * 
      *  @return BoxCtrl::Event - generated Event
      */
@@ -210,11 +209,12 @@ class BoxCtrl {
     /**
      * @brief main action of the calculateOptVehicle
      * 
-     * check all saved messages. \n
-     * select all vehicle in same sector and choose the nearest one. \n
-     * if the nearest one is valid update box.req with id of the nearest vehicle \n
-     * and return Event::CalcOptVal. \n
-     * if not valid return Event::NoAnswerReceived. \n
+     * - check all saved messages.
+     * - select all vehicle in same sector and choose the nearest one.
+     * - if the nearest one is valid update box.req with id of the nearest vehicle.
+     *      - return Event::CalcOptVal.
+     * - if not valid
+     *      - return Event::NoAnswerReceived.
      * 
      *  @return BoxLevelCtrl::Event - generated Event
      */
@@ -230,18 +230,18 @@ class BoxCtrl {
     /**
      * @brief entry action of the publishOptVehicle
      * 
-     * publish state to "Box/box.id/status" \n
-     * subscribe to "Vehicle/box.req/handshake" \n
+     * - publish state to "Box/box.id/status" 
+     * - subscribe to "Vehicle/box.req/handshake" 
      */
     void entryAction_publishOptVehicle();
 
     /**
      * @brief main action of the publishOptVehicle
      * 
-     * call Comm.loop and check for incoming Error-Message. \n
-     * publish box.id and id of req vehicle to "Box/box.id/handshake" all TIME_BETWEEN_PUBLISH seconds. \n
-     * if requested vehicle also req box in time return Event::AnswerReceived. \n
-     *  @return BoxLevelCtrl::Event - generated Event \n
+     * - call Comm.loop and check for incoming Error-Message. 
+     * - publish box.id and id of req vehicle to "Box/box.id/handshake" all TIME_BETWEEN_PUBLISH seconds.
+     * - if requested vehicle also req box in time return Event::AnswerReceived.
+     *  @return BoxLevelCtrl::Event - generated Event
      */
     BoxCtrl::Event doAction_publishOptVehicle();
 
@@ -261,10 +261,11 @@ class BoxCtrl {
     /**
      * @brief main action of the waitForAck
      * 
-     * call Comm.loop and check for incoming Error-Message. \n
-     * publish box.id and id of ack vehicle to "Box/box.id/handshake". \n
-     * wait  SMARTBOX_ITERATION_VACKS_SECONDS for response. \n
-     * if acknoledge vehicle also ack box in time return Event::AnswerReceived. \n
+     * - call Comm.loop and check for incoming Error-Message.
+     * - publish box.id and id of ack vehicle to "Box/box.id/handshake".
+     * - wait  SMARTBOX_ITERATION_VACKS_SECONDS for responde.
+     * - if acknoledge vehicle also ack box in time
+     *      - return Event::AnswerReceived.
      *  
      *  @return BoxLevelCtrl::Event - generated Event
      */
@@ -280,18 +281,19 @@ class BoxCtrl {
 
     //==waitForTransport==========================================================
     /**
-     * @brief entry action of the waitForTransport \n
-     * publish state to "Box/box.id/status". \n
-     * subscribe to "Box/box.id/position". \n
+     * @brief entry action of the waitForTransport
+     * 
+     * - publish state to "Box/box.id/status".
+     * - subscribe to "Box/box.id/position".
      */
     void entryAction_waitForTransport();
 
     /**
      * @brief main action of the waitForTransport
      * 
-     * call Comm.loop and check for incoming Error-Message. \n
-     * check incoming message if ack. vehicle updated box-position \n
-     *  @return BoxLevelCtrl::Event - generated Event \n
+     * - call Comm.loop and check for incoming Error-Message.
+     * - check incoming message if ack. vehicle updated box-position
+     *  @return BoxLevelCtrl::Event - generated Event
      */
     BoxCtrl::Event doAction_waitForTransport();
 
@@ -375,17 +377,31 @@ class BoxCtrl {
      */
     BoxCtrl::Sector decodeSector(String sector);
 
+    /**
+     * @brief publish actual position via communication
+     * 
+     */
     void publishPosition();
 
-    void publishState(State state);
     /**
-     * @brief 
+     * @brief Publish actual state via communication
      * 
-     * @return true - 
-     * @return false - 
+     * @param state - State of type enum State
+     */
+    void publishState(State state);
+
+    /**
+     * @brief Check if the last message was an error
+     * 
+     * @return true - if the last message was an error
+     * @return false - if the last message wasn't an error
      */
     bool checkForError();
 
+    /**
+     * @brief clear all box related gui entrys
+     * 
+     */
     void clearGui();
 };
 #endif
