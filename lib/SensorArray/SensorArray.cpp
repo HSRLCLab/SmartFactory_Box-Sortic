@@ -25,6 +25,7 @@ SensorArray::SensorArray(const int Sensor1, const int Sensor2, const int Sensor3
     pinMode(pSensor1, INPUT);
     pinMode(pSensor2, INPUT);
     pinMode(pSensor3, INPUT);
+    pinMode(pLoadIndicatorLED, OUTPUT);
 }
 
 /**

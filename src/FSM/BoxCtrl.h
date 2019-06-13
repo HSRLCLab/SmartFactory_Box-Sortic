@@ -56,13 +56,14 @@ class BoxCtrl {
      * 
      */
     struct Box {
-        String id = DEFAULT_HOSTNAME;                  ///< Boxname / Hostname of the Box
-        Sector actualSector = Sector::SorticHandover;  ///< actual sector initialise with Sortic handover
-        int actualLine = DEFAUL_HOSTNAME_NUMBER;       ///< actual line
-        String cargo = "";                             ///< cargo;
-        String status = "null";                        ///< status of the Box FSM
-        String ack = "null";                           ///< ack for handshake vehicle
-        String req = "null";                           ///< req for handshake vehicle
+        String id = DEFAULT_HOSTNAME;                    ///< Boxname / Hostname of the Box
+        // Sector actualSector = Sector::TransferHandover;  ///< actual sector initialise with Sortic handover
+      Sector actualSector = Sector::SorticHandover;  ///< actual sector initialise with Sortic handover
+        int actualLine = DEFAUL_HOSTNAME_NUMBER;         ///< actual line
+        String cargo = "";                               ///< cargo;
+        String status = "null";                          ///< status of the Box FSM
+        String ack = "null";                             ///< ack for handshake vehicle
+        String req = "null";                             ///< req for handshake vehicle
     } box;
 
     /**

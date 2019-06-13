@@ -23,6 +23,7 @@ BoxCtrl::BoxCtrl() : currentState(State::readSensorVal), doActionFPtr(&BoxCtrl::
     pComm.subscribe("error");
     delay(100);
     publishPosition();
+    entryAction_readSensorVal();
 }
 
 void BoxCtrl::loop() {
@@ -152,6 +153,7 @@ void BoxCtrl::entryAction_readSensorVal() {
     doActionFPtr = &BoxCtrl::doAction_readSensorVal;
     publishState(currentState);  //Update Current State and Publish
     publishPosition();
+    pComm.clear();
     if (box.actualSector == BoxCtrl::Sector::SorticHandover) {
         pComm.subscribe("Sortic/Handover");
     }
@@ -285,20 +287,23 @@ BoxCtrl::Event BoxCtrl::doAction_calculateOptVehicle() {
     myJSONStr nearestVehicleStr = pComm.pop();
     myJSONStr temp;
 
-    for (int i = 1; i < size; i++) {
+    for (int i = 0; i < size; i++) {
         // temp = pComm.getElement(i);
-        temp = pComm.pop();
-        DBINFO3ln(decodeSector(box.actualSector) + String("==") + temp.sector);
-        //Check if actual sector same as sector from vehicle
-        if (decodeSector(box.actualSector) == temp.sector) {
-            DBINFO3ln(String(abs(temp.line - box.actualLine)) + String(" < ") + String(abs(nearestVehicleStr.line - box.actualLine)));
-            //Check if this vehicle is nearer than the actual near vehicle
-            if (abs(temp.line - box.actualLine) < abs(nearestVehicleStr.line - box.actualLine)) {
-                //load nearestVehcile with actual vehicle if necessary
-                nearestVehicleStr = temp;
+        if (!pComm.isEmpty()) {
+            temp = pComm.pop();
+            DBINFO3ln(decodeSector(box.actualSector) + String("==") + temp.sector);
+            //Check if actual sector same as sector from vehicle
+            if (decodeSector(box.actualSector) == temp.sector) {
+                DBINFO3ln(String(abs(temp.line - box.actualLine)) + String(" < ") + String(abs(nearestVehicleStr.line - box.actualLine)));
+                //Check if this vehicle is nearer than the actual near vehicle
+                if (abs(temp.line - box.actualLine) < abs(nearestVehicleStr.line - box.actualLine)) {
+                    //load nearestVehcile with actual vehicle if necessary
+                    nearestVehicleStr = temp;
+                }
             }
         }
     }
+
     if (nearestVehicleStr.line != 0 && decodeSector(nearestVehicleStr.sector) != BoxCtrl::Sector::error && decodeSector(nearestVehicleStr.sector) == box.actualSector) {
         box.req = nearestVehicleStr.id;
         return Event::CalcOptVal;
